@@ -793,7 +793,7 @@ function renderCatTabs() {
 
 function estimateMinutes(p) {
   let perRound=0;
-  if (p.type==='wimhof') { perRound = p.breaths*(p.pace+p.pace*0.75) + 45 + p.holdRecover; }
+  if (p.type==='wimhof') { perRound = p.breaths*(p.pace+p.pace*0.75) + 45 + p.holdRecover + 5; }
   else { perRound = p.phases.reduce((s,ph)=>s+ph.sec,0); }
   return Math.max(1, Math.round(perRound*p.defaultRounds/60));
 }
@@ -1050,6 +1050,12 @@ async function runSession(tok) {
       await runTimedPhase(p.holdRecover, tok, s=>{ counter.textContent = state.noNumbersOn?'':s; });
       stopHoldTone();
       if (sessionToken!==tok) return;
+
+      // Recovery exhale: closes the round before the next one begins
+      setRingDuration(5); ringAction('contract'); setNoiseLevel(0.008, 5*0.4);
+      phaseWord.textContent='Выдох ртом'; counter.textContent=''; resetProgress();
+      speak('Выдох'); playTone('out', 5); vibrate(10);
+      await sleepInterruptible(5000, tok); if (sessionToken!==tok) return;
     }
   } else {
     for (let round=1; round<=state.rounds; round++){
