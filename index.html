@@ -111,6 +111,8 @@
   #ring { position:relative; width:200px; height:200px; border-radius:50%; border: 1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); display:flex; align-items:center; justify-content:center; flex-direction:column; transform: scale(0.55); transition: transform 4s cubic-bezier(0.45,0,0.55,1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset; }
   #ring.pulse { animation: livePulse 2.4s ease-in-out infinite; }
   @keyframes livePulse { 0%,100%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 24px 3px rgba(139,124,246,0.18);} 50%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 36px 8px rgba(139,124,246,0.34);} }
+  #ring.phase-flash { animation: phaseFlash 0.5s ease-out; }
+  @keyframes phaseFlash { 0%{ border-color: var(--accent); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 0 4px var(--accent-glow); } 100%{ border-color: var(--border-strong); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 0 0 transparent; } }
   #counter { font-size:44px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; }
   #phaseWord { font-family: var(--font-display); font-size:16px; color: var(--text-secondary); margin-top:2px; letter-spacing:0.3px; text-align:center; padding:0 20px; }
   #roundInfo { font-size:12px; color: var(--text-muted); margin-top:20px; letter-spacing:0.5px; }
@@ -657,6 +659,27 @@ function bell() {
     osc.connect(g); g.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+1.2);
   } catch(e){}
 }
+/* Short directional chirp at a phase change: rising pitch = inhale, falling = exhale, flat = hold.
+   Reuses the existing bell toggle, so it respects whatever the user already set. */
+function phaseChime(action) {
+  if (!state.bellOn) return;
+  try {
+    const ctx=ensureAudioCtx(); const osc=ctx.createOscillator(); const g=ctx.createGain();
+    const now=ctx.currentTime;
+    osc.type='sine';
+    if (action==='expand'||action==='expand-more') {
+      osc.frequency.setValueAtTime(392, now); osc.frequency.linearRampToValueAtTime(523, now+0.28);
+    } else if (action==='contract') {
+      osc.frequency.setValueAtTime(392, now); osc.frequency.linearRampToValueAtTime(261, now+0.28);
+    } else {
+      osc.frequency.setValueAtTime(220, now);
+    }
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.09, now+0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, now+0.38);
+    osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now+0.4);
+  } catch(e){}
+}
 function vibrate(p) { try { if (state.hapticOn && navigator.vibrate) navigator.vibrate(p); } catch(e){} }
 function startBreathNoise() {
   if (!state.breathNoiseOn) return;
@@ -951,10 +974,16 @@ function fadeBg(on) { document.getElementById('sessionFadeBg').style.opacity = o
 
 async function runTimedPhase(totalSec, tok, onSecond) {
   let remain=Math.ceil(totalSec); const total=remain;
+  // Speaking "3-2-1" only makes sense if the phase phrase ("Вдох носом" etc.)
+  // has had time to finish first — otherwise cancel() inside speak() cuts it off mid-word.
+  const longEnoughForVoiceCountdown = total > 6;
   while (remain>0){
     if (sessionToken!==tok) return false;
     if (skipRequested){ skipRequested=false; return false; }
-    if (remain<=3 && remain>=1) speak(String(remain));
+    if (remain<=3 && remain>=1) {
+      if (longEnoughForVoiceCountdown) speak(String(remain));
+      else vibrate(6); // short phase (e.g. box breathing's 4s sides): a soft tick marks the corner instead of a rushed voice count
+    }
     if (onSecond) onSecond(remain);
     setProgress((total-remain+1)/total);
     const ok=await sleepInterruptible(1000, tok); if (!ok) return false;
@@ -1067,7 +1096,8 @@ async function runSession(tok) {
         setRingDuration(phase.sec); ringAction(phase.action);
         phaseWord.textContent=phase.label;
         document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn && isHoldPhase);
-        bell(); speak(phase.voice); vibrate(phase.action==='contract'?10:15);
+        phaseChime(phase.action); speak(phase.voice); vibrate(phase.action==='contract'?10:15);
+        ring().classList.remove('phase-flash'); void ring().offsetWidth; ring().classList.add('phase-flash');
         if (phase.action==='expand'||phase.action==='expand-more') { setNoiseLevel(0.014, phase.sec*0.4); playTone('in', phase.sec); }
         else if (phase.action==='contract') { setNoiseLevel(0.006, phase.sec*0.4); playTone('out', phase.sec); }
         else { setNoiseLevel(0.0001,0.5); startHoldTone(); }
