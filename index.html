@@ -71,6 +71,12 @@
   .hero-meta { display:flex; gap:14px; font-size:12px; color: var(--text-muted); }
   .hero-play { position:absolute; right:20px; bottom:20px; width:52px; height:52px; border-radius:50%; background: var(--accent); color:#0B0A12; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 6px 20px rgba(139,124,246,0.45); }
   .hero-play:active { transform: scale(0.94); }
+  .repeat-card { margin-top:12px; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; background: rgba(255,255,255,0.03); border:0.5px solid var(--border-strong); animation: riseIn 0.5s ease; }
+  .repeat-glyph { width:38px; height:38px; border-radius:12px; background: rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .repeat-text { flex:1; min-width:0; }
+  .repeat-title { font-size:14px; font-weight:600; }
+  .repeat-sub { font-size:12px; color: var(--text-muted); margin-top:2px; }
+  .repeat-play { font-size:18px; color: var(--text-muted); }
 
   /* Category tabs */
   .cat-tabs { display:flex; gap:8px; overflow-x:auto; margin:24px -20px 4px; padding:0 20px 4px; }
@@ -82,11 +88,16 @@
   .pattern-list { display:flex; flex-direction:column; gap:11px; overflow-y:auto; flex:1; padding-bottom: 20px; }
   .pattern-card { display:flex; align-items:center; gap:14px; padding:15px; border-radius:18px; background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); border: 0.5px solid var(--border); position: relative; animation: riseIn 0.4s ease backwards; }
   .pattern-card:active { transform: scale(0.985); }
+  .pattern-card:active .pattern-glyph { animation: glyphPulse 0.4s ease; }
+  @keyframes glyphPulse { 0%{ transform:scale(1); } 40%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
   .pattern-glyph { width:48px; height:48px; border-radius:15px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:21px; }
   .pattern-info { flex:1; min-width:0; }
   .pattern-name { font-size:15.5px; font-weight:600; margin:0 0 3px; }
   .pattern-desc { font-size:12.5px; color: var(--text-secondary); margin:0; line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
   .pattern-meta { font-size:11px; color: var(--text-muted); margin-top:6px; display:flex; gap:10px; align-items:center; }
+  .pattern-spark { display:flex; gap:3px; margin-top:6px; }
+  .spark-dot { width:5px; height:5px; border-radius:50%; background: rgba(255,255,255,0.12); }
+  .spark-dot.on { background: var(--accent); }
   .fav-star { position:absolute; top:14px; right:14px; font-size:16px; color: var(--text-muted); padding:4px; }
   .fav-star.on { color: var(--gold); }
   .card-edit-btn { padding:6px; color: var(--text-muted); font-size:15px; flex-shrink:0; }
@@ -109,13 +120,41 @@
   #progressBar { stroke: var(--accent); stroke-linecap:round; transition: stroke-dashoffset 0.4s linear; }
   #glow { position:absolute; width:250px; height:250px; border-radius:50%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); filter: blur(8px); transform: scale(0.5); transition: transform 4s cubic-bezier(0.45,0,0.55,1), opacity 4s ease; opacity: 0.55; }
   #ring { position:relative; width:200px; height:200px; border-radius:50%; border: 1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); display:flex; align-items:center; justify-content:center; flex-direction:column; transform: scale(0.55); transition: transform 4s cubic-bezier(0.45,0,0.55,1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset; }
-  #ring.pulse { animation: livePulse 2.4s ease-in-out infinite; }
+  #ring.pulse { animation: livePulse var(--pulse-speed, 2.4s) ease-in-out infinite; }
   @keyframes livePulse { 0%,100%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 24px 3px rgba(139,124,246,0.18);} 50%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 36px 8px rgba(139,124,246,0.34);} }
-  #ring.phase-flash { animation: phaseFlash 0.5s ease-out; }
+  #ring.phase-flash { animation: phaseFlash var(--flash-speed, 0.5s) ease-out; }
   @keyframes phaseFlash { 0%{ border-color: var(--accent); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 0 4px var(--accent-glow); } 100%{ border-color: var(--border-strong); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 0 0 transparent; } }
+
+  /* Progressive-intensity hold feedback: red glow while behind last round's hold time,
+     gold glow once it's been beaten. Layered on top of whatever pulse/flash is already running. */
+  #ring.hold-chase.hold-behind { border-color: #E2554A; box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 28px 6px rgba(226,85,74,0.4); transition: border-color 0.6s ease, box-shadow 0.6s ease; }
+  #ring.hold-chase.hold-ahead { border-color: var(--gold); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 32px 8px rgba(232,200,138,0.5); transition: border-color 0.6s ease, box-shadow 0.6s ease; }
+
+  /* Slow tinted wash behind the session screen, matching the category colour — fades in over
+     several seconds instead of snapping, so the mood settles in rather than arriving abruptly. */
+  #sessionTint { position:absolute; inset:0; background: radial-gradient(ellipse 90% 60% at 50% 30%, var(--accent-glow) 0%, transparent 70%); opacity:0; transition: opacity 3.5s ease, background 3.5s ease; pointer-events:none; z-index:0; }
+  #screen-session.session-live #sessionTint { opacity:0.35; }
+
+  /* Calm: slow concentric ripples breathing outward behind the ring */
+  .ripple-layer { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity 1.8s ease; z-index:0; }
+  #screen-session.cat-calm .ripple-layer { opacity:1; }
+  .ripple-ring { position:absolute; width:210px; height:210px; border-radius:50%; border:1px solid var(--accent); opacity:0; animation: rippleOut 4.5s ease-out infinite; }
+  @keyframes rippleOut { 0%{ transform:scale(1); opacity:0.3; } 100%{ transform:scale(1.7); opacity:0; } }
+
+  /* Energy: small sparks drifting outward from the ring */
+  .spark-layer { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity 1.8s ease; z-index:0; }
+  #screen-session.cat-energy .spark-layer { opacity:1; }
+  .spark { position:absolute; width:4px; height:4px; border-radius:50%; background:var(--accent); top:50%; left:50%; opacity:0;
+    animation: sparkDrift 2.6s ease-out infinite; animation-delay: calc(var(--i) * 0.32s); }
+  @keyframes sparkDrift {
+    0%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-85px) scale(0.6); }
+    25%{ opacity:0.85; }
+    100%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-145px) scale(1.15); }
+  }
   #counter { font-size:44px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; }
   #phaseWord { font-family: var(--font-display); font-size:16px; color: var(--text-secondary); margin-top:2px; letter-spacing:0.3px; text-align:center; padding:0 20px; }
-  #roundInfo { font-size:12px; color: var(--text-muted); margin-top:20px; letter-spacing:0.5px; }
+  #roundInfo { font-size:12px; color: var(--text-muted); margin-top:20px; letter-spacing:0.5px; transition: color 0.3s ease; }
+  #roundInfo.round-done-flash { color: var(--accent); font-weight:600; }
   #tapHint { font-size:11px; color: var(--text-muted); margin-top:8px; opacity:0; transition: opacity 0.4s; text-align:center; height:14px; }
   #tapHint.show { opacity:1; }
 
@@ -148,6 +187,11 @@
   .stat-num { font-family: var(--font-display); font-size:28px; font-weight:600; }
   .stat-label { font-size:12px; color: var(--text-secondary); margin-top:4px; }
   .achievements { display:flex; gap:10px; overflow-x:auto; margin:20px -20px 0; padding:0 20px 8px; }
+  .calendar-grid { display:grid; grid-template-columns: repeat(14, 1fr); gap:4px; margin-top:12px; }
+  .cal-cell { aspect-ratio:1; border-radius:3px; background: rgba(255,255,255,0.05); }
+  .cal-cell.lvl1 { background: var(--accent); opacity:0.35; }
+  .cal-cell.lvl2 { background: var(--accent); opacity:0.65; }
+  .cal-cell.lvl3 { background: var(--accent); opacity:1; }
   .badge { flex-shrink:0; width:78px; text-align:center; }
   .badge-icon { width:56px; height:56px; border-radius:18px; background: rgba(255,255,255,0.03); border:0.5px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 6px; }
   .badge.earned .badge-icon { background: var(--accent-glow); border-color: var(--accent); }
@@ -208,19 +252,39 @@
   .intro-card h3 { font-family: var(--font-display); font-size:18px; margin:0 0 10px; }
   .intro-card p { font-size:14px; color: var(--text-secondary); line-height:1.6; margin:0 0 18px; }
 
-  #welcome { position:fixed; inset:0; z-index:70; background: radial-gradient(ellipse 120% 80% at 50% 20%, #1A1830 0%, var(--bg) 60%); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; }
+  #welcome { position:fixed; inset:0; z-index:70; background: radial-gradient(ellipse 120% 80% at 50% 20%, #1A1830 0%, var(--bg) 60%); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; overflow:hidden; }
   #welcome.active { display:flex; }
-  .welcome-ring { width:120px; height:120px; border-radius:50%; border:1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); margin-bottom:32px; animation: welcomeBreath 6s ease-in-out infinite; box-shadow: 0 0 40px 8px rgba(139,124,246,0.2); }
+  .welcome-particles { position:absolute; inset:0; pointer-events:none; z-index:0; }
+  .welcome-particle { position:absolute; border-radius:50%; background:var(--accent); opacity:0; animation-name:particleFloat; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
+  @keyframes particleFloat { 0%{ transform:translateY(0) scale(0.8); opacity:0; } 15%{ opacity:0.35; } 85%{ opacity:0.2; } 100%{ transform:translateY(-140px) scale(1.1); opacity:0; } }
+  .welcome-ring { position:relative; z-index:1; width:120px; height:120px; border-radius:50%; border:1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); margin-bottom:32px; animation: welcomeBreath 6s ease-in-out infinite; box-shadow: 0 0 40px 8px rgba(139,124,246,0.2); }
   @keyframes welcomeBreath { 0%,100%{ transform:scale(0.85);} 50%{ transform:scale(1.1);} }
-  .welcome-title { font-family: var(--font-display); font-size:30px; font-weight:600; margin-bottom:10px; }
-  .welcome-sub { color: var(--text-secondary); font-size:15px; line-height:1.6; margin-bottom:36px; max-width:300px; }
-  .goal-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:320px; margin-bottom:20px; }
+  .welcome-title { position:relative; z-index:1; font-family: var(--font-display); font-size:30px; font-weight:600; margin-bottom:10px; }
+  .welcome-sub { position:relative; z-index:1; color: var(--text-secondary); font-size:15px; line-height:1.6; margin-bottom:36px; max-width:300px; }
+  .goal-grid { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:320px; margin-bottom:20px; }
   .goal-btn { padding:18px 12px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); text-align:center; }
   .goal-btn .g-icon { font-size:26px; margin-bottom:6px; }
   .goal-btn .g-lbl { font-size:13px; font-weight:500; }
   .welcome-skip { color: var(--text-muted); font-size:14px; padding:12px; }
 
   ::-webkit-scrollbar { display:none; }
+
+  /* ---------- MINIMAL MODE ---------- */
+  /* Strips animation/decor for people who find the visual layer distracting —
+     screens still work exactly the same, they just don't move or glow. */
+  body.minimal-mode * { animation: none !important; transition: none !important; }
+  body.minimal-mode #glow { display:none; }
+  body.minimal-mode #ring { box-shadow:none !important; background:var(--bg-elevated); }
+  body.minimal-mode .pattern-card, body.minimal-mode .hero-card, body.minimal-mode .repeat-card { animation:none !important; }
+  body.minimal-mode #sessionTint { display:none; }
+  body.minimal-mode .welcome-ring { animation:none !important; }
+  body.minimal-mode .welcome-particles { display:none; }
+
+  /* ---------- SCREEN-OFF MODE (eyes-closed practice) ---------- */
+  #screenOffOverlay { position:fixed; inset:0; background:#000; z-index:80; display:none; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+  #screenOffOverlay.active { display:flex; }
+  #screenOffOverlay .soff-hint { color:rgba(255,255,255,0.35); font-size:13px; text-align:center; padding:0 40px; }
+  #screenOffOverlay .soff-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.25); }
 </style>
 </head>
 <body>
@@ -242,6 +306,7 @@
     </div>
 
     <div id="heroSlot"></div>
+    <div id="repeatSlot"></div>
 
     <div class="cat-tabs" id="catTabs"></div>
 
@@ -252,6 +317,18 @@
   <!-- SESSION -->
   <div class="screen" id="screen-session">
     <div class="session-fade-bg" id="sessionFadeBg"></div>
+    <div id="sessionTint"></div>
+    <div class="ripple-layer" id="rippleLayer">
+      <div class="ripple-ring"></div>
+      <div class="ripple-ring" style="animation-delay:1.5s"></div>
+      <div class="ripple-ring" style="animation-delay:3s"></div>
+    </div>
+    <div class="spark-layer" id="sparkLayer">
+      <div class="spark" style="--i:0"></div><div class="spark" style="--i:1"></div>
+      <div class="spark" style="--i:2"></div><div class="spark" style="--i:3"></div>
+      <div class="spark" style="--i:4"></div><div class="spark" style="--i:5"></div>
+      <div class="spark" style="--i:6"></div><div class="spark" style="--i:7"></div>
+    </div>
     <div class="session-top">
       <div class="icon-btn" onclick="exitSession()">←</div>
       <div class="session-title" id="sessionTitle">—</div>
@@ -292,6 +369,8 @@
       <div class="complete-stat"><div class="num" id="cStatStreak">0</div><div class="lbl">дней подряд</div></div>
       <div class="complete-stat"><div class="num" id="cStatTotal">0</div><div class="lbl">всего сессий</div></div>
     </div>
+    <div id="completeSummary" style="font-size:13px; color:var(--text-muted); margin-bottom:6px;"></div>
+    <div id="completeFact" style="font-size:13px; color:var(--text-secondary); margin-bottom:18px;"></div>
     <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">Как ты сейчас?</div>
     <div class="mood-row" id="moodRow">
       <div class="mood-btn" data-mood="calm" onclick="pickMood(this,'спокойно')">🌊</div>
@@ -299,7 +378,8 @@
       <div class="mood-btn" data-mood="clear" onclick="pickMood(this,'ясно')">✨</div>
       <div class="mood-btn" data-mood="tired" onclick="pickMood(this,'устал')">🌙</div>
     </div>
-    <button class="btn btn-primary" style="max-width:280px;" onclick="finishComplete()">Завершить</button>
+    <button class="btn btn-primary" style="flex:none; width:100%; max-width:280px;" onclick="finishComplete()">Завершить</button>
+    <div id="extendLink" style="margin-top:12px; font-size:13px; color:var(--accent);" onclick="extendSession()">+ ещё несколько раундов</div>
   </div>
 
   <!-- STATS -->
@@ -316,6 +396,8 @@
     </div>
     <div class="section-label" style="margin-top:24px;">Достижения</div>
     <div class="achievements" id="achievements"></div>
+    <div class="section-label">Последние недели</div>
+    <div id="calendarGrid" class="calendar-grid"></div>
     <div class="section-label">Недавнее</div>
     <div style="flex:1; overflow-y:auto;" id="historyList"></div>
   </div>
@@ -357,7 +439,43 @@
 
 
       <div id="advancedSettings" style="display:none;">
-        <div class="settings-group-title">Продвинутое</div>
+        <div class="settings-group-title">Профили</div>
+        <div class="set-row" style="flex-direction:column; align-items:stretch;">
+          <div style="margin-bottom:10px;"><div class="set-sub">Быстрое переключение сохранённых настроек звука</div></div>
+          <div class="cat-opt-row" id="profileRow"></div>
+        </div>
+
+        <div class="settings-group-title">Голос</div>
+        <div class="set-row" id="voicePickRow" style="flex-direction:column; align-items:stretch;">
+          <div style="margin-bottom:10px;"><div class="set-label">Голос устройства</div><div class="set-sub">Если на телефоне их несколько</div></div>
+          <select id="voicePickSelect" style="width:100%;"></select>
+        </div>
+
+        <div class="settings-group-title">Громкость</div>
+        <div class="slider-row">
+          <div class="slider-row-top"><span>Голос / звуки фаз</span><span class="val" id="volCueVal">70%</span></div>
+          <input type="range" id="volCueSlider" min="0" max="100" step="5" value="70">
+        </div>
+        <div class="slider-row">
+          <div class="slider-row-top"><span>Колокол</span><span class="val" id="volBellVal">70%</span></div>
+          <input type="range" id="volBellSlider" min="0" max="100" step="5" value="70">
+        </div>
+        <div class="slider-row">
+          <div class="slider-row-top"><span>Фоновая музыка</span><span class="val" id="volMusicVal">70%</span></div>
+          <input type="range" id="volMusicSlider" min="0" max="100" step="5" value="70">
+        </div>
+
+        <div class="settings-group-title">Экран</div>
+        <div class="set-row">
+          <div><div class="set-label">Минимализм</div><div class="set-sub">Без анимаций и декора — только текст и цифры</div></div>
+          <div class="toggle" id="minimalToggle" onclick="tSet('minimalOn','minimalToggle')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="set-row">
+          <div><div class="set-label">Выключить экран в сессии</div><div class="set-sub">Для практики с закрытыми глазами — только звук и вибро</div></div>
+          <div class="toggle" id="screenOffToggle" onclick="tSet('screenOffOn','screenOffToggle')"><div class="toggle-knob"></div></div>
+        </div>
+
+        <div class="settings-group-title">Практика</div>
         <div class="set-row">
           <div><div class="set-label">Дыхательный шум</div><div class="set-sub">Едва слышимый фон в такт дыханию</div></div>
           <div class="toggle on" id="breathNoiseToggle" onclick="tSet('breathNoiseOn','breathNoiseToggle')"><div class="toggle-knob"></div></div>
@@ -371,14 +489,35 @@
           <div class="toggle" id="noNumbersToggle" onclick="tSet('noNumbersOn','noNumbersToggle')"><div class="toggle-knob"></div></div>
         </div>
         <div class="set-row">
-          <div><div class="set-label">Нарастающая интенсивность</div><div class="set-sub">Каждый раунд Вим Хофа держим дольше</div></div>
+          <div><div class="set-label">Нарастающая интенсивность</div><div class="set-sub">Каждый раунд Вим Хофа старайся задержать дыхание дольше предыдущего — кольцо красное, пока не превысил, золотое — когда получилось</div></div>
           <div class="toggle" id="progressiveToggle" onclick="tSet('progressiveOn','progressiveToggle')"><div class="toggle-knob"></div></div>
         </div>
+        <div class="set-row">
+          <div><div class="set-label">Фоновая музыка</div><div class="set-sub">Тихий эмбиент под тип практики — сама подстраивается под категорию</div></div>
+          <div class="toggle" id="musicToggle" onclick="tSet('musicOn','musicToggle')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="set-row">
+          <div><div class="set-label">Пауза перед стартом</div><div class="set-sub">3 секунды "устройся поудобнее" перед первой фазой</div></div>
+          <div class="toggle on" id="settleToggle" onclick="tSet('settleOn','settleToggle')"><div class="toggle-knob"></div></div>
+        </div>
+
+        <div class="settings-group-title">Список практик</div>
+        <div class="set-row">
+          <div><div class="set-label">Недавние наверх списка</div><div class="set-sub">Практики, которые ты делал в последние дни, поднимаются в списке выше</div></div>
+          <div class="toggle" id="recentFirstToggle" onclick="tSet('recentFirstOn','recentFirstToggle')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="set-row">
+          <div><div class="set-label">Тихий звук выбора карточки</div><div class="set-sub">Едва слышный тик при тапе на технику в списке</div></div>
+          <div class="toggle on" id="cardTickToggle" onclick="tSet('cardTickOn','cardTickToggle')"><div class="toggle-knob"></div></div>
+        </div>
+
         <div class="settings-group-title">Данные</div>
         <div class="set-row" onclick="resetOnboarding()"><div><div class="set-label">Показать приветствие снова</div></div><div style="color:var(--text-muted);">›</div></div>
       </div>
     </div>
+
   </div>
+
 
   <!-- EDITOR -->
   <div class="screen" id="screen-editor">
@@ -481,16 +620,33 @@
 <div class="intro-overlay" id="introOverlay">
   <div class="intro-card">
     <h3>Перед началом</h3>
-    <p>Не практикуй за рулём, стоя или в воде. Лёгкое головокружение — это нормально, просто сядь или ляг удобнее. Прекрати, если станет плохо.</p>
-    <button class="btn btn-primary" style="width:100%;" onclick="dismissIntro()">Понял</button>
+    <p>Не практикуй за рулём, стоя или в воде. Лёгкое головокружение — это нормально, просто сядь или ляг удобнее.</p>
+    <p style="font-weight:600; color:var(--text-primary);">Если закружилась голова — сразу остановись. Это не слабость и не повод стараться сильнее в следующий раз, это тело говорит "хватит на сегодня".</p>
+    <button class="btn btn-primary" style="flex:none; width:100%;" onclick="dismissIntro()">Понял</button>
+  </div>
+</div>
+
+<!-- SCREEN-OFF OVERLAY (eyes-closed practice) -->
+<div id="screenOffOverlay" onclick="exitScreenOff()">
+  <div class="soff-dot"></div>
+  <div class="soff-hint">Экран выключен — звук и вибрация продолжаются.<br>Тапни, чтобы вернуть изображение.</div>
+</div>
+
+<!-- WHY-THIS-TECHNIQUE NOTE (shown once, before first session with a given pattern) -->
+<div class="intro-overlay" id="whyOverlay">
+  <div class="intro-card">
+    <h3 id="whyTitle">О технике</h3>
+    <p id="whyText"></p>
+    <button class="btn btn-primary" style="flex:none; width:100%;" onclick="dismissWhy()">Понятно</button>
   </div>
 </div>
 
 <!-- WELCOME -->
 <div id="welcome">
+  <div class="welcome-particles" id="welcomeParticles"></div>
   <div class="welcome-ring"></div>
   <div class="welcome-title">Breath OS</div>
-  <div class="welcome-sub">Дыхание — самый короткий путь к своему состоянию. Что тебе нужно прямо сейчас?</div>
+  <div class="welcome-sub" id="welcomeSub">Дыхание — самый короткий путь к своему состоянию. Что тебе нужно прямо сейчас?</div>
   <div class="goal-grid">
     <div class="goal-btn" onclick="pickGoal('energy')"><div class="g-icon">⚡</div><div class="g-lbl">Энергия</div></div>
     <div class="goal-btn" onclick="pickGoal('calm')"><div class="g-icon">🌊</div><div class="g-lbl">Спокойствие</div></div>
@@ -536,6 +692,52 @@ function cycle(inhale, hold1, exhale, hold2, opts) {
 }
 
 /* ---------- BUILT-IN LIBRARY ---------- */
+/* One-line "why this technique" notes, shown once before a person's first session
+   with each pattern. Kept to a single sentence — this is context, not a lecture. */
+const WHY_NOTES = {
+  wimhof: 'Быстрая гипервентиляция и задержка запускают выброс адреналина — для бодрости и стрессоустойчивости.',
+  wimhof_intense: 'Усиленная версия классического метода — больше вдохов и дольше задержка, для тех, кто уже освоился.',
+  fire: 'Резкие выдохи носом разогревают тело и быстро поднимают тонус — древняя йогическая техника разогрева.',
+  energize6020: 'Короткий выдох относительно вдоха смещает баланс в сторону бодрости без гипервентиляции.',
+  bhastrika: 'Мощное ритмичное дыхание для быстрого прилива энергии перед активностью.',
+  tonic444: 'Ровный вдох-задержка-выдох без нижней паузы — мягкая бодрящая тонизация.',
+  coherent: 'Дыхание в резонансном ритме приводит сердечный ритм и нервную систему в равновесие.',
+  box: 'Равные фазы дыхания используют военные и спортсмены — для быстрого возврата к ясности под давлением.',
+  sigh: 'Двойной вдох и долгий выдох — так тело естественно сбрасывает физиологическое напряжение.',
+  extendedexhale: 'Выдох длиннее вдоха напрямую активирует парасимпатику — систему отдыха и восстановления.',
+  calm46: 'Мягкое замедление ритма без резких задержек — для плавного перехода к спокойствию.',
+  soothe: 'Небольшая задержка и удлинённый выдох создают ощущение мягкого укрытия для нервной системы.',
+  fourseven: 'Классика доктора Вайля — задержка перед долгим выдохом помогает уснуть.',
+  deepsleep: 'Углублённая версия 4-7-8 с дополнительной паузой — для более глубокого расслабления перед сном.',
+  slow39: 'Очень длинный выдох относительно короткого вдоха — тело считывает это как сигнал безопасности.',
+  moon: 'Медленный вечерний ритм без усилий — просто мягкое дыхание перед сном.',
+  unwind: 'Максимально длинный выдох разгружает нервную систему после насыщенного дня.',
+  rhythm55: 'Равные вдох и выдох создают устойчивый фон для концентрации без лишнего напряжения.',
+  concentrate: 'Удлинённый квадрат с задержками — держит внимание собранным на одной точке.',
+  triangle: 'Три фазы вместо четырёх — более простой ритм для входа в фокус.',
+  natural: 'Просто наблюдение за естественным ритмом дыхания — без управления, для присутствия здесь и сейчас.',
+  ground: 'Асимметричные фазы возвращают внимание в тело, когда мысли улетают вперёд.',
+  balance55: 'Ровный ритм без крайностей — для устойчивого нейтрального состояния.',
+  reset: 'Короткие паузы после вдоха и выдоха — мягкая перезагрузка между делами.',
+  nadishodhana: 'Попеременное дыхание через ноздри — классика для баланса двух полушарий и успокоения ума.',
+  suryabhedana: 'Вдох через правую ноздрю стимулирует активность — используется для бодрости и концентрации.',
+  chandrabhedana: 'Вдох через левую ноздрю связан с охлаждением и расслаблением нервной системы.',
+  ujjayi: 'Лёгкое сужение горла создаёт шипящий звук и ровный устойчивый ритм — опора для медитации.',
+  sitali: 'Вдох через свёрнутый язык физически охлаждает — традиционная техника от жара и раздражения.',
+  sitkari: 'Вдох сквозь сжатые зубы — похожий охлаждающий эффект, если сворачивать язык непривычно.',
+  bhramari: 'Гудение на выдохе создаёт вибрацию, которая ощутимо успокаивает нервную систему.',
+  dirgha: '«Трёхчастное» йогическое дыхание последовательно заполняет живот, грудь и ключицы.',
+  reversebreath: 'Обратное дыхание используется в цигун и тайцзи для внутреннего давления и концентрации.',
+  qigong: 'Медленное дыхание животом, синхронизированное с движением — базовая техника цигун.',
+  viloma: 'Дыхание со ступенчатыми паузами внутри одной фазы — тренирует контроль и внимание.',
+  tummo: 'Тибетская техника внутреннего огня — мощная гипервентиляция с задержками для тепла и энергии.',
+  anulomaviloma: 'Традиционное попеременное дыхание с задержкой — углублённая версия Нади Шодханы.',
+  anapanasati: 'Буддийская практика осознанного наблюдения за дыханием — без изменения его ритма.',
+  buteyko: 'Метод намеренно лёгкого, почти незаметного дыхания — снижает гипервентиляцию и тревожность.',
+  liuzijue: 'Шесть исцеляющих звуков цигун — каждый выдох со своим звуком, связанным с органом и эмоцией.',
+  holotropic: 'Продолжительное учащённое дыхание для глубоких изменённых состояний — только для подготовленных.',
+  lamaze: 'Ритмичное поверхностное дыхание, которое учат перед родами — для контроля через интенсивные ощущения.'
+};
 const BUILTIN = {
   /* ===== ЭНЕРГИЯ ===== */
   wimhof: { name:'Метод Вима Хофа', cat:'energy', desc:'30 глубоких вдохов, задержка на выдохе, восстановительный вдох', glyph:'❄', level:'Средне', defaultRounds:3, type:'wimhof', breaths:30, pace:1.6, holdRecover:15, safety:true },
@@ -634,8 +836,11 @@ function bumpUsage(key) { const u=loadUsage(); u[key]=(u[key]||0)+1; try { local
 /* ---------- STATE ---------- */
 let state = {
   currentPattern:'wimhof', rounds:3,
-  cueMode:'voice', bellOn:true, hapticOn:true, lang:'ru-RU', toneVariant:'chime',
-  breathNoiseOn:true, tapSkipOn:true, noNumbersOn:false, progressiveOn:false,
+  cueMode:'voice', bellOn:true, hapticOn:true, lang:'ru-RU', toneVariant:'chime', voiceURI:'',
+  breathNoiseOn:true, tapSkipOn:true, noNumbersOn:false, progressiveOn:false, musicOn:false, settleOn:true,
+  volCue:70, volBell:70, volMusic:70,
+  minimalOn:false, screenOffOn:false, recentFirstOn:false, cardTickOn:true,
+  defaultPatternKey:null,
   running:false, sessionStart:null
 };
 let activeCat = 'all';
@@ -650,6 +855,7 @@ if (synth) {
 function pickVoice(lang) {
   if (!voiceList.length) refreshVoices();
   if (!voiceList.length) return null;
+  if (state.voiceURI) { const chosen = voiceList.find(v => v.voiceURI === state.voiceURI); if (chosen) return chosen; }
   const exact = voiceList.find(v => v.lang === lang);
   if (exact) return exact;
   const short = lang.split('-')[0];
@@ -673,12 +879,16 @@ let audioCtx=null, noiseNode=null, noiseGain=null, wakeLock=null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
 let sessionToken=0, pendingSessionKey=null;
 let lastSessionData = null;
+let previousHoldSeconds = null; // resets every new session start — this round's target to beat
 
 function loadSettings() { try { Object.assign(state, JSON.parse(localStorage.getItem('pneuma_settings')||'{}')); } catch(e){} }
 function saveSettings() {
   try { localStorage.setItem('pneuma_settings', JSON.stringify({
-    rounds:state.rounds, cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, lang:state.lang, toneVariant:state.toneVariant,
-    breathNoiseOn:state.breathNoiseOn, tapSkipOn:state.tapSkipOn, noNumbersOn:state.noNumbersOn, progressiveOn:state.progressiveOn
+    rounds:state.rounds, cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, lang:state.lang, toneVariant:state.toneVariant, voiceURI:state.voiceURI,
+    breathNoiseOn:state.breathNoiseOn, tapSkipOn:state.tapSkipOn, noNumbersOn:state.noNumbersOn, progressiveOn:state.progressiveOn, musicOn:state.musicOn, settleOn:state.settleOn,
+    volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic,
+    minimalOn:state.minimalOn, screenOffOn:state.screenOffOn, recentFirstOn:state.recentFirstOn, cardTickOn:state.cardTickOn,
+    defaultPatternKey:state.defaultPatternKey
   })); } catch(e){}
 }
 let seenIntro={}; try { seenIntro = JSON.parse(localStorage.getItem('pneuma_seen_intro')||'{}'); } catch(e){}
@@ -698,13 +908,14 @@ function ensureAudioCtx() { if (!audioCtx) audioCtx=new (window.AudioContext||wi
    which is what makes a tone sound like a real bell/mallet instead of a thin beep.
    layers: [{freq, freqEnd?, gain, decay, glideTime?, wave?}] */
 function chimeLayered(ctx, layers, now) {
+  const volMult = (state.volBell!=null?state.volBell:70)/100;
   layers.forEach(L => {
     const osc=ctx.createOscillator(); const g=ctx.createGain();
     osc.type = L.wave || 'sine';
     osc.frequency.setValueAtTime(L.freq, now);
     if (L.freqEnd) osc.frequency.linearRampToValueAtTime(L.freqEnd, now + (L.glideTime||0.28));
     g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(L.gain, now + (L.attack||0.02));
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, L.gain*volMult), now + (L.attack||0.02));
     g.gain.exponentialRampToValueAtTime(0.0001, now + (L.decay||0.5));
     osc.connect(g); g.connect(ctx.destination);
     osc.start(now); osc.stop(now + (L.decay||0.5) + 0.05);
@@ -737,6 +948,167 @@ function phaseChime(action) {
     ], now);
   } catch(e){}
 }
+/* ---------- BACKGROUND MUSIC ---------- */
+/* Generative ambient bed per category, built from oscillators (no audio files).
+   Deliberately quiet relative to bell/chime/voice peaks (~0.28) so it stays a bed, not a competitor.
+   Each profile now has TWO chords the pad slowly drifts between, plus a quiet shimmer
+   layer an octave up with its own slow, out-of-phase LFO — so the bed evolves over
+   the length of a session instead of sitting on one static drone. */
+const MUSIC_PROFILES = {
+  calm:    { chordA:[130.81,164.81,196.00], chordB:[146.83,174.61,220.00], wave:'sine',     peak:0.028, swell:9,  filter:1200, fadeOut:4.5, driftSec:26 }, // C3-E3-G3 <-> D3-F3-A3
+  sleep:   { chordA:[98.00,123.47,146.83],  chordB:[87.31,110.00,130.81],  wave:'sine',     peak:0.024, swell:13, filter:800,  fadeOut:7,   driftSec:38 }, // G2-B2-D3 <-> F2-A2-C3, slowest drift
+  energy:  { chordA:[130.81,164.81,196.00], chordB:[130.81,164.81,196.00], wave:'triangle', peak:0.030, swell:2.2,filter:1800, pulse:true, fadeOut:1.8, driftSec:999 }, // stays put — energy wants drive, not drift
+  focus:   { chordA:[146.83,220.00],        chordB:[164.81,246.94],        wave:'sine',     peak:0.022, swell:0,  filter:1400, fadeOut:3,   driftSec:44 }, // mostly static, very slow drift
+  balance: { chordA:[130.81,196.00],        chordB:[146.83,220.00],        wave:'triangle', peak:0.026, swell:6,  filter:1300, fadeOut:4,   driftSec:22 }
+};
+let musicNodes=null, musicProfile=null; // { oscs, gains, shimmerOscs, shimmerGains, lfo, lfoGain, shimmerLfo, master, filter, driftTimer }
+function startMusic(cat) {
+  if (!state.musicOn) return;
+  try {
+    stopMusicHard();
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const profile = MUSIC_PROFILES[cat] || MUSIC_PROFILES.balance;
+    const volMult = (state.volMusic!=null?state.volMusic:70)/100;
+    const master=ctx.createGain(); master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.peak*volMult), now+3); // slow fade-in so it never "arrives" abruptly
+    const filter=ctx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=profile.filter;
+    filter.connect(master); master.connect(ctx.destination);
+
+    // main chord layer — starts on chordA
+    const oscs=[], gains=[];
+    profile.chordA.forEach((freq,i) => {
+      const osc=ctx.createOscillator(); const g=ctx.createGain();
+      osc.type=profile.wave; osc.frequency.value=freq;
+      osc.detune.value = (i - (profile.chordA.length-1)/2) * 4; // tiny detune spread = warmth, not dissonance
+      g.gain.value = 1/profile.chordA.length;
+      osc.connect(g); g.connect(filter); osc.start(now);
+      oscs.push(osc); gains.push(g);
+    });
+
+    // shimmer layer — same chord an octave up, much quieter, own slow out-of-phase swell,
+    // so the pad has a second, independent motion instead of everything breathing in lockstep
+    const shimmerGainTotal=ctx.createGain(); shimmerGainTotal.gain.value=0.28; // shimmer sits well under the main layer
+    shimmerGainTotal.connect(filter);
+    const shimmerOscs=[], shimmerGains=[];
+    profile.chordA.forEach((freq,i) => {
+      const osc=ctx.createOscillator(); const g=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=freq*2;
+      osc.detune.value = (i - (profile.chordA.length-1)/2) * 6;
+      g.gain.value = 1/profile.chordA.length;
+      osc.connect(g); g.connect(shimmerGainTotal); osc.start(now);
+      shimmerOscs.push(osc); shimmerGains.push(g);
+    });
+
+    let lfo=null, lfoGain=null;
+    if (profile.swell > 0) {
+      // slow amplitude swell so the pad breathes instead of sitting flat
+      lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 1/profile.swell;
+      lfoGain=ctx.createGain(); lfoGain.gain.value = profile.pulse ? profile.peak*0.35 : profile.peak*0.25;
+      lfo.connect(lfoGain); lfoGain.connect(master.gain); lfo.start(now);
+    }
+    // shimmer's own swell, deliberately out of phase (different period, offset start) —
+    // this is what makes the pad feel alive rather than a single looping breath
+    const shimmerLfo=ctx.createOscillator(); shimmerLfo.type='sine'; shimmerLfo.frequency.value = 1/(profile.swell>0 ? profile.swell*0.62 : 7);
+    const shimmerLfoGain=ctx.createGain(); shimmerLfoGain.gain.value = shimmerGainTotal.gain.value*0.5;
+    shimmerLfo.connect(shimmerLfoGain); shimmerLfoGain.connect(shimmerGainTotal.gain); shimmerLfo.start(now);
+
+    musicNodes = { oscs, gains, shimmerOscs, shimmerGains, shimmerGainTotal, lfo, lfoGain, shimmerLfo, master, filter, driftTimer:null, currentChord:'A' };
+    musicProfile = profile;
+
+    // Slow chord drift: every driftSec, glide all oscillators to the other chord over ~6s.
+    // Skipped for profiles with driftSec >= 999 (energy wants a driving, unchanging pulse).
+    if (profile.driftSec < 999) {
+      const scheduleDrift = () => {
+        musicNodes.driftTimer = setTimeout(() => {
+          if (!musicNodes) return;
+          const target = musicNodes.currentChord==='A' ? profile.chordB : profile.chordA;
+          const t=ctx.currentTime;
+          musicNodes.oscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i], t+6); });
+          musicNodes.shimmerOscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i]*2, t+6); });
+          musicNodes.currentChord = musicNodes.currentChord==='A' ? 'B' : 'A';
+          scheduleDrift();
+        }, profile.driftSec*1000);
+      };
+      scheduleDrift();
+    }
+  } catch(e){}
+}
+function stopMusic(fadeSec) {
+  if (!musicNodes) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const { oscs, shimmerOscs, lfo, shimmerLfo, master, driftTimer } = musicNodes;
+    if (driftTimer) clearTimeout(driftTimer);
+    const fade = fadeSec!==undefined ? fadeSec : ((musicProfile&&musicProfile.fadeOut)||3);
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(Math.max(master.gain.value,0.0001), now);
+    master.gain.exponentialRampToValueAtTime(0.0001, now+fade);
+    oscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
+    shimmerOscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
+    if (lfo) try{ lfo.stop(now+fade+0.1); }catch(e){}
+    if (shimmerLfo) try{ shimmerLfo.stop(now+fade+0.1); }catch(e){}
+  } catch(e){}
+  musicNodes=null; musicProfile=null;
+}
+function stopMusicHard() {
+  if (!musicNodes) return;
+  try {
+    if (musicNodes.driftTimer) clearTimeout(musicNodes.driftTimer);
+    musicNodes.oscs.forEach(o=>{ try{o.stop();}catch(e){} });
+    musicNodes.shimmerOscs.forEach(o=>{ try{o.stop();}catch(e){} });
+    if (musicNodes.lfo) try{musicNodes.lfo.stop();}catch(e){}
+    if (musicNodes.shimmerLfo) try{musicNodes.shimmerLfo.stop();}catch(e){}
+  } catch(e){}
+  musicNodes=null; musicProfile=null;
+}
+
+/* ---------- TECHNIQUE TEXTURES ---------- */
+/* Ocean-wave noise bed for nostril/throat techniques where the real practice already involves
+   a sea-like sound (Ujjayi's throat "ocean", Sitali/Sitkari's breath through tongue/teeth). */
+const OCEAN_PATTERNS = { ujjayi:1, sitali:1, sitkari:1 };
+let oceanNode=null, oceanGain=null, oceanFilter=null, oceanLfo=null;
+function startOceanTexture(key) {
+  if (!state.musicOn || !OCEAN_PATTERNS[key]) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const bufSize=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufSize,ctx.sampleRate), data=buf.getChannelData(0);
+    let last=0; for (let i=0;i<bufSize;i++){ const white=Math.random()*2-1; last=(last+0.02*white)/1.02; data[i]=last*4.5; } // brown noise = softer, wave-like hiss
+    oceanNode=ctx.createBufferSource(); oceanNode.buffer=buf; oceanNode.loop=true;
+    oceanFilter=ctx.createBiquadFilter(); oceanFilter.type='bandpass'; oceanFilter.frequency.value=500; oceanFilter.Q.value=0.6;
+    oceanGain=ctx.createGain(); oceanGain.gain.setValueAtTime(0.0001, now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.02, now+2.5);
+    oceanNode.connect(oceanFilter); oceanFilter.connect(oceanGain); oceanGain.connect(ctx.destination); oceanNode.start();
+    // slow filter sweep = the rise/fall of a wave, on top of the breath's own rhythm
+    oceanLfo=ctx.createOscillator(); oceanLfo.type='sine'; oceanLfo.frequency.value=1/6;
+    const lfoGain=ctx.createGain(); lfoGain.gain.value=220;
+    oceanLfo.connect(lfoGain); lfoGain.connect(oceanFilter.frequency); oceanLfo.start(now);
+  } catch(e){}
+}
+function stopOceanTexture(fadeSec) {
+  if (!oceanNode) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    oceanGain.gain.cancelScheduledValues(now); oceanGain.gain.setValueAtTime(Math.max(oceanGain.gain.value,0.0001), now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.0001, now+(fadeSec||1.5));
+    oceanNode.stop(now+(fadeSec||1.5)+0.1); if (oceanLfo) oceanLfo.stop(now+(fadeSec||1.5)+0.1);
+  } catch(e){}
+  oceanNode=null; oceanGain=null; oceanFilter=null; oceanLfo=null;
+}
+/* Low humming drone under Bhramari's exhale, matching the "м-м-м" the person makes out loud. */
+let bhramariOsc=null, bhramariGain=null;
+function startBhramariHum(sec) {
+  if (!state.musicOn) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    bhramariOsc=ctx.createOscillator(); bhramariOsc.type='sine'; bhramariOsc.frequency.value=110; // low hum, roughly a comfortable chest-voice "mmm"
+    bhramariGain=ctx.createGain(); bhramariGain.gain.setValueAtTime(0.0001, now);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.05, now+0.6);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.0001, now+sec);
+    bhramariOsc.connect(bhramariGain); bhramariGain.connect(ctx.destination);
+    bhramariOsc.start(now); bhramariOsc.stop(now+sec+0.1);
+  } catch(e){}
+}
+
 function vibrate(p) { try { if (state.hapticOn && navigator.vibrate) navigator.vibrate(p); } catch(e){} }
 function startBreathNoise() {
   if (!state.breathNoiseOn) return;
@@ -759,7 +1131,7 @@ function speak(t) {
   try {
     synth.cancel();
     const u = new SpeechSynthesisUtterance(t);
-    u.lang = state.lang; u.rate = 0.95; u.pitch = 1.0;
+    u.lang = state.lang; u.rate = 0.95; u.pitch = 1.0; u.volume = (state.volCue!=null?state.volCue:70)/100;
     const v = pickVoice(state.lang);
     if (v) u.voice = v;
     // Chrome/webview bug: speak() right after cancel() sometimes gets swallowed.
@@ -785,6 +1157,7 @@ function playTone(phase, durationSec) {
   try {
     stopTone();
     const ctx=ensureAudioCtx();
+    const volMult = (state.volCue!=null?state.volCue:70)/100;
     const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
     const osc=ctx.createOscillator(); const g=ctx.createGain();
     const osc2=ctx.createOscillator(); const g2=ctx.createGain(); // quiet octave layer for warmth/body
@@ -795,20 +1168,20 @@ function playTone(phase, durationSec) {
     g.gain.setValueAtTime(0.0001, ctx.currentTime);
     g2.gain.setValueAtTime(0.0001, ctx.currentTime);
     if (phase==='in') {
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + durationSec*0.7);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.7);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.7);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.7);
       g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     } else if (phase==='out') {
-      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + durationSec*0.15);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.15);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.15);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.15);
       g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     } else { // hold — a long, sustained, slowly breathing drone
-      g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 1.5);
-      g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.5);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.09*volMult), ctx.currentTime + 1.5);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.5);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(0.025, ctx.currentTime + 1.5);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.025*volMult), ctx.currentTime + 1.5);
       g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     }
     osc.connect(g); g.connect(ctx.destination);
@@ -843,7 +1216,7 @@ function recommendedKey() {
   const goal = localStorage.getItem('pneuma_goal');
   if (goal==='energy') return 'wimhof';
   if (goal==='calm') return 'coherent';
-  if (goal==='focus') return 'boxfocus';
+  if (goal==='focus') return 'triangle';
   if (goal==='sleep') return 'fourseven';
   if (t==='morning') return 'wimhof';
   if (t==='night'||t==='evening') return 'fourseven';
@@ -857,8 +1230,35 @@ function renderHome() {
   const subs={morning:'Начни день с дыхания', day:'Найди минуту для себя', evening:'Замедлись перед вечером', night:'Отпусти день'};
   document.getElementById('greetingSub').textContent = subs[t];
   renderHero();
+  renderRepeatCard();
   renderCatTabs();
   renderPatternList();
+}
+
+function renderRepeatCard() {
+  const slot=document.getElementById('repeatSlot');
+  const h=loadHistory();
+  if (!h.length) { slot.innerHTML=''; return; }
+  const lastKey = h[0].key;
+  const p = getAllPatterns()[lastKey];
+  if (!p || lastKey===recommendedKey()) { slot.innerHTML=''; return; } // don't repeat the hero suggestion
+  const dayLabel = daysAgoLabel(h[0].date);
+  slot.innerHTML = `
+    <div class="repeat-card" onclick="openSession('${lastKey}')">
+      <div class="repeat-glyph">${p.glyph}</div>
+      <div class="repeat-text"><div class="repeat-title">Повторить: ${p.name}</div><div class="repeat-sub">${dayLabel}</div></div>
+      <div class="repeat-play">↻</div>
+    </div>`;
+}
+function daysAgoLabel(iso) {
+  const then=new Date(iso); const now=new Date();
+  const startThen=new Date(then.getFullYear(),then.getMonth(),then.getDate());
+  const startNow=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const days=Math.round((startNow-startThen)/86400000);
+  if (days<=0) return 'сегодня';
+  if (days===1) return 'вчера';
+  if (days<7) return `${days} дн. назад`;
+  return 'практика из истории';
 }
 
 function renderHero() {
@@ -894,34 +1294,79 @@ function estimateMinutes(p) {
 
 function renderPatternList() {
   const all=getAllPatterns(); const custom=loadCustom(); const favs=loadFavs(); const usage=loadUsage();
+  const hist = loadHistory();
+  const dayMap = buildPatternDayMap(hist);
   const list=document.getElementById('patternList'); list.innerHTML='';
 
   let keys = Object.keys(all);
   if (activeCat!=='all') keys = keys.filter(k => all[k].cat===activeCat);
 
-  // favorites first, then custom, then builtin
+  // Most-recent-practice timestamp per key, used only when "recent first" is on.
+  const lastPracticed = {};
+  if (state.recentFirstOn) { hist.forEach(e => { if (e.key && !lastPracticed[e.key]) lastPracticed[e.key]=e.date; }); }
+
   keys.sort((a,b) => {
     const fa=favs.includes(a)?0:1, fb=favs.includes(b)?0:1;
     if (fa!==fb) return fa-fb;
+    if (state.recentFirstOn) {
+      const ra=lastPracticed[a], rb=lastPracticed[b];
+      if (ra && rb) return new Date(rb)-new Date(ra);
+      if (ra && !rb) return -1;
+      if (!ra && rb) return 1;
+    }
     return 0;
   });
 
   if (activeCat==='all' && favs.length) {
     const favKeys = keys.filter(k=>favs.includes(k));
     if (favKeys.length) addSectionLabel(list, 'Избранное');
-    favKeys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i)));
+    favKeys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
     const rest = keys.filter(k=>!favs.includes(k));
     addSectionLabel(list, 'Все практики');
-    rest.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i)));
+    rest.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
   } else {
-    keys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i)));
+    keys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
   }
 
   if (!keys.length) { const e=document.createElement('div'); e.className='empty-note'; e.textContent='Здесь пока пусто. Создай свой паттерн кнопкой +'; list.appendChild(e); }
 }
+/* Quiet UI tick when a technique card is selected — a short, high, barely-there click,
+   independent of the voice/tone cue system so it works even with cueMode "off". */
+function cardTick() {
+  if (!state.cardTickOn) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const osc=ctx.createOscillator(); const g=ctx.createGain();
+    osc.type='sine'; osc.frequency.value=1100;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.05, now+0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now+0.09);
+    osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now+0.1);
+  } catch(e){}
+}
+/* key -> Set of 'YYYY-MM-DD' strings this pattern was practiced on, for the card sparkline */
+function buildPatternDayMap(hist) {
+  const map={};
+  hist.forEach(entry => {
+    const day = (entry.date||'').slice(0,10);
+    if (!day || !entry.key) return;
+    (map[entry.key]=map[entry.key]||new Set()).add(day);
+  });
+  return map;
+}
+function sparklineHTML(daySet) {
+  if (!daySet || !daySet.size) return '';
+  let dots='';
+  for (let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const key=d.toISOString().slice(0,10);
+    dots += `<span class="spark-dot${daySet.has(key)?' on':''}"></span>`;
+  }
+  return `<div class="pattern-spark">${dots}</div>`;
+}
 function addSectionLabel(list, text) { const l=document.createElement('div'); l.className='section-label'; l.textContent=text; l.style.margin='4px 0 8px'; list.appendChild(l); }
 
-function patternCard(key, p, isCustom, favs, usage, idx) {
+function patternCard(key, p, isCustom, favs, usage, idx, daySet) {
   const st = CAT_STYLE[p.cat] || CAT_STYLE.balance;
   const est = estimateMinutes(p);
   const isFav = favs.includes(key);
@@ -932,12 +1377,14 @@ function patternCard(key, p, isCustom, favs, usage, idx) {
       <p class="pattern-name">${p.name}</p>
       <p class="pattern-desc">${p.desc}</p>
       <div class="pattern-meta"><span>~${est} мин</span><span>${p.level||''}</span>${isCustom?'<span>· свой</span>':''}</div>
+      ${sparklineHTML(daySet)}
     </div>
     ${isCustom?`<div class="card-edit-btn" data-edit="${key}">✎</div>`:''}
     <div class="fav-star ${isFav?'on':''}" data-fav="${key}">${isFav?'★':'☆'}</div>`;
   card.addEventListener('click', (e)=>{
     if (e.target.closest('[data-fav]')) { toggleFav(key); return; }
     if (e.target.closest('[data-edit]')) { openEditor(key); return; }
+    cardTick();
     openSession(key);
   });
   return card;
@@ -959,7 +1406,23 @@ function openStats() { renderStats(); showScreen('screen-stats'); }
 function openSettings() { syncSettingsUI(); showScreen('screen-settings'); }
 
 /* ---------- SESSION START ---------- */
+let seenWhy={}; try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why')||'{}'); } catch(e){}
 function openSession(key) {
+  const p=getAllPatterns()[key];
+  const why = WHY_NOTES[key];
+  if (why && !seenWhy[key] && !p.safety) {
+    // Custom patterns and techniques with a safety intro skip this — safety intro already
+    // gives context, and a person's own creation doesn't need an explanation of itself.
+    document.getElementById('whyTitle').textContent = p.name;
+    document.getElementById('whyText').textContent = why;
+    document.getElementById('whyOverlay').classList.add('active');
+    seenWhy[key]=true; try { localStorage.setItem('pneuma_seen_why', JSON.stringify(seenWhy)); } catch(e){}
+    pendingSessionKey=key; return;
+  }
+  proceedToSafetyOrLaunch(key);
+}
+function dismissWhy() { document.getElementById('whyOverlay').classList.remove('active'); if (pendingSessionKey){ proceedToSafetyOrLaunch(pendingSessionKey); pendingSessionKey=null; } }
+function proceedToSafetyOrLaunch(key) {
   const p=getAllPatterns()[key];
   if (p.safety && !seenIntro[key]) {
     document.getElementById('introOverlay').classList.add('active');
@@ -979,13 +1442,19 @@ function launchSession(key) {
   resetRing(); resetProgress();
   document.getElementById('startBtn').textContent='Начать';
   document.getElementById('counter').textContent='—';
-  document.getElementById('phaseWord').textContent='Готов';
+  document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
   document.getElementById('tapHint').classList.remove('show');
   document.getElementById('wakeWarning').style.display='none';
   // accent color per category
   const st=CAT_STYLE[p.cat]||CAT_STYLE.balance;
   document.documentElement.style.setProperty('--accent', st.fg);
   document.documentElement.style.setProperty('--accent-glow', st.fg+'55');
+  const speeds = { energy:{flash:'0.28s', pulse:'1.5s'}, sleep:{flash:'0.9s', pulse:'3.6s'}, calm:{flash:'0.65s', pulse:'2.8s'}, focus:{flash:'0.45s', pulse:'2.2s'}, balance:{flash:'0.5s', pulse:'2.4s'} };
+  const sp = speeds[p.cat] || speeds.balance;
+  document.documentElement.style.setProperty('--flash-speed', sp.flash);
+  document.documentElement.style.setProperty('--pulse-speed', sp.pulse);
+  const sessionEl=document.getElementById('screen-session');
+  sessionEl.className = sessionEl.className.replace(/\bcat-\w+\b/g,'').trim() + ' cat-'+p.cat;
   showScreen('screen-session');
 }
 function exitSession() { stopSession(); document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666'); renderHome(); showScreen('screen-home'); }
@@ -996,16 +1465,22 @@ function closeOptsSheet() { document.getElementById('optsSheet').classList.remov
 function buildRoundSelect() {
   const wrap=document.getElementById('roundSelect'); wrap.innerHTML='';
   for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===state.rounds?' active':''); c.textContent=i;
-    c.onclick=()=>{ state.rounds=i; buildRoundSelect(); document.getElementById('roundInfo').textContent=`Раунд 1 из ${i}`; }; wrap.appendChild(c); }
+    c.onclick=()=>{ state.rounds=i; buildRoundSelect(); refreshPreStartDuration(); }; wrap.appendChild(c); }
   document.getElementById('roundCustom').value = state.rounds;
 }
 document.getElementById('roundCustom').addEventListener('input', function(){
   const n = parseInt(this.value, 10);
   if (!n || n<1) return;
   state.rounds = Math.min(n, 99);
-  document.getElementById('roundInfo').textContent=`Раунд 1 из ${state.rounds}`;
+  refreshPreStartDuration();
   document.querySelectorAll('#roundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===state.rounds));
 });
+function refreshPreStartDuration() {
+  document.getElementById('roundInfo').textContent=`Раунд 1 из ${state.rounds}`;
+  if (state.running) return;
+  const p=getAllPatterns()[state.currentPattern];
+  if (p) document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
+}
 
 /* ---------- TAP ---------- */
 document.getElementById('ringWrap').addEventListener('click', ()=>{
@@ -1025,20 +1500,20 @@ const CIRC = 2*Math.PI*140;
 function resetProgress() { const bar=document.getElementById('progressBar'); bar.style.strokeDasharray=CIRC; bar.style.strokeDashoffset=CIRC; }
 function setProgress(frac) { document.getElementById('progressBar').style.strokeDashoffset = CIRC*(1-frac); }
 function resetRing() {
-  ring().classList.remove('pulse');
-  ring().style.transition='transform 0.6s ease'; ring().style.transform='scale(0.55)';
+  ring().classList.remove('pulse','hold-chase','hold-behind','hold-ahead');
+  ring().style.transition='transform 0.6s ease, border-radius 0.6s ease'; ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%';
   glow().style.transition='transform 0.6s ease, opacity 0.6s ease'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.55';
 }
 function setRingDuration(sec) {
-  ring().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1)`;
+  ring().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), border-radius ${sec}s ease-in-out`;
   glow().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), opacity ${sec}s ease`;
 }
 function ringAction(a) {
   switch(a){
-    case 'expand': ring().classList.add('pulse'); ring().style.transform='scale(1)'; glow().style.transform='scale(1.35)'; glow().style.opacity='0.85'; break;
-    case 'expand-more': ring().style.transform='scale(1.08)'; glow().style.transform='scale(1.5)'; glow().style.opacity='0.95'; break;
-    case 'contract': ring().classList.add('pulse'); ring().style.transform='scale(0.55)'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.5'; break;
-    case 'hold-full': case 'hold-empty': ring().classList.remove('pulse'); break;
+    case 'expand': ring().classList.add('pulse'); ring().style.transform='scale(1)'; ring().style.borderRadius='46% 54% 48% 52%'; glow().style.transform='scale(1.35)'; glow().style.opacity='0.85'; break;
+    case 'expand-more': ring().style.transform='scale(1.08)'; ring().style.borderRadius='44% 56% 46% 54%'; glow().style.transform='scale(1.5)'; glow().style.opacity='0.95'; break;
+    case 'contract': ring().classList.add('pulse'); ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.5'; break;
+    case 'hold-full': case 'hold-empty': ring().classList.remove('pulse'); ring().style.borderRadius='50%'; break;
   }
 }
 function fadeBg(on) { document.getElementById('sessionFadeBg').style.opacity = on?'0.4':'0'; }
@@ -1068,16 +1543,24 @@ async function toggleStart() {
   if (state.running) return;
   unlockSpeech();
   state.running=true; state.sessionStart=Date.now(); sessionToken++;
+  previousHoldSeconds=null;
   document.getElementById('startBtn').textContent='Идёт…';
   ensureAudioCtx();
   await requestWakeLock(); startBreathNoise();
+  const p=getAllPatterns()[state.currentPattern];
+  startMusic(p.cat); startOceanTexture(state.currentPattern);
+  document.getElementById('screen-session').classList.add('session-live');
   bumpUsage(state.currentPattern);
+  if (state.screenOffOn) { setTimeout(()=>{ if (state.running) document.getElementById('screenOffOverlay').classList.add('active'); }, 1200); }
   runSession(sessionToken);
 }
+function exitScreenOff() { document.getElementById('screenOffOverlay').classList.remove('active'); vibrate(8); }
 function stopSession() {
   if (!state.running) return;
   state.running=false; sessionToken++;
-  synth&&synth.cancel(); stopBreathNoise(); stopHoldTone(); releaseWakeLock();
+  synth&&synth.cancel(); stopBreathNoise(); stopHoldTone(); releaseWakeLock(); stopMusic(1.2); stopOceanTexture(1);
+  document.getElementById('screen-session').classList.remove('session-live');
+  document.getElementById('screenOffOverlay').classList.remove('active');
   resetRing(); resetProgress();
   document.getElementById('counter').textContent='—';
   document.getElementById('phaseWord').textContent='Пауза';
@@ -1086,17 +1569,29 @@ function stopSession() {
 }
 function logSession(minutes) { const p=getAllPatterns()[state.currentPattern]; saveHistoryEntry({ name:p.name, key:state.currentPattern, date:new Date().toISOString(), minutes }); }
 
+/* Brief visual mark between rounds — not just the counter ticking over, an actual
+   "round N done" beat so progress through a multi-round session reads clearly. */
+async function flashRoundComplete(round, total, tok) {
+  if (sessionToken!==tok) return;
+  document.getElementById('roundInfo').textContent = `Раунд ${round} из ${total} завершён`;
+  document.getElementById('roundInfo').classList.add('round-done-flash');
+  vibrate(12);
+  await sleep(900);
+  document.getElementById('roundInfo').classList.remove('round-done-flash');
+}
 async function runSession(tok) {
   const p=getAllPatterns()[state.currentPattern];
   const counter=document.getElementById('counter');
   const phaseWord=document.getElementById('phaseWord');
   const roundInfo=document.getElementById('roundInfo');
 
-  // gentle entry
-  phaseWord.textContent='Приготовься'; counter.textContent=''; resetProgress();
-  fadeBg(true);
-  await sleep(2600); if (sessionToken!==tok) return;
-  fadeBg(false);
+  // gentle entry — a few quiet seconds to settle before the first cue, skippable via settings
+  if (state.settleOn!==false) {
+    phaseWord.textContent='Устройся поудобнее'; counter.textContent=''; resetProgress();
+    fadeBg(true);
+    await sleep(2600); if (sessionToken!==tok) return;
+    fadeBg(false);
+  }
 
   if (p.type==='wimhof') {
     const pace=p.pace||1.6, exhalePace=pace*0.75;
@@ -1129,18 +1624,29 @@ async function runSession(tok) {
       await sleep(2200); if (sessionToken!==tok) return;
 
       const holdTarget = state.progressiveOn ? (60+(round-1)*20) : 120;
+      const beatTarget = state.progressiveOn ? previousHoldSeconds : null; // null = no round to beat yet (round 1), or feature off
       isHoldPhase=true; document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn);
       startHoldTone();
+      if (beatTarget) { ring().classList.add('hold-chase'); document.getElementById('roundInfo').textContent = `Раунд ${round} из ${state.rounds} · держи дольше ${beatTarget}″`; }
       const hs=Date.now(); skipRequested=false;
+      let finalHoldSeconds=0;
       while (sessionToken===tok){
         const s=Math.floor((Date.now()-hs)/1000);
+        finalHoldSeconds=s;
         counter.textContent = state.noNumbersOn ? '' : (s+'″');
+        if (beatTarget) {
+          if (s < beatTarget) { ring().classList.add('hold-behind'); ring().classList.remove('hold-ahead'); }
+          else { ring().classList.remove('hold-behind'); ring().classList.add('hold-ahead'); if (s===beatTarget) vibrate(20); }
+        }
         if (skipRequested){ skipRequested=false; break; }
         if (!state.tapSkipOn && s>=holdTarget) break;
         await sleep(150);
       }
       stopHoldTone();
+      ring().classList.remove('hold-chase','hold-behind','hold-ahead');
+      if (state.progressiveOn) previousHoldSeconds = finalHoldSeconds;
       isHoldPhase=false; document.getElementById('tapHint').classList.remove('show');
+      document.getElementById('roundInfo').textContent = `Раунд ${round} из ${state.rounds}`;
       if (sessionToken!==tok) return;
 
       phaseWord.textContent=`Вдохни, держи ${p.holdRecover} сек`;
@@ -1156,6 +1662,7 @@ async function runSession(tok) {
       phaseWord.textContent='Выдох ртом'; counter.textContent=''; resetProgress();
       speak('Выдох'); playTone('out', 5); vibrate(10);
       await sleepInterruptible(5000, tok); if (sessionToken!==tok) return;
+      if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
     }
   } else {
     for (let round=1; round<=state.rounds; round++){
@@ -1168,6 +1675,7 @@ async function runSession(tok) {
         phaseWord.textContent=phase.label;
         document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn && isHoldPhase);
         phaseChime(phase.action); speak(phase.voice); vibrate(phase.action==='contract'?10:15);
+        if (state.currentPattern==='bhramari' && phase.action==='contract') startBhramariHum(phase.sec);
         ring().classList.remove('phase-flash'); void ring().offsetWidth; ring().classList.add('phase-flash');
         if (phase.action==='expand'||phase.action==='expand-more') { setNoiseLevel(0.014, phase.sec*0.4); playTone('in', phase.sec); }
         else if (phase.action==='contract') { setNoiseLevel(0.006, phase.sec*0.4); playTone('out', phase.sec); }
@@ -1180,6 +1688,7 @@ async function runSession(tok) {
         if (sessionToken!==tok) return;
         if (!done && !state.tapSkipOn) return;
       }
+      if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
     }
   }
 
@@ -1187,7 +1696,8 @@ async function runSession(tok) {
     phaseWord.textContent=''; counter.textContent=''; setProgress(1);
     await sleep(700);
     speak('Сессия завершена'); bell(); vibrate([15,50,15,50,15]);
-    stopBreathNoise(); stopHoldTone(); releaseWakeLock(); state.running=false;
+    stopBreathNoise(); stopHoldTone(); releaseWakeLock(); stopMusic(); stopOceanTexture(3); state.running=false;
+    document.getElementById('screen-session').classList.remove('session-live');
     let minutes=1; if (state.sessionStart){ minutes=Math.max(1,Math.round((Date.now()-state.sessionStart)/60000)); logSession(minutes); state.sessionStart=null; }
     showComplete(minutes);
   }
@@ -1202,13 +1712,49 @@ function showComplete(minutes) {
   document.getElementById('cStatTotal').textContent=stats.total;
   const msgs=['Ты нашёл время для себя','Тело благодарит','Спокойствие внутри','Ещё один шаг к практике'];
   document.getElementById('completeSub').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+  const p=getAllPatterns()[state.currentPattern];
+  document.getElementById('completeSummary').textContent = p ? `${state.rounds} ${roundsWord(state.rounds)} «${p.name}» — ${minutes} мин` : '';
+  document.getElementById('completeFact').textContent = buildWeeklyFact(h, minutes);
   document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
   lastSessionData={minutes};
   document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666');
   showScreen('screen-complete');
 }
+/* A plain fact comparing today to the trailing week — never praise, never guilt.
+   Needs at least a few days of history to say anything meaningful; otherwise stays silent. */
+function buildWeeklyFact(h, todayMinutes) {
+  const now=new Date();
+  const todayStr=now.toDateString();
+  const sevenDaysAgo=new Date(now); sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
+  const priorWeek = h.filter(e => { const d=new Date(e.date); return d>=sevenDaysAgo && d.toDateString()!==todayStr; });
+  if (priorWeek.length < 3) return ''; // not enough history to say anything meaningful yet
+  const byDay = {};
+  priorWeek.forEach(e => { const day=(e.date||'').slice(0,10); byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  const days = Object.keys(byDay);
+  const avgMin = days.length ? (Object.values(byDay).reduce((a,b)=>a+b,0)/days.length) : 0;
+  if (avgMin<=0) return '';
+  const diff = todayMinutes - avgMin;
+  if (Math.abs(diff) < 1) return `Как и в среднем за неделю — ${Math.round(avgMin)} мин.`;
+  if (diff > 0) return `Дольше, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
+  return `Короче, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
+}
+function roundsWord(n) {
+  const n10=n%10, n100=n%100;
+  if (n100>=11 && n100<=14) return 'раундов';
+  if (n10===1) return 'раунд';
+  if (n10>=2 && n10<=4) return 'раунда';
+  return 'раундов';
+}
 function pickMood(el, mood) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); vibrate(10); if (lastSessionData) lastSessionData.mood=mood; }
 function finishComplete() { renderHome(); showScreen('screen-home'); }
+function extendSession() {
+  const key = state.currentPattern;
+  if (!key) { finishComplete(); return; }
+  openSession(key);
+  state.rounds = 3; // a short top-up, not a whole new session
+  document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`;
+  toggleStart();
+}
 
 /* ---------- STATS ---------- */
 function computeStats(h) {
@@ -1244,17 +1790,43 @@ function renderStats() {
     const ds=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
     const row=document.createElement('div'); row.className='history-item';
     row.innerHTML=`<span>${e.name}</span><span class="h-date">${e.minutes} мин · ${ds}</span>`; list.appendChild(row); });
+  renderCalendarGrid(h);
+}
+/* 14x7 grid of the last ~98 days, shaded by minutes practiced that day — like a contribution graph,
+   but neutral: a missed day is just an empty cell, never a red flag. */
+function renderCalendarGrid(h) {
+  const grid=document.getElementById('calendarGrid'); grid.innerHTML='';
+  const byDay={};
+  h.forEach(e => { const day=(e.date||'').slice(0,10); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  const days=98, cells=[];
+  for (let i=days-1;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const key=d.toISOString().slice(0,10);
+    const mins=byDay[key]||0;
+    let lvl=0; if (mins>0) lvl=1; if (mins>=10) lvl=2; if (mins>=25) lvl=3;
+    cells.push(`<div class="cal-cell${lvl?(' lvl'+lvl):''}" title="${key}${mins?': '+mins+' мин':''}"></div>`);
+  }
+  grid.innerHTML = cells.join('');
 }
 
 /* ---------- SETTINGS ---------- */
 const TONE_VARIANT_LABELS = { chime:'Колокольчик', bowl:'Поющая чаша', ocean:'Океан', crystal:'Хрусталь' };
 function syncSettingsUI() {
   document.getElementById('langSelect').value=state.lang;
-  [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle']].forEach(([k,id])=>{
+  [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle'],['musicOn','musicToggle'],['settleOn','settleToggle'],['minimalOn','minimalToggle'],['screenOffOn','screenOffToggle'],['recentFirstOn','recentFirstToggle'],['cardTickOn','cardTickToggle']].forEach(([k,id])=>{
     document.getElementById(id).classList.toggle('on', state[k]);
   });
+  document.getElementById('volCueSlider').value = state.volCue;
+  document.getElementById('volCueVal').textContent = state.volCue+'%';
+  document.getElementById('volBellSlider').value = state.volBell;
+  document.getElementById('volBellVal').textContent = state.volBell+'%';
+  document.getElementById('volMusicSlider').value = state.volMusic;
+  document.getElementById('volMusicVal').textContent = state.volMusic+'%';
   updateCueModeUI();
   buildToneVariantRow();
+  buildVoicePickRow();
+  buildProfileRow();
+  applyMinimalMode();
 }
 function setCueMode(mode) {
   state.cueMode = mode; saveSettings(); vibrate(8);
@@ -1265,6 +1837,7 @@ function updateCueModeUI() {
   document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode==='tone');
   document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode==='off');
   document.getElementById('langRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
+  document.getElementById('voicePickRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
   document.getElementById('toneVariantRow').style.display = state.cueMode==='tone' ? 'flex' : 'none';
 }
 function buildToneVariantRow() {
@@ -1278,14 +1851,76 @@ function buildToneVariantRow() {
 function previewTone(variant) {
   try { ensureAudioCtx(); const prev=state.toneVariant; state.toneVariant=variant; const savedMode=state.cueMode; state.cueMode='tone'; playTone('in', 1.4); state.cueMode=savedMode; state.toneVariant=prev; } catch(e){}
 }
-function tSet(key, id) { state[key]=!state[key]; document.getElementById(id).classList.toggle('on', state[key]); saveSettings(); vibrate(8); }
-document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); });
+/* Voice picker — lists whatever voices the device/browser exposes for the current language,
+   falls back to "Голос по умолчанию" if the platform only has one (common on iOS Safari). */
+function buildVoicePickRow() {
+  const sel=document.getElementById('voicePickSelect'); sel.innerHTML='';
+  if (!voiceList.length) refreshVoices();
+  const relevant = voiceList.filter(v => v.lang && v.lang.split('-')[0]===state.lang.split('-')[0]);
+  const list = relevant.length ? relevant : voiceList;
+  const defOpt=document.createElement('option'); defOpt.value=''; defOpt.textContent='Голос по умолчанию'; sel.appendChild(defOpt);
+  list.forEach(v => { const o=document.createElement('option'); o.value=v.voiceURI; o.textContent=v.name; sel.appendChild(o); });
+  sel.value = state.voiceURI || '';
+}
+function onVoicePick(uri) { state.voiceURI=uri; saveSettings(); try { speak('Привет'); } catch(e){} }
+
+/* Sound profiles — save/restore a full combo of cue mode, tone variant, volumes, bell/haptic
+   as one named preset the person can switch with a single tap. */
+const BUILTIN_PROFILES = {
+  default: { label:'Обычный', cueMode:'voice', bellOn:true, hapticOn:true, volCue:70, volBell:70, volMusic:70, musicOn:false },
+  quiet:   { label:'Тихо (для работы)', cueMode:'off', bellOn:false, hapticOn:true, volCue:0, volBell:0, volMusic:0, musicOn:false },
+  deep:    { label:'Погружение', cueMode:'tone', bellOn:true, hapticOn:true, volCue:60, volBell:50, volMusic:85, musicOn:true }
+};
+function loadCustomProfiles() { try { return JSON.parse(localStorage.getItem('pneuma_profiles')||'{}'); } catch(e){ return {}; } }
+function saveCustomProfiles(o) { try { localStorage.setItem('pneuma_profiles', JSON.stringify(o)); } catch(e){} }
+function buildProfileRow() {
+  const wrap=document.getElementById('profileRow'); wrap.innerHTML='';
+  const custom = loadCustomProfiles();
+  const all = Object.assign({}, BUILTIN_PROFILES, custom);
+  Object.keys(all).forEach(key => {
+    const prof = all[key];
+    const o=document.createElement('div'); o.className='cat-opt'; o.textContent=prof.label;
+    o.onclick=()=>applyProfile(prof);
+    wrap.appendChild(o);
+  });
+  const saveBtn=document.createElement('div'); saveBtn.className='cat-opt'; saveBtn.style.borderStyle='dashed'; saveBtn.textContent='+ Сохранить текущее';
+  saveBtn.onclick=saveCurrentAsProfile;
+  wrap.appendChild(saveBtn);
+}
+function applyProfile(prof) {
+  state.cueMode=prof.cueMode; state.bellOn=prof.bellOn; state.hapticOn=prof.hapticOn;
+  state.volCue=prof.volCue; state.volBell=prof.volBell; state.volMusic=prof.volMusic; state.musicOn=prof.musicOn;
+  saveSettings(); vibrate(10); syncSettingsUI();
+}
+function saveCurrentAsProfile() {
+  const name = prompt('Название профиля:');
+  if (!name || !name.trim()) return;
+  const custom = loadCustomProfiles();
+  const key = 'custom_'+Date.now();
+  custom[key] = { label:name.trim(), cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic, musicOn:state.musicOn };
+  saveCustomProfiles(custom); vibrate(12); buildProfileRow();
+}
+
+function applyMinimalMode() { document.body.classList.toggle('minimal-mode', state.minimalOn); }
+
+function tSet(key, id) {
+  state[key]=!state[key]; document.getElementById(id).classList.toggle('on', state[key]); saveSettings(); vibrate(8);
+  if (key==='minimalOn') applyMinimalMode();
+  if (key==='recentFirstOn') renderPatternList();
+}
+document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); buildVoicePickRow(); });
+document.getElementById('voicePickSelect').addEventListener('change', e=>{ onVoicePick(e.target.value); });
+document.getElementById('volCueSlider').addEventListener('input', e=>{ state.volCue=parseInt(e.target.value); document.getElementById('volCueVal').textContent=state.volCue+'%'; saveSettings(); });
+document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { const saved=state.cueMode; playTone('in',1.2); } });
+document.getElementById('volBellSlider').addEventListener('input', e=>{ state.volBell=parseInt(e.target.value); document.getElementById('volBellVal').textContent=state.volBell+'%'; saveSettings(); });
+document.getElementById('volBellSlider').addEventListener('change', ()=>{ bell(); });
+document.getElementById('volMusicSlider').addEventListener('input', e=>{ state.volMusic=parseInt(e.target.value); document.getElementById('volMusicVal').textContent=state.volMusic+'%'; saveSettings(); });
 function toggleAdvanced() {
   const adv=document.getElementById('advancedSettings'); const btn=document.getElementById('advToggle');
   const show=adv.style.display==='none';
   adv.style.display=show?'block':'none'; btn.textContent=show?'Скрыть продвинутые настройки ⌃':'Показать продвинутые настройки ⌄';
 }
-function resetOnboarding() { try { localStorage.removeItem('pneuma_onboarded'); localStorage.removeItem('pneuma_goal'); } catch(e){} document.getElementById('welcome').classList.add('active'); }
+function resetOnboarding() { try { localStorage.removeItem('pneuma_onboarded'); localStorage.removeItem('pneuma_goal'); } catch(e){} setRandomWelcomePhrase(); spawnWelcomeParticles(); document.getElementById('welcome').classList.add('active'); }
 
 /* ---------- EDITOR ---------- */
 let editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' };
@@ -1417,6 +2052,34 @@ function deleteCustomPattern() {
 }
 
 /* ---------- ONBOARDING ---------- */
+const WELCOME_PHRASES = [
+  'Дыхание — самый короткий путь к своему состоянию. Что тебе нужно прямо сейчас?',
+  'Пара минут осознанного дыхания меняет состояние тела быстрее, чем кажется. С чего начнём?',
+  'Один вдох — и всё немного иначе. Что выбираешь на сегодня?',
+  'Тело слушает дыхание внимательнее, чем мысли. Куда направим внимание?'
+];
+function setRandomWelcomePhrase() {
+  const el = document.getElementById('welcomeSub');
+  el.textContent = WELCOME_PHRASES[Math.floor(Math.random()*WELCOME_PHRASES.length)];
+}
+function spawnWelcomeParticles() {
+  const wrap = document.getElementById('welcomeParticles');
+  wrap.innerHTML = '';
+  const count = 14;
+  for (let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'welcome-particle';
+    const size = 3 + Math.random()*5;
+    p.style.width = size+'px'; p.style.height = size+'px';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.top = (40+Math.random()*55)+'%';
+    const duration = 9 + Math.random()*8;
+    const delay = Math.random()*10;
+    p.style.animationDuration = duration+'s';
+    p.style.animationDelay = delay+'s';
+    wrap.appendChild(p);
+  }
+}
 function pickGoal(goal) {
   if (goal) { try { localStorage.setItem('pneuma_goal', goal); } catch(e){} }
   try { localStorage.setItem('pneuma_onboarded','1'); } catch(e){}
@@ -1426,7 +2089,11 @@ function pickGoal(goal) {
 
 /* ---------- INIT ---------- */
 loadSettings();
-if (!localStorage.getItem('pneuma_onboarded')) { document.getElementById('welcome').classList.add('active'); }
+if (!localStorage.getItem('pneuma_onboarded')) {
+  setRandomWelcomePhrase();
+  spawnWelcomeParticles();
+  document.getElementById('welcome').classList.add('active');
+}
 renderHome();
 
 /* ---------- TELEGRAM WEBAPP ---------- */
