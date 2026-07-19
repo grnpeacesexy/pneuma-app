@@ -543,7 +543,7 @@ const BUILTIN = {
   fire: { name:'Огненное дыхание', cat:'energy', desc:'Капалабхати — быстрые резкие выдохи носом, разгоняет энергию', glyph:'🔥', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:30, pace:1.0, holdRecover:10, safety:true, exhaleMethod:'носом' },
   energize6020: { name:'Дыхание бодрости', cat:'energy', desc:'Вдох 6 — выдох 2. Короткий выдох поднимает тонус', glyph:'☀', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(6,0,2,0) },
   bhastrika: { name:'Бхастрика', cat:'energy', desc:'Мощное ритмичное дыхание, вдох и выдох равной силы', glyph:'✦', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:25, pace:1.2, holdRecover:12, safety:true },
-  tonic444: { name:'Тонизирующее 4-4-4', cat:'energy', desc:'Вдох 4 — задержка 4 — выдох 4, без нижней паузы', glyph:'△', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,4,4,0) },
+  tonic444: { name:'Тонизирующее 4-2-3', cat:'energy', desc:'Вдох 4 — короткая задержка 2 — выдох 3. Выдох короче вдоха — физиологически это держит тонус, а не расслабляет', glyph:'▲', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(4,2,3,0) },
 
   /* ===== СПОКОЙСТВИЕ ===== */
   coherent: { name:'Когерентное дыхание', cat:'calm', desc:'Вдох 5.5 — выдох 5.5. Приводит нервную систему в равновесие', glyph:'∿', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(5.5,0,5.5,0) },
@@ -557,12 +557,11 @@ const BUILTIN = {
   fourseven: { name:'4-7-8', cat:'sleep', desc:'Вдох 4 — задержка 7 — выдох 8. Классика для засыпания', glyph:'☾', level:'Легко', defaultRounds:4, type:'cycle', phases: cycle(4,7,8,0,{exLabel:'Выдох ртом'}) },
   deepsleep: { name:'Глубокий сон', cat:'sleep', desc:'Вдох 4 — задержка 7 — выдох 8 — пауза 4. Углублённая версия', glyph:'☽', level:'Средне', defaultRounds:5, type:'cycle', phases: cycle(4,7,8,4,{exLabel:'Выдох ртом'}) },
   slow39: { name:'Медленное 3-9', cat:'sleep', desc:'Вдох 3 — выдох 9. Очень длинный выдох для тела ко сну', glyph:'⌣', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(3,0,9,0,{exLabel:'Выдох ртом'}) },
-  moon: { name:'Лунное дыхание', cat:'sleep', desc:'Медленное дыхание вдох 4 — выдох 8, вечерний ритуал', glyph:'🌙', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(4,0,8,0,{exLabel:'Выдох ртом'}) },
+  moon: { name:'Лунное дыхание', cat:'sleep', desc:'Вдох 4 — выдох 9. Чуть глубже обычного удлинённого выдоха — вечерний ритуал перед сном', glyph:'🌙', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(4,0,9,0,{exLabel:'Выдох ртом'}) },
   unwind: { name:'Разгрузка на выдохе', cat:'sleep', desc:'Вдох 5 — выдох 10. Максимально длинный выдох', glyph:'⋯', level:'Средне', defaultRounds:5, type:'cycle', phases: cycle(5,0,10,0,{exLabel:'Выдох ртом'}) },
 
   /* ===== ФОКУС ===== */
-  boxfocus: { name:'Квадрат фокуса', cat:'focus', desc:'Box 4-4-4-4 для концентрации перед задачей', glyph:'◇', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,4,4,4) },
-  rhythm55: { name:'Ритмичное 5-5', cat:'focus', desc:'Вдох 5 — выдох 5. Ровный устойчивый ритм для ума', glyph:'⬡', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(5,0,5,0) },
+  rhythm55: { name:'Ритмичное 5-2-5', cat:'focus', desc:'Вдох 5 — короткая задержка 2 — выдох 5. Пауза наверху даёт секунду собраться перед новым вдохом', glyph:'⬡', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(5,2,5,0) },
   concentrate: { name:'Концентрация 6-2-6-2', cat:'focus', desc:'Удлинённый квадрат для глубокого фокуса', glyph:'⊚', level:'Средне', defaultRounds:5, type:'cycle', phases: cycle(6,2,6,2) },
   triangle: { name:'Триангулярное', cat:'focus', desc:'Вдох 4 — задержка 4 — выдох 4. Треугольник внимания', glyph:'△', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,4,4,0) },
 
@@ -570,7 +569,53 @@ const BUILTIN = {
   natural: { name:'Осознанное дыхание', cat:'balance', desc:'Естественный ритм вдох 4 — выдох 4, просто присутствие', glyph:'◐', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(4,0,4,0) },
   ground: { name:'Заземление', cat:'balance', desc:'Вдох 4 — задержка 4 — выдох 6 — пауза 2. Возврат в тело', glyph:'⬢', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,4,6,2) },
   balance55: { name:'Баланс 5-5', cat:'balance', desc:'Ровное дыхание вдох 5 — выдох 5 для устойчивости', glyph:'❖', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(5,0,5,0) },
-  reset: { name:'Мягкая перезагрузка', cat:'balance', desc:'Вдох 5 — задержка 2 — выдох 5 — пауза 2', glyph:'⟡', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,2,5,2) }
+  reset: { name:'Мягкая перезагрузка', cat:'balance', desc:'Вдох 5 — задержка 2 — выдох 5 — пауза 2', glyph:'⟡', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,2,5,2) },
+
+  /* ===== ЙОГА, ТИБЕТСКИЕ И ДАОССКИЕ ТЕХНИКИ ===== */
+  nadishodhana: { name:'Нади Шодхана', cat:'balance', desc:'Попеременное дыхание через ноздри (зажимай пальцами по очереди). Классика йоги для баланса нервной системы', glyph:'☸', level:'Средне', defaultRounds:6, type:'cycle', phases: [
+    ph('Зажми правую, вдох левой','Вдох',4,'expand'),
+    ph('Задержи дыхание','Задержи',4,'hold-full'),
+    ph('Зажми левую, выдох правой','Выдох',4,'contract'),
+    ph('Вдох правой','Вдох',4,'expand'),
+    ph('Задержи дыхание','Задержи',4,'hold-full'),
+    ph('Зажми правую, выдох левой','Выдох',4,'contract')
+  ] },
+  suryabhedana: { name:'Сурья Бхедана', cat:'energy', desc:'Вдох только правой ноздрёй (левую зажми), выдох левой. "Солнечное" дыхание — бодрит и разогревает', glyph:'☉', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(4,2,6,0,{inLabel:'Зажми левую, вдох правой', exLabel:'Зажми правую, выдох левой'}) },
+  chandrabhedana: { name:'Чандра Бхедана', cat:'sleep', desc:'Вдох только левой ноздрёй (правую зажми), выдох правой. "Лунное" дыхание — охлаждает и успокаивает', glyph:'◑', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(4,2,6,0,{inLabel:'Зажми правую, вдох левой', exLabel:'Зажми левую, выдох правой'}) },
+  ujjayi: { name:'Уджайи (Океаническое)', cat:'focus', desc:'Вдох и выдох носом с лёгким сжатием горла — звук похож на шум океана. Держит внимание собранным', glyph:'🌊', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох носом, с шёпотом в горле', exLabel:'Выдох носом, с шёпотом в горле'}) },
+  sitali: { name:'Ситали (Охлаждающее)', cat:'calm', desc:'Вдох через свёрнутый трубочкой язык, выдох носом. Традиционно охлаждает и снимает раздражение', glyph:'❆', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох через свёрнутый язык', exLabel:'Выдох носом'}) },
+  sitkari: { name:'Ситкари', cat:'calm', desc:'Вдох сквозь сжатые зубы с лёгким шипением, выдох носом. Вариант охлаждающего дыхания, если язык не сворачивается трубочкой', glyph:'⌇', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох сквозь сжатые зубы', exLabel:'Выдох носом'}) },
+  bhramari: { name:'Брахмари (Гудение пчелы)', cat:'calm', desc:'Вдох носом, выдох с гудением "м-м-м" на закрытых губах — вибрация мягко успокаивает нервную систему', glyph:'🐝', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,0,6,0,{exLabel:'Выдох с гудением "м-м-м"'}) },
+  dirgha: { name:'Дирга Пранаяма (Трёхчастное)', cat:'balance', desc:'Последовательное наполнение живота, рёбер и груди на вдохе, выдох в обратном порядке — базовое йогическое полное дыхание', glyph:'❉', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,0,6,0,{inLabel:'Вдох: живот → рёбра → грудь', exLabel:'Выдох: грудь → рёбра → живот'}) },
+  reversebreath: { name:'Обратное дыхание', cat:'focus', desc:'Живот мягко подтягивается на вдохе и расслабляется на выдохе — обратное привычному. Даосская и цигун-практика для собранности', glyph:'⟲', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох, живот внутрь', exLabel:'Выдох, живот наружу'}) },
+  qigong: { name:'Цигун-дыхание', cat:'balance', desc:'Медленное дыхание животом с короткими паузами по краям — практика для собранности из цигун и тайцзи', glyph:'◈', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,3,6,3) },
+  viloma: { name:'Вилома (Прерывистое)', cat:'focus', desc:'Вдох маленькими частями с паузами внутри, затем один плавный выдох. Развивает контроль над дыханием', glyph:'⋮', level:'Средне', defaultRounds:6, type:'cycle', phases: [
+    ph('Вдох — часть 1','Вдох',2,'expand'),
+    ph('Пауза','Пауза',2,'hold-full'),
+    ph('Вдох — часть 2','Вдох',2,'expand-more'),
+    ph('Пауза','Пауза',2,'hold-full'),
+    ph('Вдох — часть 3, полный','Вдох',2,'expand-more'),
+    ph('Плавный выдох','Выдох',6,'contract')
+  ] },
+  tummo: { name:'Тумо (тибетское "внутреннее пламя")', cat:'energy', desc:'Тибетская техника разогрева тела мощными вдохами и задержкой дыхания — на её основе частично строится метод Вима Хофа', glyph:'🌋', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:25, pace:1.3, holdRecover:15, safety:true },
+  anulomaviloma: { name:'Анулома Вилома', cat:'balance', desc:'Попеременное дыхание через ноздри без задержек — более лёгкий вход в Нади Шодхану, хорош для начала практики', glyph:'☯', level:'Легко', defaultRounds:8, type:'cycle', phases: [
+    ph('Зажми правую, вдох левой','Вдох',4,'expand'),
+    ph('Зажми левую, выдох правой','Выдох',4,'contract'),
+    ph('Вдох правой','Вдох',4,'expand'),
+    ph('Зажми правую, выдох левой','Выдох',4,'contract')
+  ] },
+  anapanasati: { name:'Анапанасати (Осознанное наблюдение)', cat:'balance', desc:'Буддийская практика — дыхание не меняется, а просто наблюдается. Ритм ниже дан как мягкий ориентир, а не строгое правило', glyph:'☁', level:'Легко', defaultRounds:10, type:'cycle', phases: cycle(4,0,4,0,{inLabel:'Вдох — просто наблюдай', exLabel:'Выдох — просто наблюдай'}) },
+  buteyko: { name:'Метод Бутейко', cat:'calm', desc:'Очень лёгкое, тихое дыхание малым объёмом с небольшой паузой после выдоха. В отличие от большинства практик, цель — не дышать глубже, а дышать мягче', glyph:'◌', level:'Средне', defaultRounds:8, type:'cycle', phases: cycle(3,0,3,2,{inLabel:'Маленький тихий вдох носом', exLabel:'Маленький тихий выдох носом'}) },
+  liuzijue: { name:'Шесть исцеляющих звуков (цигун)', cat:'balance', desc:'Даосская практика: на каждом выдохе — свой звук для своего органа (Сюй — печень, Хэ — сердце, Ху — селезёнка, Сы — лёгкие, Чуй — почки, Си — тройной обогреватель)', glyph:'六', level:'Средне', defaultRounds:2, type:'cycle', phases: [
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Сюй" (печень)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Хэ" (сердце)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Ху" (селезёнка)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Сы" (лёгкие)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Чуй" (почки)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох со звуком "Си" (тройной обогреватель)','Выдох',6,'contract')
+  ] },
+  holotropic: { name:'Холотропное дыхание', cat:'energy', desc:'Быстрое непрерывное дыхание ртом без пауз между вдохом и выдохом. Может вызывать сильные ощущения — традиционно практикуется под наблюдением фасилитатора, начинай спокойно', glyph:'◎', level:'Сложно', defaultRounds:20, type:'cycle', safety:true, phases: cycle(2,0,2,0,{inLabel:'Вдох ртом, без паузы', exLabel:'Выдох ртом, без паузы'}) },
+  lamaze: { name:'Ламаз (дыхание в родах)', cat:'focus', desc:'Лёгкое ритмичное дыхание ртом на схватках — историческая техника из подготовки к родам, переключает внимание на ритм', glyph:'♀', level:'Легко', defaultRounds:10, type:'cycle', phases: cycle(1.5,0,1.5,0,{inLabel:'Лёгкий вдох ртом', exLabel:'Лёгкий выдох ртом'}) }
 };
 
 const GLYPHS = ['✦','◈','☾','✧','◐','❖','⟡','◇','✺','⬡','△','○','∿','❋','⬢'];
@@ -649,35 +694,47 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 
 /* ---------- AUDIO ---------- */
 function ensureAudioCtx() { if (!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+/* Layered oscillator chime: several harmonics with independent decay,
+   which is what makes a tone sound like a real bell/mallet instead of a thin beep.
+   layers: [{freq, freqEnd?, gain, decay, glideTime?, wave?}] */
+function chimeLayered(ctx, layers, now) {
+  layers.forEach(L => {
+    const osc=ctx.createOscillator(); const g=ctx.createGain();
+    osc.type = L.wave || 'sine';
+    osc.frequency.setValueAtTime(L.freq, now);
+    if (L.freqEnd) osc.frequency.linearRampToValueAtTime(L.freqEnd, now + (L.glideTime||0.28));
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(L.gain, now + (L.attack||0.02));
+    g.gain.exponentialRampToValueAtTime(0.0001, now + (L.decay||0.5));
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(now); osc.stop(now + (L.decay||0.5) + 0.05);
+  });
+}
 function bell() {
   if (!state.bellOn) return;
-  try { const ctx=ensureAudioCtx(); const osc=ctx.createOscillator(); const g=ctx.createGain();
-    osc.type='sine'; osc.frequency.value=528;
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime+0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.2);
-    osc.connect(g); g.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+1.2);
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    chimeLayered(ctx, [
+      { freq:528,   gain:0.24, decay:1.4 },
+      { freq:528*2, gain:0.10, decay:0.8 },
+      { freq:528*3, gain:0.05, decay:0.5 }
+    ], now);
   } catch(e){}
 }
-/* Short directional chirp at a phase change: rising pitch = inhale, falling = exhale, flat = hold.
+/* Directional chime at a phase change: rising pitch = inhale, falling = exhale, flat = hold.
    Reuses the existing bell toggle, so it respects whatever the user already set. */
 function phaseChime(action) {
   if (!state.bellOn) return;
   try {
-    const ctx=ensureAudioCtx(); const osc=ctx.createOscillator(); const g=ctx.createGain();
-    const now=ctx.currentTime;
-    osc.type='sine';
-    if (action==='expand'||action==='expand-more') {
-      osc.frequency.setValueAtTime(392, now); osc.frequency.linearRampToValueAtTime(523, now+0.28);
-    } else if (action==='contract') {
-      osc.frequency.setValueAtTime(392, now); osc.frequency.linearRampToValueAtTime(261, now+0.28);
-    } else {
-      osc.frequency.setValueAtTime(220, now);
-    }
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.09, now+0.03);
-    g.gain.exponentialRampToValueAtTime(0.0001, now+0.38);
-    osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now+0.4);
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    let base=220, target=220;
+    if (action==='expand'||action==='expand-more') { base=392; target=523; }
+    else if (action==='contract') { base=392; target=261; }
+    chimeLayered(ctx, [
+      { freq:base,     freqEnd:target,     gain:0.28, decay:0.55, glideTime:0.28 },
+      { freq:base*2,   freqEnd:target*2,   gain:0.12, decay:0.35, glideTime:0.28 },
+      { freq:base*1.5, freqEnd:target*1.5, gain:0.08, decay:0.3,  glideTime:0.28 }
+    ], now);
   } catch(e){}
 }
 function vibrate(p) { try { if (state.hapticOn && navigator.vibrate) navigator.vibrate(p); } catch(e){} }
@@ -717,8 +774,11 @@ const TONE_VARIANTS = {
   ocean:  { wave:'triangle', inFreq:330, outFreq:247, holdFreq:196 },
   crystal:{ wave:'sine',     inFreq:523, outFreq:392, holdFreq:330 }
 };
-let toneOsc=null, toneGain=null;
-function stopTone() { try { if (toneOsc){ toneOsc.stop(); toneOsc.disconnect(); toneOsc=null; } if (toneGain){ toneGain.disconnect(); toneGain=null; } } catch(e){} }
+let toneOsc=null, toneGain=null, toneOsc2=null, toneGain2=null;
+function stopTone() {
+  try { if (toneOsc){ toneOsc.stop(); toneOsc.disconnect(); toneOsc=null; } if (toneGain){ toneGain.disconnect(); toneGain=null; } } catch(e){}
+  try { if (toneOsc2){ toneOsc2.stop(); toneOsc2.disconnect(); toneOsc2=null; } if (toneGain2){ toneGain2.disconnect(); toneGain2=null; } } catch(e){}
+}
 /* phase: 'in' | 'out' | 'hold' — plays a tone that swells (in), fades (out), or sustains (hold) over durationSec */
 function playTone(phase, durationSec) {
   if (state.cueMode!=='tone') return;
@@ -727,24 +787,35 @@ function playTone(phase, durationSec) {
     const ctx=ensureAudioCtx();
     const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
     const osc=ctx.createOscillator(); const g=ctx.createGain();
-    osc.type = variant.wave;
+    const osc2=ctx.createOscillator(); const g2=ctx.createGain(); // quiet octave layer for warmth/body
+    osc.type = variant.wave; osc2.type = variant.wave;
     const freq = phase==='in' ? variant.inFreq : phase==='out' ? variant.outFreq : variant.holdFreq;
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc2.frequency.setValueAtTime(freq*2, ctx.currentTime);
     g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g2.gain.setValueAtTime(0.0001, ctx.currentTime);
     if (phase==='in') {
-      g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + durationSec*0.7);
+      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + durationSec*0.7);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.7);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     } else if (phase==='out') {
-      g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + durationSec*0.15);
+      g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + durationSec*0.15);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.15);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     } else { // hold — a long, sustained, slowly breathing drone
-      g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 1.5);
-      g.gain.exponentialRampToValueAtTime(0.03, ctx.currentTime + durationSec*0.5);
+      g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 1.5);
+      g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + durationSec*0.5);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(0.025, ctx.currentTime + 1.5);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
     }
     osc.connect(g); g.connect(ctx.destination);
+    osc2.connect(g2); g2.connect(ctx.destination);
     osc.start(); osc.stop(ctx.currentTime + durationSec + 0.1);
-    toneOsc=osc; toneGain=g;
+    osc2.start(); osc2.stop(ctx.currentTime + durationSec + 0.1);
+    toneOsc=osc; toneGain=g; toneOsc2=osc2; toneGain2=g2;
   } catch(e){}
 }
 /* long sustained tone for indefinite hold (tap-to-end), gently loops */
