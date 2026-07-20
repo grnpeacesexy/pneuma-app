@@ -165,11 +165,6 @@
   .btn-ghost { background:transparent; color: var(--text-secondary); }
   #startBtn { flex:1.4; }
   .wake-warning { font-size:11px; color: var(--gold); text-align:center; padding:0 20px 8px; z-index:2; }
-  .voice-fail-banner { display:none; margin:0 20px 16px; padding:16px; border-radius:16px; background: rgba(226,85,74,0.12); border:0.5px solid rgba(226,85,74,0.35); z-index:2; }
-  .voice-fail-banner.show { display:block; animation: riseIn 0.4s ease; }
-  .vfb-text { font-size:13px; color: var(--text-secondary); line-height:1.5; margin-bottom:12px; }
-  .vfb-actions { display:flex; gap:8px; }
-  .vfb-actions .btn { font-size:13px; }
 
   /* ============ SESSION COMPLETE ============ */
   #screen-complete { align-items:center; justify-content:center; text-align:center; }
@@ -362,13 +357,6 @@
       <button class="btn btn-primary" id="startBtn" onclick="toggleStart()">Начать</button>
     </div>
     <div class="wake-warning" id="wakeWarning" style="display:none;">Экран может погаснуть во время сессии</div>
-    <div class="voice-fail-banner" id="voiceFailBanner">
-      <div class="vfb-text">Голос не звучит на этом устройстве — обычно так бывает, если в телефоне не установлен русский голос для озвучки. Можно переключиться на звуковые сигналы вместо голоса.</div>
-      <div class="vfb-actions">
-        <button class="btn btn-primary" style="padding:10px;" onclick="switchToToneFromBanner()">Переключить на звуки</button>
-        <button class="btn btn-ghost" style="padding:10px;" onclick="dismissVoiceFailBanner()">Не сейчас</button>
-      </div>
-    </div>
   </div>
 
   <!-- COMPLETE -->
@@ -877,9 +865,8 @@ function pickVoice(lang) {
 }
 /* Some webviews (incl. Telegram's) only allow speechSynthesis after a real user tap.
    Call this once on the first tap of Start to "unlock" the engine. */
-let voiceConfirmedWorking = false;
-let voiceFailureNoticeShown = false;
 function unlockSpeech() {
+  unlockAudioCues();
   if (speechUnlocked || !synth) return;
   speechUnlocked = true;
   try {
@@ -888,37 +875,6 @@ function unlockSpeech() {
     u.volume = 0; u.lang = state.lang;
     synth.speak(u);
   } catch(e){}
-  checkVoiceAvailability();
-}
-/* Detects the common Android case: speechSynthesis exists and getVoices() may even
-   return entries, but nothing actually plays because the OS has no TTS voice data
-   installed for the chosen language. We can't fix that from the page — only the
-   phone's own TTS settings can — but we can stop leaving the person in silent
-   confusion and offer to switch to tone cues instead. */
-function checkVoiceAvailability() {
-  if (!synth || state.cueMode!=='voice' || voiceConfirmedWorking || voiceFailureNoticeShown) return;
-  try {
-    const test = new SpeechSynthesisUtterance('.');
-    test.volume = 0.01; test.lang = state.lang;
-    let started = false;
-    test.onstart = () => { started = true; voiceConfirmedWorking = true; };
-    synth.speak(test);
-    setTimeout(() => {
-      if (!started && state.cueMode==='voice' && !voiceFailureNoticeShown) {
-        showVoiceFailureNotice();
-      }
-    }, 2500);
-  } catch(e){ showVoiceFailureNotice(); }
-}
-function showVoiceFailureNotice() {
-  voiceFailureNoticeShown = true;
-  document.getElementById('voiceFailBanner').classList.add('show');
-}
-function dismissVoiceFailBanner() { document.getElementById('voiceFailBanner').classList.remove('show'); }
-function switchToToneFromBanner() {
-  state.cueMode='tone'; saveSettings();
-  dismissVoiceFailBanner();
-  vibrate(10);
 }
 let audioCtx=null, noiseNode=null, noiseGain=null, wakeLock=null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
@@ -1171,17 +1127,71 @@ function setNoiseLevel(level, dur) {
   try { const ctx=ensureAudioCtx(); noiseGain.gain.cancelScheduledValues(ctx.currentTime);
     noiseGain.gain.linearRampToValueAtTime(Math.min(level,0.016), ctx.currentTime+dur); } catch(e){}
 }
-function speak(t) {
-  if (state.cueMode!=='voice' || !synth) return;
+/* ---------- PRE-RECORDED VOICE CLIPS ---------- */
+/* speechSynthesis depends on whatever TTS engine (if any) is installed on the device —
+   on some Android phones it's missing, outdated, or has no Russian voice downloaded, and no
+   code fix can patch that. A real .mp3, once recorded, plays identically everywhere.
+   Files are optional: if a clip 404s, that one phrase silently falls back to synth, nothing breaks. */
+const AUDIO_BASE = 'audio/ru/';
+const AUDIO_MAP = {
+  'Вдох':                          'inhale.mp3',
+  'Выдох':                         'exhale.mp3',
+  'Задержи':                       'hold.mp3',
+  'Задержи дыхание':               'hold_breath.mp3',
+  'Пауза':                         'pause.mp3',
+  'Ещё':                           'more.mp3',
+  'Вдохни и задержи':              'inhale_hold.mp3',
+  'Выдохни и задержи дыхание':     'exhale_hold.mp3',
+  'Сессия завершена':              'session_complete.mp3',
+  'Привет':                        'hello.mp3',
+  '1':                             'count_1.mp3',
+  '2':                             'count_2.mp3',
+  '3':                             'count_3.mp3'
+};
+let audioCueCache={}, audioCueAvailable={}, audioCuesUnlocked=false;
+function preloadAudioCues() {
+  Object.keys(AUDIO_MAP).forEach(text => {
+    try {
+      const el=new Audio(AUDIO_BASE+AUDIO_MAP[text]); el.preload='auto';
+      el.addEventListener('canplaythrough', ()=>{ audioCueAvailable[text]=true; }, {once:true});
+      el.addEventListener('error', ()=>{ audioCueAvailable[text]=false; }, {once:true});
+      audioCueCache[text]=el;
+    } catch(e){}
+  });
+}
+/* Browsers/webviews require a real user tap before ANY audio element can play —
+   same rule as speechSynthesis, so this rides along with the same first-tap unlock. */
+function unlockAudioCues() {
+  if (audioCuesUnlocked) return;
+  audioCuesUnlocked=true;
+  Object.values(audioCueCache).forEach(el => {
+    try { const p=el.play(); if (p&&p.then) p.then(()=>{ el.pause(); el.currentTime=0; }).catch(()=>{}); } catch(e){}
+  });
+}
+function speakViaSynth(t) {
+  if (!synth) return;
   try {
     synth.cancel();
-    const u = new SpeechSynthesisUtterance(t);
-    u.lang = state.lang; u.rate = 0.95; u.pitch = 1.0; u.volume = (state.volCue!=null?state.volCue:70)/100;
-    const v = pickVoice(state.lang);
-    if (v) u.voice = v;
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang=state.lang; u.rate=0.95; u.pitch=1.0; u.volume=(state.volCue!=null?state.volCue:70)/100;
+    const v=pickVoice(state.lang);
+    if (v) u.voice=v;
     // Chrome/webview bug: speak() right after cancel() sometimes gets swallowed.
     setTimeout(() => { try { synth.speak(u); } catch(e){} }, 30);
   } catch(e){}
+}
+function speak(t) {
+  if (state.cueMode!=='voice') return;
+  const clip=audioCueCache[t];
+  if (clip && audioCueAvailable[t]!==false) {
+    try {
+      clip.currentTime=0; clip.volume=(state.volCue!=null?state.volCue:70)/100;
+      const p=clip.play();
+      if (p && p.catch) p.catch(()=>{ speakViaSynth(t); });
+      return;
+    } catch(e){ /* fall through to synth below */ }
+  }
+  speakViaSynth(t);
 }
 
 /* Tone variants: each defines a base frequency for inhale/exhale/hold and a waveform */
@@ -1490,7 +1500,6 @@ function launchSession(key) {
   document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
   document.getElementById('tapHint').classList.remove('show');
   document.getElementById('wakeWarning').style.display='none';
-  document.getElementById('voiceFailBanner').classList.remove('show');
   // accent color per category
   const st=CAT_STYLE[p.cat]||CAT_STYLE.balance;
   document.documentElement.style.setProperty('--accent', st.fg);
@@ -2135,6 +2144,7 @@ function pickGoal(goal) {
 
 /* ---------- INIT ---------- */
 loadSettings();
+preloadAudioCues();
 if (!localStorage.getItem('pneuma_onboarded')) {
   setRandomWelcomePhrase();
   spawnWelcomeParticles();
