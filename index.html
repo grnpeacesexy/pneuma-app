@@ -449,6 +449,7 @@
         <div class="set-row" id="voicePickRow" style="flex-direction:column; align-items:stretch;">
           <div style="margin-bottom:10px;"><div class="set-label">Голос устройства</div><div class="set-sub">Если на телефоне их несколько</div></div>
           <select id="voicePickSelect" style="width:100%;"></select>
+          <button class="btn btn-ghost" type="button" style="margin-top:10px; padding:11px;" onclick="testVoiceCues()">Проверить голос: вдох → пауза → выдох</button>
         </div>
 
         <div class="settings-group-title">Громкость</div>
@@ -792,11 +793,11 @@ const BUILTIN = {
   reversebreath: { name:'Обратное дыхание', cat:'focus', desc:'Живот мягко подтягивается на вдохе и расслабляется на выдохе — обратное привычному. Даосская и цигун-практика для собранности', glyph:'⟲', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох, живот внутрь', exLabel:'Выдох, живот наружу'}) },
   qigong: { name:'Цигун-дыхание', cat:'balance', desc:'Медленное дыхание животом с короткими паузами по краям — практика для собранности из цигун и тайцзи', glyph:'◈', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,3,6,3) },
   viloma: { name:'Вилома (Прерывистое)', cat:'focus', desc:'Вдох маленькими частями с паузами внутри, затем один плавный выдох. Развивает контроль над дыханием', glyph:'⋮', level:'Средне', defaultRounds:6, type:'cycle', phases: [
-    ph('Вдох — часть 1','Вдох',2,'expand'),
+    ph('Вдох — часть 1','Вдох, часть один',2,'expand'),
     ph('Пауза','Пауза',2,'hold-full'),
-    ph('Вдох — часть 2','Вдох',2,'expand-more'),
+    ph('Вдох — часть 2','Вдох, часть два',2,'expand-more'),
     ph('Пауза','Пауза',2,'hold-full'),
-    ph('Вдох — часть 3, полный','Вдох',2,'expand-more'),
+    ph('Вдох — часть 3, полный','Вдох, часть три',2,'expand-more'),
     ph('Плавный выдох','Выдох',6,'contract')
   ] },
   tummo: { name:'Тумо (тибетское "внутреннее пламя")', cat:'energy', desc:'Тибетская техника разогрева тела мощными вдохами и задержкой дыхания — на её основе частично строится метод Вима Хофа', glyph:'🌋', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:25, pace:1.3, holdRecover:15, safety:true },
@@ -832,6 +833,15 @@ function loadHistory() { try { return JSON.parse(localStorage.getItem('pneuma_hi
 function saveHistoryEntry(e) { const h=loadHistory(); h.unshift(e); try { localStorage.setItem('pneuma_history', JSON.stringify(h.slice(0,200))); } catch(x){} }
 function loadUsage() { try { return JSON.parse(localStorage.getItem('pneuma_usage')||'{}'); } catch(e){ return {}; } }
 function bumpUsage(key) { const u=loadUsage(); u[key]=(u[key]||0)+1; try { localStorage.setItem('pneuma_usage', JSON.stringify(u)); } catch(e){} }
+function escapeHTML(value) {
+  return String(value==null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function localDayKey(value) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  const m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
 
 /* ---------- STATE ---------- */
 let state = {
@@ -1100,6 +1110,7 @@ let bhramariOsc=null, bhramariGain=null;
 function startBhramariHum(sec) {
   if (!state.musicOn) return;
   try {
+    stopBhramariHum();
     const ctx=ensureAudioCtx(); const now=ctx.currentTime;
     bhramariOsc=ctx.createOscillator(); bhramariOsc.type='sine'; bhramariOsc.frequency.value=110; // low hum, roughly a comfortable chest-voice "mmm"
     bhramariGain=ctx.createGain(); bhramariGain.gain.setValueAtTime(0.0001, now);
@@ -1108,6 +1119,11 @@ function startBhramariHum(sec) {
     bhramariOsc.connect(bhramariGain); bhramariGain.connect(ctx.destination);
     bhramariOsc.start(now); bhramariOsc.stop(now+sec+0.1);
   } catch(e){}
+}
+function stopBhramariHum() {
+  try { if (bhramariOsc) { bhramariOsc.stop(); bhramariOsc.disconnect(); } } catch(e){}
+  try { if (bhramariGain) bhramariGain.disconnect(); } catch(e){}
+  bhramariOsc=null; bhramariGain=null;
 }
 
 function vibrate(p) { try { if (state.hapticOn && navigator.vibrate) navigator.vibrate(p); } catch(e){} }
@@ -1149,6 +1165,7 @@ const AUDIO_MAP = {
   '3':                             'count_3.mp3'
 };
 let audioCueCache={}, audioCueAvailable={}, audioCuesUnlocked=false;
+let speechRequestId=0, voiceTestToken=0;
 function preloadAudioCues() {
   Object.keys(AUDIO_MAP).forEach(text => {
     try {
@@ -1174,7 +1191,7 @@ function unlockAudioCues() {
     if (p&&p.catch) p.catch(()=>{});
   } catch(e){}
 }
-function speakViaSynth(t) {
+function speakViaSynth(t, requestId) {
   if (!synth) return;
   try {
     synth.cancel();
@@ -1182,26 +1199,52 @@ function speakViaSynth(t) {
     u.lang=state.lang; u.rate=0.95; u.pitch=1.0; u.volume=(state.volCue!=null?state.volCue:70)/100;
     const v=pickVoice(state.lang);
     if (v) u.voice=v;
-    // Chrome/webview bug: speak() right after cancel() sometimes gets swallowed.
-    setTimeout(() => { try { synth.speak(u); } catch(e){} }, 30);
+    // Some Android WebViews need a short gap after cancel().  The request id is
+    // essential: without it, a delayed old phrase can start after a newer phase
+    // and then be cancelled together with the new one (most visible in Viloma).
+    setTimeout(() => {
+      if (requestId!==speechRequestId || state.cueMode!=='voice') return;
+      try { synth.speak(u); } catch(e){}
+    }, 70);
   } catch(e){}
 }
 function stopAllAudioCues() {
   Object.values(audioCueCache).forEach(el => { try { if (!el.paused) { el.pause(); el.currentTime=0; } } catch(e){} });
 }
+function stopSpeechCues() {
+  speechRequestId++;
+  try { synth && synth.cancel(); } catch(e){}
+  stopAllAudioCues();
+}
 function speak(t) {
   if (state.cueMode!=='voice') return;
+  const requestId=++speechRequestId;
+  // Always stop an unfinished system utterance when a new phase begins.
+  // This also invalidates any delayed fallback from the previous phase.
+  try { synth && synth.cancel(); } catch(e){}
   const clip=audioCueCache[t];
-  if (clip && audioCueAvailable[t]!==false) {
+  // Use a local recording only after it has actually loaded.  The original
+  // version tried files while their status was still unknown; on phones where
+  // the audio/ folder is absent this made phase cues disappear instead of
+  // falling back to the built-in voice.
+  if (clip && audioCueAvailable[t]===true) {
     try {
-      stopAllAudioCues(); // a new cue always cuts off whatever line was still finishing — same rule speechSynthesis's cancel() gave us
+      stopAllAudioCues();
       clip.currentTime=0; clip.volume=(state.volCue!=null?state.volCue:70)/100;
       const p=clip.play();
-      if (p && p.catch) p.catch(()=>{ speakViaSynth(t); });
+      if (p && p.catch) p.catch(()=>{ if (requestId===speechRequestId) speakViaSynth(t, requestId); });
       return;
     } catch(e){ /* fall through to synth below */ }
   }
-  speakViaSynth(t);
+  speakViaSynth(t, requestId);
+}
+function testVoiceCues() {
+  if (state.cueMode!=='voice') { setCueMode('voice'); }
+  unlockSpeech();
+  const token=++voiceTestToken;
+  ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
+    setTimeout(() => { if (token===voiceTestToken) speak(cue); }, index*1400);
+  });
 }
 
 /* Tone variants: each defines a base frequency for inhale/exhale/hold and a waveform */
@@ -1309,11 +1352,12 @@ function renderRepeatCard() {
   if (!p || lastKey===recommendedKey()) { slot.innerHTML=''; return; } // don't repeat the hero suggestion
   const dayLabel = daysAgoLabel(h[0].date);
   slot.innerHTML = `
-    <div class="repeat-card" onclick="openSession('${lastKey}')">
-      <div class="repeat-glyph">${p.glyph}</div>
-      <div class="repeat-text"><div class="repeat-title">Повторить: ${p.name}</div><div class="repeat-sub">${dayLabel}</div></div>
+    <div class="repeat-card">
+      <div class="repeat-glyph">${escapeHTML(p.glyph)}</div>
+      <div class="repeat-text"><div class="repeat-title">Повторить: ${escapeHTML(p.name)}</div><div class="repeat-sub">${escapeHTML(dayLabel)}</div></div>
       <div class="repeat-play">↻</div>
     </div>`;
+  slot.querySelector('.repeat-card').onclick=()=>openSession(lastKey);
 }
 function daysAgoLabel(iso) {
   const then=new Date(iso); const now=new Date();
@@ -1334,9 +1378,9 @@ function renderHero() {
   document.getElementById('heroSlot').innerHTML = `
     <div class="hero-card" onclick="openSession('${key}')">
       <div class="hero-eyebrow">Рекомендуем сейчас</div>
-      <div class="hero-name">${p.name}</div>
-      <div class="hero-desc">${p.desc}</div>
-      <div class="hero-meta"><span>~${est} мин</span><span>${p.level}</span><span>${CATEGORIES[p.cat].label}</span></div>
+      <div class="hero-name">${escapeHTML(p.name)}</div>
+      <div class="hero-desc">${escapeHTML(p.desc)}</div>
+      <div class="hero-meta"><span>~${est} мин</span><span>${escapeHTML(p.level)}</span><span>${escapeHTML(CATEGORIES[p.cat].label)}</span></div>
       <div class="hero-play">▶</div>
     </div>`;
 }
@@ -1413,7 +1457,7 @@ function cardTick() {
 function buildPatternDayMap(hist) {
   const map={};
   hist.forEach(entry => {
-    const day = (entry.date||'').slice(0,10);
+    const day = localDayKey(entry.date);
     if (!day || !entry.key) return;
     (map[entry.key]=map[entry.key]||new Set()).add(day);
   });
@@ -1424,7 +1468,7 @@ function sparklineHTML(daySet) {
   let dots='';
   for (let i=6;i>=0;i--){
     const d=new Date(); d.setDate(d.getDate()-i);
-    const key=d.toISOString().slice(0,10);
+    const key=localDayKey(d);
     dots += `<span class="spark-dot${daySet.has(key)?' on':''}"></span>`;
   }
   return `<div class="pattern-spark">${dots}</div>`;
@@ -1437,11 +1481,11 @@ function patternCard(key, p, isCustom, favs, usage, idx, daySet) {
   const isFav = favs.includes(key);
   const card=document.createElement('div'); card.className='pattern-card'; card.style.animationDelay=(idx*0.03)+'s';
   card.innerHTML = `
-    <div class="pattern-glyph" style="background:${st.bg}; color:${st.fg};">${p.glyph}</div>
+    <div class="pattern-glyph" style="background:${st.bg}; color:${st.fg};">${escapeHTML(p.glyph)}</div>
     <div class="pattern-info">
-      <p class="pattern-name">${p.name}</p>
-      <p class="pattern-desc">${p.desc}</p>
-      <div class="pattern-meta"><span>~${est} мин</span><span>${p.level||''}</span>${isCustom?'<span>· свой</span>':''}</div>
+      <p class="pattern-name">${escapeHTML(p.name)}</p>
+      <p class="pattern-desc">${escapeHTML(p.desc)}</p>
+      <div class="pattern-meta"><span>~${est} мин</span><span>${escapeHTML(p.level||'')}</span>${isCustom?'<span>· свой</span>':''}</div>
       ${sparklineHTML(daySet)}
     </div>
     ${isCustom?`<div class="card-edit-btn" data-edit="${key}">✎</div>`:''}
@@ -1466,7 +1510,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   document.getElementById('addFab').style.display = (id==='screen-home') ? 'flex' : 'none';
 }
-function closeSub() { renderHome(); showScreen('screen-home'); }
+function closeSub() { clearTimeout(miniTimer); renderHome(); showScreen('screen-home'); }
 function openStats() { renderStats(); showScreen('screen-stats'); }
 function openSettings() { syncSettingsUI(); showScreen('screen-settings'); }
 
@@ -1474,6 +1518,7 @@ function openSettings() { syncSettingsUI(); showScreen('screen-settings'); }
 let seenWhy={}; try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why')||'{}'); } catch(e){}
 function openSession(key) {
   const p=getAllPatterns()[key];
+  if (!p) { renderHome(); showScreen('screen-home'); return; }
   const why = WHY_NOTES[key];
   if (why && !seenWhy[key] && !p.safety) {
     // Custom patterns and techniques with a safety intro skip this — safety intro already
@@ -1525,7 +1570,10 @@ function launchSession(key) {
 function exitSession() { stopSession(); document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666'); renderHome(); showScreen('screen-home'); }
 
 /* ---------- SESSION OPTS SHEET ---------- */
-function openSessionOpts() { buildRoundSelect(); document.getElementById('optsSheet').classList.add('active'); }
+function openSessionOpts() {
+  if (state.running) { vibrate(8); return; }
+  buildRoundSelect(); document.getElementById('optsSheet').classList.add('active');
+}
 function closeOptsSheet() { document.getElementById('optsSheet').classList.remove('active'); }
 function buildRoundSelect() {
   const wrap=document.getElementById('roundSelect'); wrap.innerHTML='';
@@ -1617,15 +1665,22 @@ async function toggleStart() {
   document.getElementById('screen-session').classList.add('session-live');
   bumpUsage(state.currentPattern);
   if (state.screenOffOn) { setTimeout(()=>{ if (state.running) document.getElementById('screenOffOverlay').classList.add('active'); }, 1200); }
-  runSession(sessionToken);
+  try {
+    await runSession(sessionToken);
+  } catch(e) {
+    // Keep the screen usable even if a browser audio API fails unexpectedly.
+    if (state.running) stopSession();
+    document.getElementById('phaseWord').textContent='Не удалось продолжить. Попробуй начать ещё раз.';
+  }
 }
 function exitScreenOff() { document.getElementById('screenOffOverlay').classList.remove('active'); vibrate(8); }
 function stopSession() {
   if (!state.running) return;
   state.running=false; sessionToken++;
-  synth&&synth.cancel(); stopBreathNoise(); stopHoldTone(); releaseWakeLock(); stopMusic(1.2); stopOceanTexture(1);
+  stopSpeechCues(); stopBreathNoise(); stopHoldTone(); stopBhramariHum(); releaseWakeLock(); stopMusic(1.2); stopOceanTexture(1);
   document.getElementById('screen-session').classList.remove('session-live');
   document.getElementById('screenOffOverlay').classList.remove('active');
+  closeOptsSheet(); isHoldPhase=false;
   resetRing(); resetProgress();
   document.getElementById('counter').textContent='—';
   document.getElementById('phaseWord').textContent='Пауза';
@@ -1761,8 +1816,10 @@ async function runSession(tok) {
     phaseWord.textContent=''; counter.textContent=''; setProgress(1);
     await sleep(700);
     speak('Сессия завершена'); bell(); vibrate([15,50,15,50,15]);
-    stopBreathNoise(); stopHoldTone(); releaseWakeLock(); stopMusic(); stopOceanTexture(3); state.running=false;
+    stopBreathNoise(); stopHoldTone(); stopBhramariHum(); releaseWakeLock(); stopMusic(); stopOceanTexture(3); state.running=false;
     document.getElementById('screen-session').classList.remove('session-live');
+    document.getElementById('screenOffOverlay').classList.remove('active');
+    closeOptsSheet(); isHoldPhase=false;
     let minutes=1; if (state.sessionStart){ minutes=Math.max(1,Math.round((Date.now()-state.sessionStart)/60000)); logSession(minutes); state.sessionStart=null; }
     showComplete(minutes);
   }
@@ -1794,7 +1851,7 @@ function buildWeeklyFact(h, todayMinutes) {
   const priorWeek = h.filter(e => { const d=new Date(e.date); return d>=sevenDaysAgo && d.toDateString()!==todayStr; });
   if (priorWeek.length < 3) return ''; // not enough history to say anything meaningful yet
   const byDay = {};
-  priorWeek.forEach(e => { const day=(e.date||'').slice(0,10); byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  priorWeek.forEach(e => { const day=localDayKey(e.date); if(day) byDay[day]=(byDay[day]||0)+(e.minutes||0); });
   const days = Object.keys(byDay);
   const avgMin = days.length ? (Object.values(byDay).reduce((a,b)=>a+b,0)/days.length) : 0;
   if (avgMin<=0) return '';
@@ -1854,7 +1911,7 @@ function renderStats() {
   else h.slice(0,40).forEach(e=>{ const d=new Date(e.date);
     const ds=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
     const row=document.createElement('div'); row.className='history-item';
-    row.innerHTML=`<span>${e.name}</span><span class="h-date">${e.minutes} мин · ${ds}</span>`; list.appendChild(row); });
+    row.innerHTML=`<span>${escapeHTML(e.name)}</span><span class="h-date">${escapeHTML(e.minutes)} мин · ${escapeHTML(ds)}</span>`; list.appendChild(row); });
   renderCalendarGrid(h);
 }
 /* 14x7 grid of the last ~98 days, shaded by minutes practiced that day — like a contribution graph,
@@ -1862,11 +1919,11 @@ function renderStats() {
 function renderCalendarGrid(h) {
   const grid=document.getElementById('calendarGrid'); grid.innerHTML='';
   const byDay={};
-  h.forEach(e => { const day=(e.date||'').slice(0,10); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  h.forEach(e => { const day=localDayKey(e.date); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); });
   const days=98, cells=[];
   for (let i=days-1;i>=0;i--){
     const d=new Date(); d.setDate(d.getDate()-i);
-    const key=d.toISOString().slice(0,10);
+    const key=localDayKey(d);
     const mins=byDay[key]||0;
     let lvl=0; if (mins>0) lvl=1; if (mins>=10) lvl=2; if (mins>=25) lvl=3;
     cells.push(`<div class="cal-cell${lvl?(' lvl'+lvl):''}" title="${key}${mins?': '+mins+' мин':''}"></div>`);
