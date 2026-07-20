@@ -1165,7 +1165,13 @@ function unlockAudioCues() {
   if (audioCuesUnlocked) return;
   audioCuesUnlocked=true;
   Object.values(audioCueCache).forEach(el => {
-    try { const p=el.play(); if (p&&p.then) p.then(()=>{ el.pause(); el.currentTime=0; }).catch(()=>{}); } catch(e){}
+    try {
+      const savedVolume=el.volume;
+      el.volume=0; // mute before play — pause() alone isn't fast enough on slower phones and a chord of all clips leaks through
+      const p=el.play();
+      if (p&&p.then) p.then(()=>{ el.pause(); el.currentTime=0; el.volume=savedVolume; }).catch(()=>{ el.volume=savedVolume; });
+      else el.volume=savedVolume;
+    } catch(e){}
   });
 }
 function speakViaSynth(t) {
