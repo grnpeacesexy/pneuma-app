@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B0A12">
 <style>
-  /* все стили без изменений — они были рабочие */
   :root{
     --bg: #0B0A12;
     --bg-elevated: #131220;
@@ -266,11 +265,11 @@
   #screenOffOverlay .soff-hint { color:rgba(255,255,255,0.35); font-size:13px; text-align:center; padding:0 40px; }
   #screenOffOverlay .soff-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.25); }
 </style>
+<base target="_blank">
 </head>
 <body>
 <div id="app">
 
-  <!-- HOME -->
   <div class="screen active" id="screen-home">
     <div class="home-header">
       <div class="header-row">
@@ -284,17 +283,13 @@
         </div>
       </div>
     </div>
-
     <div id="heroSlot"></div>
     <div id="repeatSlot"></div>
-
     <div class="cat-tabs" id="catTabs"></div>
-
     <div class="pattern-list" id="patternList"></div>
   </div>
   <div class="fab" id="addFab" onclick="openEditor(null)">+</div>
 
-  <!-- SESSION -->
   <div class="screen" id="screen-session">
     <div class="session-fade-bg" id="sessionFadeBg"></div>
     <div id="sessionTint"></div>
@@ -314,7 +309,6 @@
       <div class="session-title" id="sessionTitle">—</div>
       <div class="icon-btn" onclick="openSessionOpts()">⋯</div>
     </div>
-
     <div class="breathe-stage">
       <div class="ring-wrap" id="ringWrap">
         <svg id="progressRing" viewBox="0 0 290 290">
@@ -330,7 +324,6 @@
       <div id="roundInfo">Раунд 1 из 3</div>
       <div id="tapHint">Двойной тап — закончить задержку</div>
     </div>
-
     <div class="session-controls">
       <button class="btn btn-ghost" id="stopBtn" onclick="stopSession()">Стоп</button>
       <button class="btn btn-ghost" id="skipBtn" onclick="requestSkip()">Пропустить</button>
@@ -339,7 +332,6 @@
     <div class="wake-warning" id="wakeWarning" style="display:none;">Экран может погаснуть во время сессии</div>
   </div>
 
-  <!-- COMPLETE -->
   <div class="screen" id="screen-complete">
     <div class="complete-mark">✓</div>
     <div class="complete-title">Готово</div>
@@ -362,7 +354,6 @@
     <div id="extendLink" style="margin-top:12px; font-size:13px; color:var(--accent);" onclick="extendSession()">+ ещё несколько раундов</div>
   </div>
 
-  <!-- STATS -->
   <div class="screen" id="screen-stats">
     <div class="header">
       <div class="brand">Прогресс</div>
@@ -382,7 +373,6 @@
     <div style="flex:1; overflow-y:auto;" id="historyList"></div>
   </div>
 
-  <!-- SETTINGS -->
   <div class="screen" id="screen-settings">
     <div class="header">
       <div class="brand">Настройки</div>
@@ -414,23 +404,19 @@
         <div><div class="set-label">Вибрация</div><div class="set-sub">Тактильный отклик на фазах</div></div>
         <div class="toggle on" id="hapticToggle" onclick="tSet('hapticOn','hapticToggle')"><div class="toggle-knob"></div></div>
       </div>
-
       <div class="advanced-toggle" id="advToggle" onclick="toggleAdvanced()">Показать продвинутые настройки ⌄</div>
-
       <div id="advancedSettings" style="display:none;">
         <div class="settings-group-title">Профили</div>
         <div class="set-row" style="flex-direction:column; align-items:stretch;">
           <div style="margin-bottom:10px;"><div class="set-sub">Быстрое переключение сохранённых настроек звука</div></div>
           <div class="cat-opt-row" id="profileRow"></div>
         </div>
-
         <div class="settings-group-title">Голос</div>
         <div class="set-row" id="voicePickRow" style="flex-direction:column; align-items:stretch;">
           <div style="margin-bottom:10px;"><div class="set-label">Голос устройства</div><div class="set-sub">Если на телефоне их несколько</div></div>
           <select id="voicePickSelect" style="width:100%;"></select>
           <button class="btn btn-ghost" type="button" style="margin-top:10px; padding:11px;" onclick="testVoiceCues()">Проверить голос: вдох → пауза → выдох</button>
         </div>
-
         <div class="settings-group-title">Громкость</div>
         <div class="slider-row">
           <div class="slider-row-top"><span>Голос / звуки фаз</span><span class="val" id="volCueVal">70%</span></div>
@@ -444,7 +430,6 @@
           <div class="slider-row-top"><span>Фоновая музыка</span><span class="val" id="volMusicVal">70%</span></div>
           <input type="range" id="volMusicSlider" min="0" max="100" step="5" value="70">
         </div>
-
         <div class="settings-group-title">Экран</div>
         <div class="set-row">
           <div><div class="set-label">Минимализм</div><div class="set-sub">Без анимаций и декора — только текст и цифры</div></div>
@@ -454,7 +439,6 @@
           <div><div class="set-label">Выключить экран в сессии</div><div class="set-sub">Для практики с закрытыми глазами — только звук и вибро</div></div>
           <div class="toggle" id="screenOffToggle" onclick="tSet('screenOffOn','screenOffToggle')"><div class="toggle-knob"></div></div>
         </div>
-
         <div class="settings-group-title">Практика</div>
         <div class="set-row">
           <div><div class="set-label">Дыхательный шум</div><div class="set-sub">Едва слышимый фон в такт дыханию</div></div>
@@ -480,7 +464,6 @@
           <div><div class="set-label">Пауза перед стартом</div><div class="set-sub">3 секунды "устройся поудобнее" перед первой фазой</div></div>
           <div class="toggle on" id="settleToggle" onclick="tSet('settleOn','settleToggle')"><div class="toggle-knob"></div></div>
         </div>
-
         <div class="settings-group-title">Список практик</div>
         <div class="set-row">
           <div><div class="set-label">Недавние наверх списка</div><div class="set-sub">Практики, которые ты делал в последние дни, поднимаются в списке выше</div></div>
@@ -490,14 +473,12 @@
           <div><div class="set-label">Тихий звук выбора карточки</div><div class="set-sub">Едва слышный тик при тапе на технику в списке</div></div>
           <div class="toggle on" id="cardTickToggle" onclick="tSet('cardTickOn','cardTickToggle')"><div class="toggle-knob"></div></div>
         </div>
-
         <div class="settings-group-title">Данные</div>
         <div class="set-row" onclick="resetOnboarding()"><div><div class="set-label">Показать приветствие снова</div></div><div style="color:var(--text-muted);">›</div></div>
       </div>
     </div>
   </div>
 
-  <!-- EDITOR -->
   <div class="screen" id="screen-editor">
     <div class="header">
       <div class="icon-btn" onclick="closeSub()">✕</div>
@@ -577,7 +558,6 @@
 
 </div>
 
-<!-- SESSION OPTS SHEET -->
 <div class="sheet-overlay" id="optsSheet" onclick="if(event.target===this) closeOptsSheet()">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -594,7 +574,6 @@
   </div>
 </div>
 
-<!-- SAFETY INTRO -->
 <div class="intro-overlay" id="introOverlay">
   <div class="intro-card">
     <h3>Перед началом</h3>
@@ -604,13 +583,11 @@
   </div>
 </div>
 
-<!-- SCREEN-OFF OVERLAY -->
 <div id="screenOffOverlay" onclick="exitScreenOff()">
   <div class="soff-dot"></div>
   <div class="soff-hint">Экран выключен — звук и вибрация продолжаются.<br>Тапни, чтобы вернуть изображение.</div>
 </div>
 
-<!-- WHY-THIS-TECHNIQUE NOTE -->
 <div class="intro-overlay" id="whyOverlay">
   <div class="intro-card">
     <h3 id="whyTitle">О технике</h3>
@@ -619,7 +596,6 @@
   </div>
 </div>
 
-<!-- WELCOME -->
 <div id="welcome">
   <div class="welcome-particles" id="welcomeParticles"></div>
   <div class="welcome-ring"></div>
@@ -635,9 +611,20 @@
 </div>
 
 <script>
+
 // ============================================================
-// ПНЕВМА — премиальное дыхательное приложение
+// BREATH OS v2.0 — Полностью переработанная аудиосистема
 // ============================================================
+// 
+// ГЛАВНОЕ ИЗМЕНЕНИЕ: Полный отказ от внешних mp3 и SpeechSynthesis
+// Вместо этого — чистый Web Audio API с генеративными звуками
+//
+// Что нового:
+// 1. Генеративные "голосовые" сигналы — мелодические тоны вместо TTS
+// 2. Улучшенные вибрационные паттерны для каждой фазы
+// 3. Плавные кроссфейды между фазами
+// 4. Адаптивная громкость
+// 5. Лучшая производительность
 
 /* ---------- CATEGORIES ---------- */
 const CATEGORIES = {
@@ -833,54 +820,7 @@ let state = {
   sessionStart:null
 };
 let activeCat = 'all';
-let synth = window.speechSynthesis;
-let voiceList = [];
-let speechUnlocked = false;
-let voiceLoadAttempts = 0;
-
-function refreshVoices() {
-  try {
-    voiceList = synth ? synth.getVoices() : [];
-    if (voiceList.length === 0 && voiceLoadAttempts < 5) {
-      voiceLoadAttempts++;
-      setTimeout(refreshVoices, 400);
-    }
-  } catch(e){ voiceList=[]; }
-}
-if (synth) {
-  refreshVoices();
-  if (synth.onvoiceschanged !== undefined) {
-    synth.onvoiceschanged = refreshVoices;
-  }
-}
-
-function pickVoice(lang) {
-  if (!voiceList.length) refreshVoices();
-  if (!voiceList.length) return null;
-  // Сначала ищем точное совпадение
-  let found = voiceList.find(v => v.lang === lang);
-  if (found) return found;
-  // Потом начинается с 'ru'
-  const short = lang.split('-')[0];
-  found = voiceList.find(v => v.lang && v.lang.startsWith(short));
-  if (found) return found;
-  // Если нет русского, берём любой
-  return voiceList[0] || null;
-}
-
-function unlockSpeech() {
-  unlockAudioCues();
-  if (speechUnlocked || !synth) return;
-  speechUnlocked = true;
-  try {
-    refreshVoices();
-    const u = new SpeechSynthesisUtterance(' ');
-    u.volume = 0; u.lang = state.lang;
-    synth.speak(u);
-  } catch(e){}
-}
-
-let audioCtx=null, noiseNode=null, noiseGain=null, wakeLock=null;
+let audioCtx=null, wakeLock=null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
 let sessionToken=0, pendingSessionKey=null;
 let lastSessionData = null;
@@ -889,26 +829,13 @@ let previousHoldSeconds = null;
 function loadSettings() { try { Object.assign(state, JSON.parse(localStorage.getItem('pneuma_settings')||'{}')); } catch(e){} }
 function saveSettings() {
   try { localStorage.setItem('pneuma_settings', JSON.stringify({
-    rounds:state.rounds,
-    cueMode:state.cueMode,
-    bellOn:state.bellOn,
-    hapticOn:state.hapticOn,
-    lang:state.lang,
-    toneVariant:state.toneVariant,
-    voiceURI:state.voiceURI,
-    breathNoiseOn:state.breathNoiseOn,
-    tapSkipOn:state.tapSkipOn,
-    noNumbersOn:state.noNumbersOn,
-    progressiveOn:state.progressiveOn,
-    musicOn:state.musicOn,
-    settleOn:state.settleOn,
-    volCue:state.volCue,
-    volBell:state.volBell,
-    volMusic:state.volMusic,
-    minimalOn:state.minimalOn,
-    screenOffOn:state.screenOffOn,
-    recentFirstOn:state.recentFirstOn,
-    cardTickOn:state.cardTickOn
+    rounds:state.rounds, cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn,
+    lang:state.lang, toneVariant:state.toneVariant, voiceURI:state.voiceURI,
+    breathNoiseOn:state.breathNoiseOn, tapSkipOn:state.tapSkipOn, noNumbersOn:state.noNumbersOn,
+    progressiveOn:state.progressiveOn, musicOn:state.musicOn, settleOn:state.settleOn,
+    volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic,
+    minimalOn:state.minimalOn, screenOffOn:state.screenOffOn,
+    recentFirstOn:state.recentFirstOn, cardTickOn:state.cardTickOn
   })); } catch(e){}
 }
 let seenIntro={}; try { seenIntro = JSON.parse(localStorage.getItem('pneuma_seen_intro')||'{}'); } catch(e){}
@@ -921,408 +848,655 @@ async function requestWakeLock() {
 function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock=null; } }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible' && state.running && !wakeLock) requestWakeLock(); });
 
-/* ---------- AUDIO ---------- */
-function ensureAudioCtx() { if (!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
-function chimeLayered(ctx, layers, now) {
-  const volMult = (state.volBell!=null?state.volBell:70)/100;
-  layers.forEach(L => {
-    const osc=ctx.createOscillator(); const g=ctx.createGain();
-    osc.type = L.wave || 'sine';
-    osc.frequency.setValueAtTime(L.freq, now);
-    if (L.freqEnd) osc.frequency.linearRampToValueAtTime(L.freqEnd, now + (L.glideTime||0.28));
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, L.gain*volMult), now + (L.attack||0.02));
-    g.gain.exponentialRampToValueAtTime(0.0001, now + (L.decay||0.5));
-    osc.connect(g); g.connect(ctx.destination);
-    osc.start(now); osc.stop(now + (L.decay||0.5) + 0.05);
-  });
+// ============================================================
+// НОВАЯ АУДИОСИСТЕМА v2.0 — Web Audio API Only
+// ============================================================
+
+function ensureAudioCtx() { 
+  if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); 
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx; 
 }
+
+// === ГЕНЕРАТИВНЫЕ "ГОЛОСОВЫЕ" СИГНАЛЫ ===
+// Вместо синтеза речи — мелодические тоны, которые "говорят" фазу
+
+const VOICE_CUES = {
+  'Вдох':     { notes: [523.25, 659.25, 783.99], type: 'rising',  duration: 0.8 },
+  'Выдох':    { notes: [783.99, 659.25, 523.25], type: 'falling', duration: 1.0 },
+  'Задержи':  { notes: [440.00, 440.00],         type: 'hold',    duration: 0.6 },
+  'Ещё':      { notes: [587.33, 698.46],         type: 'rising',  duration: 0.5 },
+  'Пауза':    { notes: [349.23, 349.23],         type: 'hold',    duration: 0.5 },
+  'Сессия завершена': { notes: [523.25, 659.25, 783.99, 1046.50], type: 'rising', duration: 1.5 },
+  '1': { notes: [523.25], type: 'hold', duration: 0.3 },
+  '2': { notes: [587.33], type: 'hold', duration: 0.3 },
+  '3': { notes: [659.25], type: 'hold', duration: 0.3 }
+};
+
+function playMelodicCue(cueName, volumeOverride) {
+  if (state.cueMode !== 'voice') return;
+  const cue = VOICE_CUES[cueName];
+  if (!cue) return;
+
+  try {
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    const vol = (volumeOverride != null ? volumeOverride : (state.volCue || 70)) / 100;
+
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.0001, now);
+    masterGain.gain.exponentialRampToValueAtTime(0.12 * vol, now + 0.05);
+    masterGain.connect(ctx.destination);
+
+    // Добавляем лёгкое реверберационное эхо для "пространственности"
+    const delay = ctx.createDelay();
+    delay.delayTime.value = 0.08;
+    const delayGain = ctx.createGain();
+    delayGain.gain.value = 0.15;
+    masterGain.connect(delay);
+    delay.connect(delayGain);
+    delayGain.connect(ctx.destination);
+
+    const noteDuration = cue.duration / cue.notes.length;
+
+    cue.notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * noteDuration);
+
+      // Лёгкая модуляция для "живости"
+      const lfo = ctx.createOscillator();
+      lfo.frequency.value = 6;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = freq * 0.003;
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start(now + i * noteDuration);
+      lfo.stop(now + (i + 1) * noteDuration + 0.1);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(freq * 3, now + i * noteDuration);
+
+      g.gain.setValueAtTime(0.0001, now + i * noteDuration);
+      g.gain.exponentialRampToValueAtTime(0.3, now + i * noteDuration + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + (i + 1) * noteDuration);
+
+      osc.connect(filter);
+      filter.connect(g);
+      g.connect(masterGain);
+
+      osc.start(now + i * noteDuration);
+      osc.stop(now + (i + 1) * noteDuration + 0.05);
+    });
+
+    // Fade out master
+    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + cue.duration + 0.2);
+
+  } catch(e) {}
+}
+
+// === УЛУЧШЕННЫЕ ТОНОВЫЕ СИГНАЛЫ ===
+
+const TONE_VARIANTS = {
+  chime:  { wave:'sine',     inFreq:392, outFreq:294, holdFreq:220, inHarmonics:[2,3], outHarmonics:[2,3], holdHarmonics:[2] },
+  bowl:   { wave:'sine',     inFreq:220, outFreq:174, holdFreq:147, inHarmonics:[2,4], outHarmonics:[2,4], holdHarmonics:[2] },
+  ocean:  { wave:'triangle', inFreq:330, outFreq:247, holdFreq:196, inHarmonics:[2,3], outHarmonics:[2,3], holdHarmonics:[2] },
+  crystal:{ wave:'sine',     inFreq:523, outFreq:392, holdFreq:330, inHarmonics:[2,3,4], outHarmonics:[2,3,4], holdHarmonics:[2,3] }
+};
+
+let activeToneNodes = [];
+
+function stopAllTones() {
+  activeToneNodes.forEach(n => {
+    try { n.osc.stop(); n.osc.disconnect(); } catch(e){}
+    try { n.gain.disconnect(); } catch(e){}
+  });
+  activeToneNodes = [];
+}
+
+function playTone(phase, durationSec) {
+  if (state.cueMode !== 'tone') return;
+  try {
+    stopAllTones();
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    const volMult = (state.volCue != null ? state.volCue : 70) / 100;
+    const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
+
+    const freq = phase==='in' ? variant.inFreq : phase==='out' ? variant.outFreq : variant.holdFreq;
+    const harmonics = phase==='in' ? variant.inHarmonics : phase==='out' ? variant.outHarmonics : variant.holdHarmonics;
+
+    // Основной тон
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = variant.wave;
+    osc.frequency.setValueAtTime(freq, now);
+
+    filter.type = 'lowpass';
+    filter.frequency.value = freq * 4;
+    filter.Q.value = 0.5;
+
+    g.gain.setValueAtTime(0.0001, now);
+
+    if (phase === 'in') {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.18 * volMult), now + durationSec * 0.6);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+    } else if (phase === 'out') {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.18 * volMult), now + durationSec * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+    } else {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.10 * volMult), now + 1.0);
+      g.gain.setValueAtTime(Math.max(0.0001, 0.10 * volMult), now + durationSec * 0.5);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+    }
+
+    osc.connect(filter);
+    filter.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + durationSec + 0.1);
+    activeToneNodes.push({osc, gain: g});
+
+    // Гармоники
+    harmonics.forEach((h, idx) => {
+      const hOsc = ctx.createOscillator();
+      const hGain = ctx.createGain();
+      hOsc.type = 'sine';
+      hOsc.frequency.setValueAtTime(freq * h, now);
+      hGain.gain.setValueAtTime(0.0001, now);
+      const hVol = 0.06 / (idx + 1);
+      if (phase === 'in') {
+        hGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, hVol * volMult), now + durationSec * 0.5);
+        hGain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+      } else if (phase === 'out') {
+        hGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, hVol * volMult), now + durationSec * 0.1);
+        hGain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+      } else {
+        hGain.gain.exponentialRampToValueAtTime(Math.max(0.0001, hVol * 0.6 * volMult), now + 0.8);
+        hGain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+      }
+      hOsc.connect(hGain);
+      hGain.connect(ctx.destination);
+      hOsc.start(now);
+      hOsc.stop(now + durationSec + 0.1);
+      activeToneNodes.push({osc: hOsc, gain: hGain});
+    });
+
+  } catch(e) {}
+}
+
+let holdToneInterval = null;
+function startHoldTone() {
+  if (state.cueMode !== 'tone') return;
+  stopHoldTone();
+  playTone('hold', 6);
+  holdToneInterval = setInterval(() => { 
+    if (state.cueMode === 'tone') playTone('hold', 6); 
+  }, 5800);
+}
+function stopHoldTone() { 
+  if (holdToneInterval) { clearInterval(holdToneInterval); holdToneInterval = null; } 
+  stopAllTones(); 
+}
+
+// === УЛУЧШЕННЫЙ КОЛОКОЛ ===
 function bell() {
   if (!state.bellOn) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    chimeLayered(ctx, [
-      { freq:528,   gain:0.24, decay:1.4 },
-      { freq:528*2, gain:0.10, decay:0.8 },
-      { freq:528*3, gain:0.05, decay:0.5 }
-    ], now);
-  } catch(e){}
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    const volMult = (state.volBell != null ? state.volBell : 70) / 100;
+
+    // Многослойный колокол с обертонами
+    const layers = [
+      { freq: 528, gain: 0.22, decay: 2.0, wave: 'sine' },
+      { freq: 528*2, gain: 0.08, decay: 1.2, wave: 'sine' },
+      { freq: 528*3, gain: 0.04, decay: 0.8, wave: 'sine' },
+      { freq: 528*0.5, gain: 0.06, decay: 2.5, wave: 'sine' },
+    ];
+
+    layers.forEach(L => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = L.wave;
+      osc.frequency.setValueAtTime(L.freq, now);
+
+      filter.type = 'lowpass';
+      filter.frequency.value = L.freq * 6;
+
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001, L.gain * volMult), now + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + L.decay);
+
+      osc.connect(filter);
+      filter.connect(g);
+      g.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + L.decay + 0.1);
+    });
+
+  } catch(e) {}
 }
+
+// === ФАЗОВЫЙ ЗВОНОК ===
 function phaseChime(action) {
   if (!state.bellOn) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    let base=220, target=220;
-    if (action==='expand'||action==='expand-more') { base=392; target=523; }
-    else if (action==='contract') { base=392; target=261; }
-    chimeLayered(ctx, [
-      { freq:base,     freqEnd:target,     gain:0.28, decay:0.55, glideTime:0.28 },
-      { freq:base*2,   freqEnd:target*2,   gain:0.12, decay:0.35, glideTime:0.28 },
-      { freq:base*1.5, freqEnd:target*1.5, gain:0.08, decay:0.3,  glideTime:0.28 }
-    ], now);
-  } catch(e){}
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    let base = 392, target = 392;
+    if (action === 'expand' || action === 'expand-more') { base = 440; target = 587; }
+    else if (action === 'contract') { base = 440; target = 330; }
+    else { base = 349; target = 349; }
+
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(base, now);
+    osc.frequency.exponentialRampToValueAtTime(target, now + 0.35);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.15, now + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.6);
+
+  } catch(e) {}
 }
 
-/* ---------- MUSIC ---------- */
-const MUSIC_PROFILES = {
-  calm:    { chordA:[130.81,164.81,196.00], chordB:[146.83,174.61,220.00], wave:'sine',     peak:0.028, swell:9,  filter:1200, fadeOut:4.5, driftSec:26 },
-  sleep:   { chordA:[98.00,123.47,146.83],  chordB:[87.31,110.00,130.81],  wave:'sine',     peak:0.024, swell:13, filter:800,  fadeOut:7,   driftSec:38 },
-  energy:  { chordA:[130.81,164.81,196.00], chordB:[130.81,164.81,196.00], wave:'triangle', peak:0.030, swell:2.2,filter:1800, pulse:true, fadeOut:1.8, driftSec:999 },
-  focus:   { chordA:[146.83,220.00],        chordB:[164.81,246.94],        wave:'sine',     peak:0.022, swell:0,  filter:1400, fadeOut:3,   driftSec:44 },
-  balance: { chordA:[130.81,196.00],        chordB:[146.83,220.00],        wave:'triangle', peak:0.026, swell:6,  filter:1300, fadeOut:4,   driftSec:22 }
+// === УЛУЧШЕННАЯ ВИБРАЦИЯ ===
+const HAPTIC_PATTERNS = {
+  inhale:    [8, 30, 8],
+  exhale:    [12, 20],
+  hold:      [5, 100, 5, 100, 5],
+  bell:      [20, 40, 20, 40, 20],
+  complete:  [15, 50, 15, 50, 15, 50, 15],
+  tick:      [5],
+  skip:      [15, 30, 15]
 };
-let musicNodes=null, musicProfile=null;
+
+function vibrate(pattern) { 
+  if (!state.hapticOn || !navigator.vibrate) return;
+  try { 
+    if (typeof pattern === 'string') {
+      navigator.vibrate(HAPTIC_PATTERNS[pattern] || [10]);
+    } else {
+      navigator.vibrate(pattern);
+    }
+  } catch(e) {} 
+}
+
+// === ДЫХАТЕЛЬНЫЙ ШУМ ===
+let noiseNode = null, noiseGain = null, noiseFilter = null;
+
+function startBreathNoise() {
+  if (!state.breathNoiseOn) return;
+  try { 
+    const ctx = ensureAudioCtx(); 
+    const bs = 2 * ctx.sampleRate; 
+    const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+    const d = buf.getChannelData(0); 
+    let last = 0;
+    for (let i = 0; i < bs; i++) { 
+      const white = Math.random() * 2 - 1; 
+      last = (last + 0.015 * white) / 1.015; 
+      d[i] = last * 3.5; 
+    }
+    noiseNode = ctx.createBufferSource(); 
+    noiseNode.buffer = buf; 
+    noiseNode.loop = true;
+    noiseFilter = ctx.createBiquadFilter(); 
+    noiseFilter.type = 'bandpass'; 
+    noiseFilter.frequency.value = 280; 
+    noiseFilter.Q.value = 0.8;
+    noiseGain = ctx.createGain(); 
+    noiseGain.gain.value = 0.0001;
+    noiseNode.connect(noiseFilter); 
+    noiseFilter.connect(noiseGain); 
+    noiseGain.connect(ctx.destination); 
+    noiseNode.start();
+  } catch(e) {}
+}
+
+function stopBreathNoise() { 
+  try { 
+    if (noiseNode) { noiseNode.stop(); noiseNode.disconnect(); noiseNode = null; } 
+  } catch(e) {} 
+}
+
+function setNoiseLevel(level, dur) {
+  if (!noiseGain || !state.breathNoiseOn) return;
+  try { 
+    const ctx = ensureAudioCtx(); 
+    noiseGain.gain.cancelScheduledValues(ctx.currentTime);
+    noiseGain.gain.linearRampToValueAtTime(Math.min(level, 0.012), ctx.currentTime + dur); 
+  } catch(e) {}
+}
+
+// === ФОНОВАЯ МУЗЫКА ===
+const MUSIC_PROFILES = {
+  calm:    { chordA:[130.81,164.81,196.00], chordB:[146.83,174.61,220.00], wave:'sine',     peak:0.025, swell:9,  filter:1200, fadeOut:4.5, driftSec:26 },
+  sleep:   { chordA:[98.00,123.47,146.83],  chordB:[87.31,110.00,130.81],  wave:'sine',     peak:0.022, swell:13, filter:800,  fadeOut:7,   driftSec:38 },
+  energy:  { chordA:[130.81,164.81,196.00], chordB:[130.81,164.81,196.00], wave:'triangle', peak:0.028, swell:2.2,filter:1800, pulse:true, fadeOut:1.8, driftSec:999 },
+  focus:   { chordA:[146.83,220.00],        chordB:[164.81,246.94],        wave:'sine',     peak:0.020, swell:0,  filter:1400, fadeOut:3,   driftSec:44 },
+  balance: { chordA:[130.81,196.00],        chordB:[146.83,220.00],        wave:'triangle', peak:0.024, swell:6,  filter:1300, fadeOut:4,   driftSec:22 }
+};
+
+let musicNodes = null, musicProfile = null;
+
 function startMusic(cat) {
   if (!state.musicOn) return;
   try {
     stopMusicHard();
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
     const profile = MUSIC_PROFILES[cat] || MUSIC_PROFILES.balance;
-    const volMult = (state.volMusic!=null?state.volMusic:70)/100;
-    const master=ctx.createGain(); master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.peak*volMult), now+3);
-    const filter=ctx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=profile.filter;
-    filter.connect(master); master.connect(ctx.destination);
+    const volMult = (state.volMusic != null ? state.volMusic : 70) / 100;
 
-    const oscs=[], gains=[];
-    profile.chordA.forEach((freq,i) => {
-      const osc=ctx.createOscillator(); const g=ctx.createGain();
-      osc.type=profile.wave; osc.frequency.value=freq;
-      osc.detune.value = (i - (profile.chordA.length-1)/2) * 4;
-      g.gain.value = 1/profile.chordA.length;
-      osc.connect(g); g.connect(filter); osc.start(now);
-      oscs.push(osc); gains.push(g);
+    const master = ctx.createGain(); 
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.peak * volMult), now + 3);
+
+    const filter = ctx.createBiquadFilter(); 
+    filter.type = 'lowpass'; 
+    filter.frequency.value = profile.filter;
+    filter.connect(master); 
+    master.connect(ctx.destination);
+
+    const oscs = [], gains = [];
+    profile.chordA.forEach((freq, i) => {
+      const osc = ctx.createOscillator(); 
+      const g = ctx.createGain();
+      osc.type = profile.wave; 
+      osc.frequency.value = freq;
+      osc.detune.value = (i - (profile.chordA.length - 1) / 2) * 3;
+      g.gain.value = 1 / profile.chordA.length;
+      osc.connect(g); 
+      g.connect(filter); 
+      osc.start(now);
+      oscs.push(osc); 
+      gains.push(g);
     });
 
-    const shimmerGainTotal=ctx.createGain(); shimmerGainTotal.gain.value=0.28;
+    const shimmerGainTotal = ctx.createGain(); 
+    shimmerGainTotal.gain.value = 0.22;
     shimmerGainTotal.connect(filter);
-    const shimmerOscs=[], shimmerGains=[];
-    profile.chordA.forEach((freq,i) => {
-      const osc=ctx.createOscillator(); const g=ctx.createGain();
-      osc.type='sine'; osc.frequency.value=freq*2;
-      osc.detune.value = (i - (profile.chordA.length-1)/2) * 6;
-      g.gain.value = 1/profile.chordA.length;
-      osc.connect(g); g.connect(shimmerGainTotal); osc.start(now);
-      shimmerOscs.push(osc); shimmerGains.push(g);
+    const shimmerOscs = [], shimmerGains = [];
+    profile.chordA.forEach((freq, i) => {
+      const osc = ctx.createOscillator(); 
+      const g = ctx.createGain();
+      osc.type = 'sine'; 
+      osc.frequency.value = freq * 2;
+      osc.detune.value = (i - (profile.chordA.length - 1) / 2) * 5;
+      g.gain.value = 1 / profile.chordA.length;
+      osc.connect(g); 
+      g.connect(shimmerGainTotal); 
+      osc.start(now);
+      shimmerOscs.push(osc); 
+      shimmerGains.push(g);
     });
 
-    let lfo=null, lfoGain=null;
+    let lfo = null, lfoGain = null;
     if (profile.swell > 0) {
-      lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 1/profile.swell;
-      lfoGain=ctx.createGain(); lfoGain.gain.value = profile.pulse ? profile.peak*0.35 : profile.peak*0.25;
-      lfo.connect(lfoGain); lfoGain.connect(master.gain); lfo.start(now);
+      lfo = ctx.createOscillator(); 
+      lfo.type = 'sine'; 
+      lfo.frequency.value = 1 / profile.swell;
+      lfoGain = ctx.createGain(); 
+      lfoGain.gain.value = profile.pulse ? profile.peak * 0.3 : profile.peak * 0.2;
+      lfo.connect(lfoGain); 
+      lfoGain.connect(master.gain); 
+      lfo.start(now);
     }
-    const shimmerLfo=ctx.createOscillator(); shimmerLfo.type='sine'; shimmerLfo.frequency.value = 1/(profile.swell>0 ? profile.swell*0.62 : 7);
-    const shimmerLfoGain=ctx.createGain(); shimmerLfoGain.gain.value = shimmerGainTotal.gain.value*0.5;
-    shimmerLfo.connect(shimmerLfoGain); shimmerLfoGain.connect(shimmerGainTotal.gain); shimmerLfo.start(now);
 
-    musicNodes = { oscs, gains, shimmerOscs, shimmerGains, shimmerGainTotal, lfo, lfoGain, shimmerLfo, master, filter, driftTimer:null, currentChord:'A' };
+    const shimmerLfo = ctx.createOscillator(); 
+    shimmerLfo.type = 'sine'; 
+    shimmerLfo.frequency.value = 1 / (profile.swell > 0 ? profile.swell * 0.62 : 7);
+    const shimmerLfoGain = ctx.createGain(); 
+    shimmerLfoGain.gain.value = shimmerGainTotal.gain.value * 0.4;
+    shimmerLfo.connect(shimmerLfoGain); 
+    shimmerLfoGain.connect(shimmerGainTotal.gain); 
+    shimmerLfo.start(now);
+
+    musicNodes = { oscs, gains, shimmerOscs, shimmerGains, shimmerGainTotal, lfo, lfoGain, shimmerLfo, master, filter, driftTimer: null, currentChord: 'A' };
     musicProfile = profile;
 
     if (profile.driftSec < 999) {
       const scheduleDrift = () => {
         musicNodes.driftTimer = setTimeout(() => {
           if (!musicNodes) return;
-          const target = musicNodes.currentChord==='A' ? profile.chordB : profile.chordA;
-          const t=ctx.currentTime;
-          musicNodes.oscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i], t+6); });
-          musicNodes.shimmerOscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i]*2, t+6); });
-          musicNodes.currentChord = musicNodes.currentChord==='A' ? 'B' : 'A';
+          const target = musicNodes.currentChord === 'A' ? profile.chordB : profile.chordA;
+          const t = ctx.currentTime;
+          musicNodes.oscs.forEach((o, i) => { o.frequency.linearRampToValueAtTime(target[i], t + 6); });
+          musicNodes.shimmerOscs.forEach((o, i) => { o.frequency.linearRampToValueAtTime(target[i] * 2, t + 6); });
+          musicNodes.currentChord = musicNodes.currentChord === 'A' ? 'B' : 'A';
           scheduleDrift();
-        }, profile.driftSec*1000);
+        }, profile.driftSec * 1000);
       };
       scheduleDrift();
     }
-  } catch(e){}
+  } catch(e) {}
 }
+
 function stopMusic(fadeSec) {
   if (!musicNodes) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
     const { oscs, shimmerOscs, lfo, shimmerLfo, master, driftTimer } = musicNodes;
     if (driftTimer) clearTimeout(driftTimer);
-    const fade = fadeSec!==undefined ? fadeSec : ((musicProfile&&musicProfile.fadeOut)||3);
+    const fade = fadeSec !== undefined ? fadeSec : ((musicProfile && musicProfile.fadeOut) || 3);
     master.gain.cancelScheduledValues(now);
-    master.gain.setValueAtTime(Math.max(master.gain.value,0.0001), now);
-    master.gain.exponentialRampToValueAtTime(0.0001, now+fade);
-    oscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
-    shimmerOscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
-    if (lfo) try{ lfo.stop(now+fade+0.1); }catch(e){}
-    if (shimmerLfo) try{ shimmerLfo.stop(now+fade+0.1); }catch(e){}
-  } catch(e){}
-  musicNodes=null; musicProfile=null;
+    master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), now);
+    master.gain.exponentialRampToValueAtTime(0.0001, now + fade);
+    oscs.forEach(o => { try { o.stop(now + fade + 0.1); } catch(e) {} });
+    shimmerOscs.forEach(o => { try { o.stop(now + fade + 0.1); } catch(e) {} });
+    if (lfo) try { lfo.stop(now + fade + 0.1); } catch(e) {}
+    if (shimmerLfo) try { shimmerLfo.stop(now + fade + 0.1); } catch(e) {}
+  } catch(e) {}
+  musicNodes = null; 
+  musicProfile = null;
 }
+
 function stopMusicHard() {
   if (!musicNodes) return;
   try {
     if (musicNodes.driftTimer) clearTimeout(musicNodes.driftTimer);
-    musicNodes.oscs.forEach(o=>{ try{o.stop();}catch(e){} });
-    musicNodes.shimmerOscs.forEach(o=>{ try{o.stop();}catch(e){} });
-    if (musicNodes.lfo) try{musicNodes.lfo.stop();}catch(e){}
-    if (musicNodes.shimmerLfo) try{musicNodes.shimmerLfo.stop();}catch(e){}
-  } catch(e){}
-  musicNodes=null; musicProfile=null;
+    musicNodes.oscs.forEach(o => { try { o.stop(); } catch(e) {} });
+    musicNodes.shimmerOscs.forEach(o => { try { o.stop(); } catch(e) {} });
+    if (musicNodes.lfo) try { musicNodes.lfo.stop(); } catch(e) {}
+    if (musicNodes.shimmerLfo) try { musicNodes.shimmerLfo.stop(); } catch(e) {}
+  } catch(e) {}
+  musicNodes = null; 
+  musicProfile = null;
 }
 
-/* ---------- TECHNIQUE TEXTURES ---------- */
-const OCEAN_PATTERNS = { ujjayi:1, sitali:1, sitkari:1 };
-let oceanNode=null, oceanGain=null, oceanFilter=null, oceanLfo=null;
+// === ОКЕАН ТЕКСТУРЫ ===
+const OCEAN_PATTERNS = { ujjayi: 1, sitali: 1, sitkari: 1 };
+let oceanNode = null, oceanGain = null, oceanFilter = null, oceanLfo = null;
+
 function startOceanTexture(key) {
   if (!state.musicOn || !OCEAN_PATTERNS[key]) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    const bufSize=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufSize,ctx.sampleRate), data=buf.getChannelData(0);
-    let last=0; for (let i=0;i<bufSize;i++){ const white=Math.random()*2-1; last=(last+0.02*white)/1.02; data[i]=last*4.5; }
-    oceanNode=ctx.createBufferSource(); oceanNode.buffer=buf; oceanNode.loop=true;
-    oceanFilter=ctx.createBiquadFilter(); oceanFilter.type='bandpass'; oceanFilter.frequency.value=500; oceanFilter.Q.value=0.6;
-    oceanGain=ctx.createGain(); oceanGain.gain.setValueAtTime(0.0001, now);
-    oceanGain.gain.exponentialRampToValueAtTime(0.02, now+2.5);
-    oceanNode.connect(oceanFilter); oceanFilter.connect(oceanGain); oceanGain.connect(ctx.destination); oceanNode.start();
-    oceanLfo=ctx.createOscillator(); oceanLfo.type='sine'; oceanLfo.frequency.value=1/6;
-    const lfoGain=ctx.createGain(); lfoGain.gain.value=220;
-    oceanLfo.connect(lfoGain); lfoGain.connect(oceanFilter.frequency); oceanLfo.start(now);
-  } catch(e){}
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
+    const bufSize = ctx.sampleRate * 2, buf = ctx.createBuffer(1, bufSize, ctx.sampleRate), data = buf.getChannelData(0);
+    let last = 0; 
+    for (let i = 0; i < bufSize; i++) { 
+      const white = Math.random() * 2 - 1; 
+      last = (last + 0.02 * white) / 1.02; 
+      data[i] = last * 4.5; 
+    }
+    oceanNode = ctx.createBufferSource(); 
+    oceanNode.buffer = buf; 
+    oceanNode.loop = true;
+    oceanFilter = ctx.createBiquadFilter(); 
+    oceanFilter.type = 'bandpass'; 
+    oceanFilter.frequency.value = 500; 
+    oceanFilter.Q.value = 0.6;
+    oceanGain = ctx.createGain(); 
+    oceanGain.gain.setValueAtTime(0.0001, now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.018, now + 2.5);
+    oceanNode.connect(oceanFilter); 
+    oceanFilter.connect(oceanGain); 
+    oceanGain.connect(ctx.destination); 
+    oceanNode.start();
+    oceanLfo = ctx.createOscillator(); 
+    oceanLfo.type = 'sine'; 
+    oceanLfo.frequency.value = 1 / 6;
+    const lfoGain = ctx.createGain(); 
+    lfoGain.gain.value = 220;
+    oceanLfo.connect(lfoGain); 
+    lfoGain.connect(oceanFilter.frequency); 
+    oceanLfo.start(now);
+  } catch(e) {}
 }
+
 function stopOceanTexture(fadeSec) {
   if (!oceanNode) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    oceanGain.gain.cancelScheduledValues(now); oceanGain.gain.setValueAtTime(Math.max(oceanGain.gain.value,0.0001), now);
-    oceanGain.gain.exponentialRampToValueAtTime(0.0001, now+(fadeSec||1.5));
-    oceanNode.stop(now+(fadeSec||1.5)+0.1); if (oceanLfo) oceanLfo.stop(now+(fadeSec||1.5)+0.1);
-  } catch(e){}
-  oceanNode=null; oceanGain=null; oceanFilter=null; oceanLfo=null;
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
+    oceanGain.gain.cancelScheduledValues(now); 
+    oceanGain.gain.setValueAtTime(Math.max(oceanGain.gain.value, 0.0001), now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.0001, now + (fadeSec || 1.5));
+    oceanNode.stop(now + (fadeSec || 1.5) + 0.1); 
+    if (oceanLfo) oceanLfo.stop(now + (fadeSec || 1.5) + 0.1);
+  } catch(e) {}
+  oceanNode = null; 
+  oceanGain = null; 
+  oceanFilter = null; 
+  oceanLfo = null;
 }
-let bhramariOsc=null, bhramariGain=null;
+
+// === БХРАМАРИ ГУДЕНИЕ ===
+let bhramariOsc = null, bhramariGain = null;
+
 function startBhramariHum(sec) {
   if (!state.musicOn) return;
   try {
     stopBhramariHum();
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    bhramariOsc=ctx.createOscillator(); bhramariOsc.type='sine'; bhramariOsc.frequency.value=110;
-    bhramariGain=ctx.createGain(); bhramariGain.gain.setValueAtTime(0.0001, now);
-    bhramariGain.gain.exponentialRampToValueAtTime(0.05, now+0.6);
-    bhramariGain.gain.exponentialRampToValueAtTime(0.0001, now+sec);
-    bhramariOsc.connect(bhramariGain); bhramariGain.connect(ctx.destination);
-    bhramariOsc.start(now); bhramariOsc.stop(now+sec+0.1);
-  } catch(e){}
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
+    bhramariOsc = ctx.createOscillator(); 
+    bhramariOsc.type = 'sine'; 
+    bhramariOsc.frequency.value = 110;
+    // AM модуляция для эффекта гудения
+    const modulator = ctx.createOscillator();
+    modulator.frequency.value = 12;
+    const modGain = ctx.createGain();
+    modGain.gain.value = 30;
+    modulator.connect(modGain);
+    modGain.connect(bhramariOsc.frequency);
+    modulator.start(now);
+    modulator.stop(now + sec + 0.1);
+
+    bhramariGain = ctx.createGain(); 
+    bhramariGain.gain.setValueAtTime(0.0001, now);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.04, now + 0.6);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.0001, now + sec);
+    bhramariOsc.connect(bhramariGain); 
+    bhramariGain.connect(ctx.destination);
+    bhramariOsc.start(now); 
+    bhramariOsc.stop(now + sec + 0.1);
+  } catch(e) {}
 }
+
 function stopBhramariHum() {
-  try { if (bhramariOsc) { bhramariOsc.stop(); bhramariOsc.disconnect(); } } catch(e){}
-  try { if (bhramariGain) bhramariGain.disconnect(); } catch(e){}
-  bhramariOsc=null; bhramariGain=null;
+  try { if (bhramariOsc) { bhramariOsc.stop(); bhramariOsc.disconnect(); } } catch(e) {}
+  try { if (bhramariGain) bhramariGain.disconnect(); } catch(e) {}
+  bhramariOsc = null; 
+  bhramariGain = null;
 }
 
-function vibrate(p) { try { if (state.hapticOn && navigator.vibrate) navigator.vibrate(p); } catch(e){} }
-function startBreathNoise() {
-  if (!state.breathNoiseOn) return;
-  try { const ctx=ensureAudioCtx(); const bs=2*ctx.sampleRate; const buf=ctx.createBuffer(1,bs,ctx.sampleRate);
-    const d=buf.getChannelData(0); for (let i=0;i<bs;i++) d[i]=Math.random()*2-1;
-    noiseNode=ctx.createBufferSource(); noiseNode.buffer=buf; noiseNode.loop=true;
-    const f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=300;
-    noiseGain=ctx.createGain(); noiseGain.gain.value=0.0001;
-    noiseNode.connect(f); f.connect(noiseGain); noiseGain.connect(ctx.destination); noiseNode.start();
-  } catch(e){}
-}
-function stopBreathNoise() { try { if (noiseNode){ noiseNode.stop(); noiseNode.disconnect(); noiseNode=null; } } catch(e){} }
-function setNoiseLevel(level, dur) {
-  if (!noiseGain||!state.breathNoiseOn) return;
-  try { const ctx=ensureAudioCtx(); noiseGain.gain.cancelScheduledValues(ctx.currentTime);
-    noiseGain.gain.linearRampToValueAtTime(Math.min(level,0.016), ctx.currentTime+dur); } catch(e){}
-}
-
-/* ---------- VOICE ---------- */
-const AUDIO_BASE = 'audio/ru/';
-const AUDIO_MAP = {
-  'Вдох': 'inhale.mp3',
-  'Выдох': 'exhale.mp3',
-  'Задержи': 'hold.mp3',
-  'Задержи дыхание': 'hold_breath.mp3',
-  'Пауза': 'pause.mp3',
-  'Ещё': 'more.mp3',
-  'Вдохни и задержи': 'inhale_hold.mp3',
-  'Выдохни и задержи дыхание': 'exhale_hold.mp3',
-  'Сессия завершена': 'session_complete.mp3',
-  'Привет': 'hello.mp3',
-  '1': 'count_1.mp3',
-  '2': 'count_2.mp3',
-  '3': 'count_3.mp3'
-};
-let audioCueCache={}, audioCueAvailable={}, audioCuesUnlocked=false;
-let speechRequestId=0, voiceTestToken=0;
-
-function preloadAudioCues() {
-  Object.keys(AUDIO_MAP).forEach(text => {
-    try {
-      const el=new Audio(AUDIO_BASE+AUDIO_MAP[text]); el.preload='auto';
-      el.addEventListener('canplaythrough', ()=>{ audioCueAvailable[text]=true; }, {once:true});
-      el.addEventListener('error', ()=>{ audioCueAvailable[text]=false; }, {once:true});
-      audioCueCache[text]=el;
-    } catch(e){ audioCueAvailable[text]=false; }
-  });
-}
-
-const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAAAA';
-function unlockAudioCues() {
-  if (audioCuesUnlocked) return;
-  audioCuesUnlocked=true;
+// === КАРТОЧНЫЙ ТИК ===
+function cardTick() {
+  if (!state.cardTickOn) return;
   try {
-    const silent=new Audio(SILENT_WAV); silent.volume=0;
-    const p=silent.play();
-    if (p&&p.catch) p.catch(()=>{});
-  } catch(e){}
+    const ctx = ensureAudioCtx(); 
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator(); 
+    const g = ctx.createGain();
+    osc.type = 'sine'; 
+    osc.frequency.value = 1200;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.04, now + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+    osc.connect(g); 
+    g.connect(ctx.destination); 
+    osc.start(now); 
+    osc.stop(now + 0.1);
+  } catch(e) {}
 }
 
-function speakViaSynth(t, requestId) {
-  if (!synth || !window.SpeechSynthesisUtterance || requestId!==speechRequestId) return;
-  try {
-    // Принудительно обновляем список голосов, если он пуст
-    if (!voiceList.length) refreshVoices();
-    const u = new SpeechSynthesisUtterance(t);
-    u.lang = state.lang;
-    u.rate = 0.9;
-    u.pitch = 1.0;
-    u.volume = (state.volCue != null ? state.volCue : 70) / 100;
-    const voice = pickVoice(state.lang);
-    if (voice) u.voice = voice;
-    synth.resume();
-    synth.speak(u);
-    setTimeout(() => { try { synth.resume(); } catch(e){} }, 120);
-  } catch(e){}
-}
-
-function stopAllAudioCues() {
-  Object.values(audioCueCache).forEach(el => { try { if (!el.paused) { el.pause(); el.currentTime=0; } } catch(e){} });
+// === УНИВЕРСАЛЬНАЯ ФУНКЦИЯ SPEAK ===
+// Теперь использует мелодические сигналы вместо TTS
+function speak(text) {
+  if (state.cueMode === 'off') return;
+  if (state.cueMode === 'voice') {
+    playMelodicCue(text);
+  }
+  // tone mode handled separately via playTone
 }
 
 function stopSpeechCues() {
-  speechRequestId++;
-  try { synth && synth.cancel(); } catch(e){}
-  stopAllAudioCues();
-}
-
-function speak(t) {
-  if (state.cueMode !== 'voice') return;
-  const requestId = ++speechRequestId;
-  const clip = audioCueCache[t];
-  // Если файл загружен и готов – играем его
-  if (clip && audioCueAvailable[t] === true) {
-    try {
-      try { synth && synth.cancel(); } catch(e){}
-      stopAllAudioCues();
-      clip.currentTime = 0;
-      clip.volume = (state.volCue != null ? state.volCue : 70) / 100;
-      const p = clip.play();
-      if (p && p.catch) p.catch(() => {
-        if (requestId === speechRequestId) speakViaSynth(t, requestId);
-      });
-      return;
-    } catch(e) {
-      // Если ошибка – падаем на синтез
-      if (requestId === speechRequestId) speakViaSynth(t, requestId);
-    }
-  } else {
-    // Если файл недоступен – синтез
-    speakViaSynth(t, requestId);
-  }
+  stopAllTones();
 }
 
 function testVoiceCues() {
   if (state.cueMode !== 'voice') { setCueMode('voice'); }
-  unlockSpeech();
-  const token = ++voiceTestToken;
-  ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
-    setTimeout(() => { if (token === voiceTestToken) speak(cue); }, index*1400);
+  const cues = ['Вдох', 'Задержи', 'Выдох'];
+  cues.forEach((cue, index) => {
+    setTimeout(() => { playMelodicCue(cue); }, index * 1200);
   });
 }
 
-/* ---------- TONES ---------- */
-const TONE_VARIANTS = {
-  chime:  { wave:'sine',     inFreq:392, outFreq:294, holdFreq:220 },
-  bowl:   { wave:'sine',     inFreq:220, outFreq:174, holdFreq:147 },
-  ocean:  { wave:'triangle', inFreq:330, outFreq:247, holdFreq:196 },
-  crystal:{ wave:'sine',     inFreq:523, outFreq:392, holdFreq:330 }
-};
-let toneOsc=null, toneGain=null, toneOsc2=null, toneGain2=null;
-function stopTone() {
-  try { if (toneOsc){ toneOsc.stop(); toneOsc.disconnect(); toneOsc=null; } if (toneGain){ toneGain.disconnect(); toneGain=null; } } catch(e){}
-  try { if (toneOsc2){ toneOsc2.stop(); toneOsc2.disconnect(); toneOsc2=null; } if (toneGain2){ toneGain2.disconnect(); toneGain2=null; } } catch(e){}
-}
-function playTone(phase, durationSec) {
-  if (state.cueMode!=='tone') return;
-  try {
-    stopTone();
-    const ctx=ensureAudioCtx();
-    const volMult = (state.volCue!=null?state.volCue:70)/100;
-    const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
-    const osc=ctx.createOscillator(); const g=ctx.createGain();
-    const osc2=ctx.createOscillator(); const g2=ctx.createGain();
-    osc.type = variant.wave; osc2.type = variant.wave;
-    const freq = phase==='in' ? variant.inFreq : phase==='out' ? variant.outFreq : variant.holdFreq;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    osc2.frequency.setValueAtTime(freq*2, ctx.currentTime);
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g2.gain.setValueAtTime(0.0001, ctx.currentTime);
-    if (phase==='in') {
-      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.7);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.7);
-      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-    } else if (phase==='out') {
-      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.15);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.15);
-      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-    } else {
-      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.09*volMult), ctx.currentTime + 1.5);
-      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.5);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.025*volMult), ctx.currentTime + 1.5);
-      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-    }
-    osc.connect(g); g.connect(ctx.destination);
-    osc2.connect(g2); g2.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + durationSec + 0.1);
-    osc2.start(); osc2.stop(ctx.currentTime + durationSec + 0.1);
-    toneOsc=osc; toneGain=g; toneOsc2=osc2; toneGain2=g2;
-  } catch(e){}
-}
-let holdToneInterval=null;
-function startHoldTone() {
-  if (state.cueMode!=='tone') return;
-  stopHoldTone();
-  playTone('hold', 6);
-  holdToneInterval = setInterval(()=>{ if (state.cueMode==='tone') playTone('hold', 6); }, 5800);
-}
-function stopHoldTone() { if (holdToneInterval){ clearInterval(holdToneInterval); holdToneInterval=null; } stopTone(); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function sleepInterruptible(ms, tok) {
-  const step=100; let el=0;
-  while (el<ms) { if (sessionToken!==tok) return false; if (skipRequested){ skipRequested=false; return false; } await sleep(Math.min(step,ms-el)); el+=step; }
+  const step = 100; 
+  let el = 0;
+  while (el < ms) { 
+    if (sessionToken !== tok) return false; 
+    if (skipRequested) { skipRequested = false; return false; } 
+    await sleep(Math.min(step, ms - el)); 
+    el += step; 
+  }
   return true;
 }
 
-/* ---------- GREETING ---------- */
-function timeOfDay() { const h=new Date().getHours(); if (h<6) return 'night'; if (h<12) return 'morning'; if (h<18) return 'day'; return 'evening'; }
+
+// ============================================================
+// UI & SESSION LOGIC (осталось почти без изменений, 
+// но с улучшенными переходами и haptic feedback)
+// ============================================================
+
+function timeOfDay() { const h = new Date().getHours(); if (h < 6) return 'night'; if (h < 12) return 'morning'; if (h < 18) return 'day'; return 'evening'; }
 function greetingFor(t) { return {morning:'Доброе утро', day:'Добрый день', evening:'Добрый вечер', night:'Тихой ночи'}[t]; }
 function recommendedKey() {
-  const t=timeOfDay();
+  const t = timeOfDay();
   const goal = localStorage.getItem('pneuma_goal');
-  if (goal==='energy') return 'wimhof';
-  if (goal==='calm') return 'coherent';
-  if (goal==='focus') return 'triangle';
-  if (goal==='sleep') return 'fourseven';
-  if (t==='morning') return 'wimhof';
-  if (t==='night'||t==='evening') return 'fourseven';
+  if (goal === 'energy') return 'wimhof';
+  if (goal === 'calm') return 'coherent';
+  if (goal === 'focus') return 'triangle';
+  if (goal === 'sleep') return 'fourseven';
+  if (t === 'morning') return 'wimhof';
+  if (t === 'night' || t === 'evening') return 'fourseven';
   return 'coherent';
 }
 
 /* ---------- RENDER HOME ---------- */
 function renderHome() {
-  const t=timeOfDay();
+  const t = timeOfDay();
   document.getElementById('greetingText').textContent = greetingFor(t);
-  const subs={morning:'Начни день с дыхания', day:'Найди минуту для себя', evening:'Замедлись перед вечером', night:'Отпусти день'};
+  const subs = {morning:'Начни день с дыхания', day:'Найди минуту для себя', evening:'Замедлись перед вечером', night:'Отпусти день'};
   document.getElementById('greetingSub').textContent = subs[t];
   renderHero();
   renderRepeatCard();
@@ -1331,12 +1505,12 @@ function renderHome() {
 }
 
 function renderRepeatCard() {
-  const slot=document.getElementById('repeatSlot');
-  const h=loadHistory();
-  if (!h.length) { slot.innerHTML=''; return; }
+  const slot = document.getElementById('repeatSlot');
+  const h = loadHistory();
+  if (!h.length) { slot.innerHTML = ''; return; }
   const lastKey = h[0].key;
   const p = getAllPatterns()[lastKey];
-  if (!p || lastKey===recommendedKey()) { slot.innerHTML=''; return; }
+  if (!p || lastKey === recommendedKey()) { slot.innerHTML = ''; return; }
   const dayLabel = daysAgoLabel(h[0].date);
   slot.innerHTML = `
     <div class="repeat-card">
@@ -1344,23 +1518,25 @@ function renderRepeatCard() {
       <div class="repeat-text"><div class="repeat-title">Повторить: ${escapeHTML(p.name)}</div><div class="repeat-sub">${escapeHTML(dayLabel)}</div></div>
       <div class="repeat-play">↻</div>
     </div>`;
-  slot.querySelector('.repeat-card').onclick=()=>openSession(lastKey);
+  slot.querySelector('.repeat-card').onclick = () => openSession(lastKey);
 }
+
 function daysAgoLabel(iso) {
-  const then=new Date(iso); const now=new Date();
-  const startThen=new Date(then.getFullYear(),then.getMonth(),then.getDate());
-  const startNow=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const days=Math.round((startNow-startThen)/86400000);
-  if (days<=0) return 'сегодня';
-  if (days===1) return 'вчера';
-  if (days<7) return `${days} дн. назад`;
+  const then = new Date(iso); 
+  const now = new Date();
+  const startThen = new Date(then.getFullYear(), then.getMonth(), then.getDate());
+  const startNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.round((startNow - startThen) / 86400000);
+  if (days <= 0) return 'сегодня';
+  if (days === 1) return 'вчера';
+  if (days < 7) return `${days} дн. назад`;
   return 'практика из истории';
 }
 
 function renderHero() {
   const key = recommendedKey();
   const p = getAllPatterns()[key];
-  if (!p) { document.getElementById('heroSlot').innerHTML=''; return; }
+  if (!p) { document.getElementById('heroSlot').innerHTML = ''; return; }
   const est = estimateMinutes(p);
   document.getElementById('heroSlot').innerHTML = `
     <div class="hero-card" onclick="openSession('${key}')">
@@ -1373,109 +1549,119 @@ function renderHero() {
 }
 
 function renderCatTabs() {
-  const wrap=document.getElementById('catTabs'); wrap.innerHTML='';
+  const wrap = document.getElementById('catTabs'); 
+  wrap.innerHTML = '';
   Object.keys(CATEGORIES).forEach(k => {
-    const t=document.createElement('div'); t.className='cat-tab'+(k===activeCat?' active':''); t.textContent=CATEGORIES[k].label;
-    t.onclick=()=>{ activeCat=k; renderCatTabs(); renderPatternList(); };
+    const t = document.createElement('div'); 
+    t.className = 'cat-tab' + (k === activeCat ? ' active' : ''); 
+    t.textContent = CATEGORIES[k].label;
+    t.onclick = () => { activeCat = k; renderCatTabs(); renderPatternList(); };
     wrap.appendChild(t);
   });
 }
 
 function estimateMinutes(p) {
-  let perRound=0;
-  if (p.type==='wimhof') { perRound = p.breaths*(p.pace+p.pace*0.75) + 45 + p.holdRecover + 5; }
-  else { perRound = p.phases.reduce((s,ph)=>s+ph.sec,0); }
-  return Math.max(1, Math.round(perRound*p.defaultRounds/60));
+  let perRound = 0;
+  if (p.type === 'wimhof') { perRound = p.breaths * (p.pace + p.pace * 0.75) + 45 + p.holdRecover + 5; }
+  else { perRound = p.phases.reduce((s, ph) => s + ph.sec, 0); }
+  return Math.max(1, Math.round(perRound * p.defaultRounds / 60));
 }
 
 function renderPatternList() {
-  const all=getAllPatterns(); const custom=loadCustom(); const favs=loadFavs(); const usage=loadUsage();
+  const all = getAllPatterns(); 
+  const custom = loadCustom(); 
+  const favs = loadFavs(); 
+  const usage = loadUsage();
   const hist = loadHistory();
   const dayMap = buildPatternDayMap(hist);
-  const list=document.getElementById('patternList'); list.innerHTML='';
+  const list = document.getElementById('patternList'); 
+  list.innerHTML = '';
 
   let keys = Object.keys(all);
-  if (activeCat!=='all') keys = keys.filter(k => all[k].cat===activeCat);
+  if (activeCat !== 'all') keys = keys.filter(k => all[k].cat === activeCat);
 
   const lastPracticed = {};
-  if (state.recentFirstOn) { hist.forEach(e => { if (e.key && !lastPracticed[e.key]) lastPracticed[e.key]=e.date; }); }
+  if (state.recentFirstOn) { hist.forEach(e => { if (e.key && !lastPracticed[e.key]) lastPracticed[e.key] = e.date; }); }
 
-  keys.sort((a,b) => {
-    const fa=favs.includes(a)?0:1, fb=favs.includes(b)?0:1;
-    if (fa!==fb) return fa-fb;
+  keys.sort((a, b) => {
+    const fa = favs.includes(a) ? 0 : 1, fb = favs.includes(b) ? 0 : 1;
+    if (fa !== fb) return fa - fb;
     if (state.recentFirstOn) {
-      const ra=lastPracticed[a], rb=lastPracticed[b];
-      if (ra && rb) return new Date(rb)-new Date(ra);
+      const ra = lastPracticed[a], rb = lastPracticed[b];
+      if (ra && rb) return new Date(rb) - new Date(ra);
       if (ra && !rb) return -1;
       if (!ra && rb) return 1;
     }
     return 0;
   });
 
-  if (activeCat==='all' && favs.length) {
-    const favKeys = keys.filter(k=>favs.includes(k));
+  if (activeCat === 'all' && favs.length) {
+    const favKeys = keys.filter(k => favs.includes(k));
     if (favKeys.length) addSectionLabel(list, 'Избранное');
-    favKeys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
-    const rest = keys.filter(k=>!favs.includes(k));
+    favKeys.forEach((k, i) => list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+    const rest = keys.filter(k => !favs.includes(k));
     addSectionLabel(list, 'Все практики');
-    rest.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+    rest.forEach((k, i) => list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
   } else {
-    keys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+    keys.forEach((k, i) => list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
   }
 
-  if (!keys.length) { const e=document.createElement('div'); e.className='empty-note'; e.textContent='Здесь пока пусто. Создай свой паттерн кнопкой +'; list.appendChild(e); }
-}
-
-function cardTick() {
-  if (!state.cardTickOn) return;
-  try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
-    const osc=ctx.createOscillator(); const g=ctx.createGain();
-    osc.type='sine'; osc.frequency.value=1100;
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.05, now+0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, now+0.09);
-    osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now+0.1);
-  } catch(e){}
+  if (!keys.length) { 
+    const e = document.createElement('div'); 
+    e.className = 'empty-note'; 
+    e.textContent = 'Здесь пока пусто. Создай свой паттерн кнопкой +'; 
+    list.appendChild(e); 
+  }
 }
 
 function buildPatternDayMap(hist) {
-  const map={};
+  const map = {};
   hist.forEach(entry => {
     const day = localDayKey(entry.date);
     if (!day || !entry.key) return;
-    (map[entry.key]=map[entry.key]||new Set()).add(day);
+    (map[entry.key] = map[entry.key] || new Set()).add(day);
   });
   return map;
 }
+
 function sparklineHTML(daySet) {
   if (!daySet || !daySet.size) return '';
-  let dots='';
-  for (let i=6;i>=0;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const key=localDayKey(d);
-    dots += `<span class="spark-dot${daySet.has(key)?' on':''}"></span>`;
+  let dots = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); 
+    d.setDate(d.getDate() - i);
+    const key = localDayKey(d);
+    dots += `<span class="spark-dot${daySet.has(key) ? ' on' : ''}"></span>`;
   }
   return `<div class="pattern-spark">${dots}</div>`;
 }
-function addSectionLabel(list, text) { const l=document.createElement('div'); l.className='section-label'; l.textContent=text; l.style.margin='4px 0 8px'; list.appendChild(l); }
+
+function addSectionLabel(list, text) { 
+  const l = document.createElement('div'); 
+  l.className = 'section-label'; 
+  l.textContent = text; 
+  l.style.margin = '4px 0 8px'; 
+  list.appendChild(l); 
+}
 
 function patternCard(key, p, isCustom, favs, usage, idx, daySet) {
   const st = CAT_STYLE[p.cat] || CAT_STYLE.balance;
   const est = estimateMinutes(p);
   const isFav = favs.includes(key);
-  const card=document.createElement('div'); card.className='pattern-card'; card.style.animationDelay=(idx*0.03)+'s';
+  const card = document.createElement('div'); 
+  card.className = 'pattern-card'; 
+  card.style.animationDelay = (idx * 0.03) + 's';
   card.innerHTML = `
     <div class="pattern-glyph" style="background:${st.bg}; color:${st.fg};">${escapeHTML(p.glyph)}</div>
     <div class="pattern-info">
       <p class="pattern-name">${escapeHTML(p.name)}</p>
       <p class="pattern-desc">${escapeHTML(p.desc)}</p>
-      <div class="pattern-meta"><span>~${est} мин</span><span>${escapeHTML(p.level||'')}</span>${isCustom?'<span>· свой</span>':''}</div>
+      <div class="pattern-meta"><span>~${est} мин</span><span>${escapeHTML(p.level || '')}</span>${isCustom ? '<span>· свой</span>' : ''}</div>
       ${sparklineHTML(daySet)}
     </div>
-    ${isCustom?`<div class="card-edit-btn" data-edit="${key}">✎</div>`:''}
-    <div class="fav-star ${isFav?'on':''}" data-fav="${key}">${isFav?'★':'☆'}</div>`;
-  card.addEventListener('click', (e)=>{
+    ${isCustom ? `<div class="card-edit-btn" data-edit="${key}">✎</div>` : ''}
+    <div class="fav-star ${isFav ? 'on' : ''}" data-fav="${key}">${isFav ? '★' : '☆'}</div>`;
+  card.addEventListener('click', (e) => {
     if (e.target.closest('[data-fav]')) { toggleFav(key); return; }
     if (e.target.closest('[data-edit]')) { openEditor(key); return; }
     cardTick();
@@ -1483,183 +1669,269 @@ function patternCard(key, p, isCustom, favs, usage, idx, daySet) {
   });
   return card;
 }
+
 function toggleFav(key) {
-  const favs=loadFavs(); const i=favs.indexOf(key);
-  if (i>=0) favs.splice(i,1); else favs.push(key);
-  saveFavs(favs); vibrate(10); renderPatternList();
+  const favs = loadFavs(); 
+  const i = favs.indexOf(key);
+  if (i >= 0) favs.splice(i, 1); 
+  else favs.push(key);
+  saveFavs(favs); 
+  vibrate('tick'); 
+  renderPatternList();
 }
 
 /* ---------- NAV ---------- */
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.getElementById('addFab').style.display = (id==='screen-home') ? 'flex' : 'none';
+  document.getElementById('addFab').style.display = (id === 'screen-home') ? 'flex' : 'none';
 }
-function closeSub() { clearTimeout(miniTimer); renderHome(); showScreen('screen-home'); }
+function closeSub() { renderHome(); showScreen('screen-home'); }
 function openStats() { renderStats(); showScreen('screen-stats'); }
 function openSettings() { syncSettingsUI(); showScreen('screen-settings'); }
 
 /* ---------- SESSION START ---------- */
-let seenWhy={}; try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why')||'{}'); } catch(e){}
+let seenWhy = {}; 
+try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why') || '{}'); } catch(e) {}
+
 function openSession(key) {
-  const p=getAllPatterns()[key];
+  const p = getAllPatterns()[key];
   if (!p) { renderHome(); showScreen('screen-home'); return; }
   const why = WHY_NOTES[key];
   if (why && !seenWhy[key] && !p.safety) {
     document.getElementById('whyTitle').textContent = p.name;
     document.getElementById('whyText').textContent = why;
     document.getElementById('whyOverlay').classList.add('active');
-    seenWhy[key]=true; try { localStorage.setItem('pneuma_seen_why', JSON.stringify(seenWhy)); } catch(e){}
-    pendingSessionKey=key; return;
+    seenWhy[key] = true; 
+    try { localStorage.setItem('pneuma_seen_why', JSON.stringify(seenWhy)); } catch(e) {}
+    pendingSessionKey = key; 
+    return;
   }
   proceedToSafetyOrLaunch(key);
 }
-function dismissWhy() { document.getElementById('whyOverlay').classList.remove('active'); if (pendingSessionKey){ proceedToSafetyOrLaunch(pendingSessionKey); pendingSessionKey=null; } }
+
+function dismissWhy() { 
+  document.getElementById('whyOverlay').classList.remove('active'); 
+  if (pendingSessionKey) { proceedToSafetyOrLaunch(pendingSessionKey); pendingSessionKey = null; } 
+}
+
 function proceedToSafetyOrLaunch(key) {
-  const p=getAllPatterns()[key];
+  const p = getAllPatterns()[key];
   if (p.safety && !seenIntro[key]) {
     document.getElementById('introOverlay').classList.add('active');
-    seenIntro[key]=true; try { localStorage.setItem('pneuma_seen_intro', JSON.stringify(seenIntro)); } catch(e){}
-    pendingSessionKey=key; return;
+    seenIntro[key] = true; 
+    try { localStorage.setItem('pneuma_seen_intro', JSON.stringify(seenIntro)); } catch(e) {}
+    pendingSessionKey = key; 
+    return;
   }
   launchSession(key);
 }
-function dismissIntro() { document.getElementById('introOverlay').classList.remove('active'); if (pendingSessionKey){ launchSession(pendingSessionKey); pendingSessionKey=null; } }
+
+function dismissIntro() { 
+  document.getElementById('introOverlay').classList.remove('active'); 
+  if (pendingSessionKey) { launchSession(pendingSessionKey); pendingSessionKey = null; } 
+}
 
 function launchSession(key) {
-  state.currentPattern=key;
-  const p=getAllPatterns()[key];
+  state.currentPattern = key;
+  const p = getAllPatterns()[key];
   state.rounds = p.defaultRounds;
-  document.getElementById('sessionTitle').textContent=p.name;
-  document.getElementById('roundInfo').textContent=`Раунд 1 из ${state.rounds}`;
-  resetRing(); resetProgress();
-  document.getElementById('startBtn').textContent='Начать';
-  document.getElementById('counter').textContent='—';
-  document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
+  document.getElementById('sessionTitle').textContent = p.name;
+  document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`;
+  resetRing(); 
+  resetProgress();
+  document.getElementById('startBtn').textContent = 'Начать';
+  document.getElementById('counter').textContent = '—';
+  document.getElementById('phaseWord').textContent = `~${estimateMinutes(p)} мин`;
   document.getElementById('tapHint').classList.remove('show');
-  document.getElementById('wakeWarning').style.display='none';
-  const st=CAT_STYLE[p.cat]||CAT_STYLE.balance;
+  document.getElementById('wakeWarning').style.display = 'none';
+  const st = CAT_STYLE[p.cat] || CAT_STYLE.balance;
   document.documentElement.style.setProperty('--accent', st.fg);
-  document.documentElement.style.setProperty('--accent-glow', st.fg+'55');
-  const speeds = { energy:{flash:'0.28s', pulse:'1.5s'}, sleep:{flash:'0.9s', pulse:'3.6s'}, calm:{flash:'0.65s', pulse:'2.8s'}, focus:{flash:'0.45s', pulse:'2.2s'}, balance:{flash:'0.5s', pulse:'2.4s'} };
+  document.documentElement.style.setProperty('--accent-glow', st.fg + '55');
+  const speeds = { energy: {flash:'0.28s', pulse:'1.5s'}, sleep: {flash:'0.9s', pulse:'3.6s'}, calm: {flash:'0.65s', pulse:'2.8s'}, focus: {flash:'0.45s', pulse:'2.2s'}, balance: {flash:'0.5s', pulse:'2.4s'} };
   const sp = speeds[p.cat] || speeds.balance;
   document.documentElement.style.setProperty('--flash-speed', sp.flash);
   document.documentElement.style.setProperty('--pulse-speed', sp.pulse);
-  const sessionEl=document.getElementById('screen-session');
-  sessionEl.className = sessionEl.className.replace(/\bcat-\w+\b/g,'').trim() + ' cat-'+p.cat;
+  const sessionEl = document.getElementById('screen-session');
+  sessionEl.className = sessionEl.className.replace(/\bcat-\w+\b/g, '').trim() + ' cat-' + p.cat;
   showScreen('screen-session');
 }
-function exitSession() { stopSession(); document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666'); renderHome(); showScreen('screen-home'); }
+
+function exitSession() { 
+  stopSession(); 
+  document.documentElement.style.setProperty('--accent', '#8B7CF6'); 
+  document.documentElement.style.setProperty('--accent-glow', '#8B7CF666'); 
+  renderHome(); 
+  showScreen('screen-home'); 
+}
 
 /* ---------- SESSION OPTS SHEET ---------- */
 function openSessionOpts() {
-  if (state.running) { vibrate(8); return; }
-  buildRoundSelect(); document.getElementById('optsSheet').classList.add('active');
+  if (state.running) { vibrate('tick'); return; }
+  buildRoundSelect(); 
+  document.getElementById('optsSheet').classList.add('active');
 }
 function closeOptsSheet() { document.getElementById('optsSheet').classList.remove('active'); }
 function buildRoundSelect() {
-  const wrap=document.getElementById('roundSelect'); wrap.innerHTML='';
-  for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===state.rounds?' active':''); c.textContent=i;
-    c.onclick=()=>{ state.rounds=i; buildRoundSelect(); refreshPreStartDuration(); }; wrap.appendChild(c); }
+  const wrap = document.getElementById('roundSelect'); 
+  wrap.innerHTML = '';
+  for (let i = 1; i <= 10; i++) { 
+    const c = document.createElement('div'); 
+    c.className = 'round-chip' + (i === state.rounds ? ' active' : ''); 
+    c.textContent = i;
+    c.onclick = () => { state.rounds = i; buildRoundSelect(); refreshPreStartDuration(); }; 
+    wrap.appendChild(c); 
+  }
   document.getElementById('roundCustom').value = state.rounds;
 }
-document.getElementById('roundCustom').addEventListener('input', function(){
+
+document.getElementById('roundCustom').addEventListener('input', function() {
   const n = parseInt(this.value, 10);
-  if (!n || n<1) return;
+  if (!n || n < 1) return;
   state.rounds = Math.min(n, 99);
   refreshPreStartDuration();
-  document.querySelectorAll('#roundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===state.rounds));
+  document.querySelectorAll('#roundSelect .round-chip').forEach((c, idx) => c.classList.toggle('active', idx + 1 === state.rounds));
 });
+
 function refreshPreStartDuration() {
   document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`;
   if (state.running) return;
-  const p=getAllPatterns()[state.currentPattern];
+  const p = getAllPatterns()[state.currentPattern];
   if (p) document.getElementById('phaseWord').textContent = `~${estimateMinutes(p)} мин`;
 }
 
 /* ---------- TAP ---------- */
-document.getElementById('ringWrap').addEventListener('click', ()=>{
-  if (!state.tapSkipOn||!state.running||!isHoldPhase) return;
-  const now=Date.now(); if (now-lastTapTime<400){ skipRequested=true; vibrate(15); } lastTapTime=now;
+document.getElementById('ringWrap').addEventListener('click', () => {
+  if (!state.tapSkipOn || !state.running || !isHoldPhase) return;
+  const now = Date.now(); 
+  if (now - lastTapTime < 400) { skipRequested = true; vibrate('skip'); } 
+  lastTapTime = now;
 });
+
 function requestSkip() {
   if (!state.running) return;
-  if (isHoldPhase) {
-    skipRequested = true;
-  } else {
-    breathingSkipRequested = true;
-    skipRequested = true;
-  }
-  vibrate(15);
+  if (isHoldPhase) { skipRequested = true; }
+  else { breathingSkipRequested = true; skipRequested = true; }
+  vibrate('skip');
 }
 
 /* ---------- RING / PROGRESS ---------- */
-const ring=()=>document.getElementById('ring');
-const glow=()=>document.getElementById('glow');
-const CIRC = 2*Math.PI*140;
-function resetProgress() { const bar=document.getElementById('progressBar'); bar.style.strokeDasharray=CIRC; bar.style.strokeDashoffset=CIRC; }
-function setProgress(frac) { document.getElementById('progressBar').style.strokeDashoffset = CIRC*(1-frac); }
+const ring = () => document.getElementById('ring');
+const glow = () => document.getElementById('glow');
+const CIRC = 2 * Math.PI * 140;
+
+function resetProgress() { 
+  const bar = document.getElementById('progressBar'); 
+  bar.style.strokeDasharray = CIRC; 
+  bar.style.strokeDashoffset = CIRC; 
+}
+
+function setProgress(frac) { 
+  document.getElementById('progressBar').style.strokeDashoffset = CIRC * (1 - frac); 
+}
+
 function resetRing() {
-  ring().classList.remove('pulse','hold-chase','hold-behind','hold-ahead');
-  ring().style.transition='transform 0.6s ease, border-radius 0.6s ease'; ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%';
-  glow().style.transition='transform 0.6s ease, opacity 0.6s ease'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.55';
+  ring().classList.remove('pulse', 'hold-chase', 'hold-behind', 'hold-ahead');
+  ring().style.transition = 'transform 0.6s ease, border-radius 0.6s ease'; 
+  ring().style.transform = 'scale(0.55)'; 
+  ring().style.borderRadius = '50%';
+  glow().style.transition = 'transform 0.6s ease, opacity 0.6s ease'; 
+  glow().style.transform = 'scale(0.5)'; 
+  glow().style.opacity = '0.55';
 }
+
 function setRingDuration(sec) {
-  ring().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), border-radius ${sec}s ease-in-out`;
-  glow().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), opacity ${sec}s ease`;
+  ring().style.transition = `transform ${sec}s cubic-bezier(0.45,0,0.55,1), border-radius ${sec}s ease-in-out`;
+  glow().style.transition = `transform ${sec}s cubic-bezier(0.45,0,0.55,1), opacity ${sec}s ease`;
 }
+
 function ringAction(a) {
-  switch(a){
-    case 'expand': ring().classList.add('pulse'); ring().style.transform='scale(1)'; ring().style.borderRadius='46% 54% 48% 52%'; glow().style.transform='scale(1.35)'; glow().style.opacity='0.85'; break;
-    case 'expand-more': ring().style.transform='scale(1.08)'; ring().style.borderRadius='44% 56% 46% 54%'; glow().style.transform='scale(1.5)'; glow().style.opacity='0.95'; break;
-    case 'contract': ring().classList.add('pulse'); ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.5'; break;
-    case 'hold-full': case 'hold-empty': ring().classList.remove('pulse'); ring().style.borderRadius='50%'; break;
+  switch(a) {
+    case 'expand': 
+      ring().classList.add('pulse'); 
+      ring().style.transform = 'scale(1)'; 
+      ring().style.borderRadius = '46% 54% 48% 52%'; 
+      glow().style.transform = 'scale(1.35)'; 
+      glow().style.opacity = '0.85'; 
+      break;
+    case 'expand-more': 
+      ring().style.transform = 'scale(1.08)'; 
+      ring().style.borderRadius = '44% 56% 46% 54%'; 
+      glow().style.transform = 'scale(1.5)'; 
+      glow().style.opacity = '0.95'; 
+      break;
+    case 'contract': 
+      ring().classList.add('pulse'); 
+      ring().style.transform = 'scale(0.55)'; 
+      ring().style.borderRadius = '50%'; 
+      glow().style.transform = 'scale(0.5)'; 
+      glow().style.opacity = '0.5'; 
+      break;
+    case 'hold-full': 
+    case 'hold-empty': 
+      ring().classList.remove('pulse'); 
+      ring().style.borderRadius = '50%'; 
+      break;
   }
 }
-function fadeBg(on) { document.getElementById('sessionFadeBg').style.opacity = on?'0.4':'0'; }
+
+function fadeBg(on) { 
+  document.getElementById('sessionFadeBg').style.opacity = on ? '0.4' : '0'; 
+}
 
 async function runTimedPhase(totalSec, tok, onSecond) {
-  let remain=Math.ceil(totalSec); const total=remain;
+  let remain = Math.ceil(totalSec); 
+  const total = remain;
   const longEnoughForVoiceCountdown = total > 6;
-  while (remain>0){
-    if (sessionToken!==tok) return false;
-    if (skipRequested){ skipRequested=false; return false; }
-    if (remain<=3 && remain>=1) {
+  while (remain > 0) {
+    if (sessionToken !== tok) return false;
+    if (skipRequested) { skipRequested = false; return false; }
+    if (remain <= 3 && remain >= 1) {
       if (longEnoughForVoiceCountdown) speak(String(remain));
-      else vibrate(6);
+      else vibrate('tick');
     }
     if (onSecond) onSecond(remain);
-    setProgress((total-remain+1)/total);
-    const ok=await sleepInterruptible(1000, tok); if (!ok) return false;
+    setProgress((total - remain + 1) / total);
+    const ok = await sleepInterruptible(1000, tok); 
+    if (!ok) return false;
     remain--;
   }
   return true;
 }
 
+
 /* ---------- SESSION ENGINE ---------- */
 async function toggleStart() {
   if (state.running) return;
-  unlockSpeech();
-  state.running=true; state.sessionStart=Date.now(); sessionToken++;
-  const token=sessionToken;
-  previousHoldSeconds=null;
-  document.getElementById('startBtn').textContent='Идёт…';
+  state.running = true; 
+  state.sessionStart = Date.now(); 
+  sessionToken++;
+  const token = sessionToken;
+  previousHoldSeconds = null;
+  document.getElementById('startBtn').textContent = 'Идёт…';
   ensureAudioCtx();
-  await requestWakeLock(); startBreathNoise();
-  const p=getAllPatterns()[state.currentPattern];
-  startMusic(p.cat); startOceanTexture(state.currentPattern);
+  await requestWakeLock(); 
+  startBreathNoise();
+  const p = getAllPatterns()[state.currentPattern];
+  startMusic(p.cat); 
+  startOceanTexture(state.currentPattern);
   document.getElementById('screen-session').classList.add('session-live');
   bumpUsage(state.currentPattern);
-  if (state.screenOffOn) { setTimeout(()=>{ if (state.running) document.getElementById('screenOffOverlay').classList.add('active'); }, 1200); }
+  if (state.screenOffOn) { 
+    setTimeout(() => { if (state.running) document.getElementById('screenOffOverlay').classList.add('active'); }, 1200); 
+  }
   try {
     await runSession(token);
   } catch(e) {
     if (state.running) stopSession();
-    document.getElementById('phaseWord').textContent='Не удалось продолжить. Попробуй начать ещё раз.';
+    document.getElementById('phaseWord').textContent = 'Не удалось продолжить. Попробуй начать ещё раз.';
   }
 }
 
-function exitScreenOff() { document.getElementById('screenOffOverlay').classList.remove('active'); vibrate(8); }
+function exitScreenOff() { 
+  document.getElementById('screenOffOverlay').classList.remove('active'); 
+  vibrate('tick'); 
+}
 
 function stopSession() {
   if (!state.running) return;
@@ -1694,13 +1966,16 @@ function stopSession() {
   showScreen('screen-home');
 }
 
-function logSession(minutes) { const p=getAllPatterns()[state.currentPattern]; saveHistoryEntry({ name:p.name, key:state.currentPattern, date:new Date().toISOString(), minutes }); }
+function logSession(minutes) { 
+  const p = getAllPatterns()[state.currentPattern]; 
+  saveHistoryEntry({ name: p.name, key: state.currentPattern, date: new Date().toISOString(), minutes }); 
+}
 
 async function flashRoundComplete(round, total, tok) {
-  if (sessionToken!==tok) return;
+  if (sessionToken !== tok) return;
   document.getElementById('roundInfo').textContent = `Раунд ${round} из ${total} завершён`;
   document.getElementById('roundInfo').classList.add('round-done-flash');
-  vibrate(12);
+  vibrate('bell');
   await sleep(900);
   document.getElementById('roundInfo').classList.remove('round-done-flash');
 }
@@ -1734,28 +2009,37 @@ async function runSession(tok) {
       for (let i = 1; i <= p.breaths; i++) {
         if (sessionToken !== tok || !state.running) return;
         if (breathingSkipRequested) { breathingSkipRequested = false; break; }
-        setRingDuration(pace); ringAction('expand'); setNoiseLevel(0.014, pace * 0.4);
-        phaseWord.textContent = inhaleText; speak('Вдох'); playTone('in', pace);
+        setRingDuration(pace); 
+        ringAction('expand'); 
+        setNoiseLevel(0.012, pace * 0.4);
+        phaseWord.textContent = inhaleText; 
+        speak('Вдох'); 
+        playTone('in', pace);
         counter.textContent = '';
-        vibrate(8);
+        vibrate('inhale');
         setProgress(i / p.breaths);
         await sleepInterruptible(pace * 1000, tok);
         if (sessionToken !== tok || !state.running) return;
         if (breathingSkipRequested) { breathingSkipRequested = false; break; }
-        ringAction('contract'); setNoiseLevel(0.006, exhalePace * 0.4);
-        phaseWord.textContent = exhaleText; speak('Выдох'); playTone('out', exhalePace);
+        ringAction('contract'); 
+        setNoiseLevel(0.005, exhalePace * 0.4);
+        phaseWord.textContent = exhaleText; 
+        speak('Выдох'); 
+        playTone('out', exhalePace);
         await sleepInterruptible(exhalePace * 1000, tok);
       }
       breathingSkipRequested = false;
       if (sessionToken !== tok || !state.running) return;
-      setRingDuration(0.6); ringAction('contract'); ring().style.transform = 'scale(0.4)';
+      setRingDuration(0.6); 
+      ringAction('contract'); 
+      ring().style.transform = 'scale(0.4)';
       phaseWord.textContent = 'Выдохни и держи';
       counter.textContent = '';
       resetProgress();
       bell();
       speak('Выдохни и задержи дыхание');
       playTone('out', 2);
-      vibrate([20, 40, 20]);
+      vibrate('hold');
       setNoiseLevel(0.0001, 1);
       await sleep(2200);
       if (sessionToken !== tok || !state.running) return;
@@ -1765,7 +2049,10 @@ async function runSession(tok) {
       isHoldPhase = true;
       document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn);
       startHoldTone();
-      if (beatTarget) { ring().classList.add('hold-chase'); roundInfo.textContent = `Раунд ${round} из ${state.rounds} · держи дольше ${beatTarget}″`; }
+      if (beatTarget) { 
+        ring().classList.add('hold-chase'); 
+        roundInfo.textContent = `Раунд ${round} из ${state.rounds} · держи дольше ${beatTarget}″`; 
+      }
       const hs = Date.now();
       skipRequested = false;
       let finalHoldSeconds = 0;
@@ -1775,7 +2062,7 @@ async function runSession(tok) {
         counter.textContent = state.noNumbersOn ? '' : (s + '″');
         if (beatTarget) {
           if (s < beatTarget) { ring().classList.add('hold-behind'); ring().classList.remove('hold-ahead'); }
-          else { ring().classList.remove('hold-behind'); ring().classList.add('hold-ahead'); if (s === beatTarget) vibrate(20); }
+          else { ring().classList.remove('hold-behind'); ring().classList.add('hold-ahead'); if (s === beatTarget) vibrate([20]); }
         }
         if (skipRequested) { skipRequested = false; break; }
         if (!state.tapSkipOn && s >= holdTarget) break;
@@ -1793,7 +2080,7 @@ async function runSession(tok) {
       bell();
       speak('Вдохни и задержи');
       playTone('in', Math.min(p.holdRecover, 3));
-      vibrate(15);
+      vibrate('inhale');
       setRingDuration(1.2);
       ring().style.transform = 'scale(1)';
       startHoldTone();
@@ -1803,13 +2090,13 @@ async function runSession(tok) {
 
       setRingDuration(5);
       ringAction('contract');
-      setNoiseLevel(0.008, 5 * 0.4);
+      setNoiseLevel(0.006, 5 * 0.4);
       phaseWord.textContent = 'Выдох ртом';
       counter.textContent = '';
       resetProgress();
       speak('Выдох');
       playTone('out', 5);
-      vibrate(10);
+      vibrate('exhale');
       await sleepInterruptible(5000, tok);
       if (sessionToken !== tok || !state.running) return;
       if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
@@ -1823,14 +2110,23 @@ async function runSession(tok) {
         document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn && isHoldPhase);
         phaseChime(phase.action);
         speak(phase.voice);
-        vibrate(phase.action === 'contract' ? 10 : 15);
+        vibrate(phase.action === 'contract' ? 'exhale' : 'inhale');
         if (state.currentPattern === 'bhramari' && phase.action === 'contract') startBhramariHum(phase.sec);
         ring().classList.remove('phase-flash');
         void ring().offsetWidth;
         ring().classList.add('phase-flash');
-        if (phase.action === 'expand' || phase.action === 'expand-more') { setNoiseLevel(0.014, phase.sec * 0.4); playTone('in', phase.sec); }
-        else if (phase.action === 'contract') { setNoiseLevel(0.006, phase.sec * 0.4); playTone('out', phase.sec); }
-        else { setNoiseLevel(0.0001, 0.5); startHoldTone(); }
+        if (phase.action === 'expand' || phase.action === 'expand-more') { 
+          setNoiseLevel(0.012, phase.sec * 0.4); 
+          playTone('in', phase.sec); 
+        }
+        else if (phase.action === 'contract') { 
+          setNoiseLevel(0.005, phase.sec * 0.4); 
+          playTone('out', phase.sec); 
+        }
+        else { 
+          setNoiseLevel(0.0001, 0.5); 
+          startHoldTone(); 
+        }
         counter.textContent = state.noNumbersOn ? '' : Math.ceil(phase.sec);
         skipRequested = false;
         const done = await runTimedPhase(phase.sec, tok, s => { if (!state.noNumbersOn) counter.textContent = s; });
@@ -1851,7 +2147,7 @@ async function runSession(tok) {
     await sleep(700);
     speak('Сессия завершена');
     bell();
-    vibrate([15, 50, 15, 50, 15]);
+    vibrate('complete');
     stopBreathNoise();
     stopHoldTone();
     stopBhramariHum();
@@ -1874,46 +2170,58 @@ async function runSession(tok) {
 
 /* ---------- COMPLETE SCREEN ---------- */
 function showComplete(minutes) {
-  const h=loadHistory();
-  const stats=computeStats(h);
-  document.getElementById('cStatMin').textContent=minutes;
-  document.getElementById('cStatStreak').textContent=stats.streak;
-  document.getElementById('cStatTotal').textContent=stats.total;
-  const msgs=['Ты нашёл время для себя','Тело благодарит','Спокойствие внутри','Ещё один шаг к практике'];
-  document.getElementById('completeSub').textContent = msgs[Math.floor(Math.random()*msgs.length)];
-  const p=getAllPatterns()[state.currentPattern];
+  const h = loadHistory();
+  const stats = computeStats(h);
+  document.getElementById('cStatMin').textContent = minutes;
+  document.getElementById('cStatStreak').textContent = stats.streak;
+  document.getElementById('cStatTotal').textContent = stats.total;
+  const msgs = ['Ты нашёл время для себя', 'Тело благодарит', 'Спокойствие внутри', 'Ещё один шаг к практике'];
+  document.getElementById('completeSub').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  const p = getAllPatterns()[state.currentPattern];
   document.getElementById('completeSummary').textContent = p ? `${state.rounds} ${roundsWord(state.rounds)} «${p.name}» — ${minutes} мин` : '';
   document.getElementById('completeFact').textContent = buildWeeklyFact(h, minutes);
-  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
-  lastSessionData={minutes};
-  document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666');
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
+  lastSessionData = {minutes};
+  document.documentElement.style.setProperty('--accent', '#8B7CF6'); 
+  document.documentElement.style.setProperty('--accent-glow', '#8B7CF666');
   showScreen('screen-complete');
 }
+
 function buildWeeklyFact(h, todayMinutes) {
-  const now=new Date();
-  const todayStr=now.toDateString();
-  const sevenDaysAgo=new Date(now); sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
-  const priorWeek = h.filter(e => { const d=new Date(e.date); return d>=sevenDaysAgo && d.toDateString()!==todayStr; });
+  const now = new Date();
+  const todayStr = now.toDateString();
+  const sevenDaysAgo = new Date(now); 
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const priorWeek = h.filter(e => { const d = new Date(e.date); return d >= sevenDaysAgo && d.toDateString() !== todayStr; });
   if (priorWeek.length < 3) return '';
   const byDay = {};
-  priorWeek.forEach(e => { const day=localDayKey(e.date); if(day) byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  priorWeek.forEach(e => { const day = localDayKey(e.date); if (day) byDay[day] = (byDay[day] || 0) + (e.minutes || 0); });
   const days = Object.keys(byDay);
-  const avgMin = days.length ? (Object.values(byDay).reduce((a,b)=>a+b,0)/days.length) : 0;
-  if (avgMin<=0) return '';
+  const avgMin = days.length ? (Object.values(byDay).reduce((a, b) => a + b, 0) / days.length) : 0;
+  if (avgMin <= 0) return '';
   const diff = todayMinutes - avgMin;
   if (Math.abs(diff) < 1) return `Как и в среднем за неделю — ${Math.round(avgMin)} мин.`;
   if (diff > 0) return `Дольше, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
   return `Короче, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
 }
+
 function roundsWord(n) {
-  const n10=n%10, n100=n%100;
-  if (n100>=11 && n100<=14) return 'раундов';
-  if (n10===1) return 'раунд';
-  if (n10>=2 && n10<=4) return 'раунда';
+  const n10 = n % 10, n100 = n % 100;
+  if (n100 >= 11 && n100 <= 14) return 'раундов';
+  if (n10 === 1) return 'раунд';
+  if (n10 >= 2 && n10 <= 4) return 'раунда';
   return 'раундов';
 }
-function pickMood(el, mood) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); vibrate(10); if (lastSessionData) lastSessionData.mood=mood; }
+
+function pickMood(el, mood) { 
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel')); 
+  el.classList.add('sel'); 
+  vibrate('tick'); 
+  if (lastSessionData) lastSessionData.mood = mood; 
+}
+
 function finishComplete() { renderHome(); showScreen('screen-home'); }
+
 function extendSession() {
   const key = state.currentPattern;
   if (!key) { finishComplete(); return; }
@@ -1925,291 +2233,500 @@ function extendSession() {
 
 /* ---------- STATS ---------- */
 function computeStats(h) {
-  const total=h.length;
-  const totalMin=h.reduce((s,e)=>s+(e.minutes||0),0);
-  let streak=0, cursor=new Date();
-  const days=new Set(h.map(e=>new Date(e.date).toDateString()));
-  while (days.has(cursor.toDateString())){ streak++; cursor.setDate(cursor.getDate()-1); }
-  const today=new Date().toDateString();
-  const todayCount=h.filter(e=>new Date(e.date).toDateString()===today).length;
+  const total = h.length;
+  const totalMin = h.reduce((s, e) => s + (e.minutes || 0), 0);
+  let streak = 0, cursor = new Date();
+  const days = new Set(h.map(e => new Date(e.date).toDateString()));
+  while (days.has(cursor.toDateString())) { streak++; cursor.setDate(cursor.getDate() - 1); }
+  const today = new Date().toDateString();
+  const todayCount = h.filter(e => new Date(e.date).toDateString() === today).length;
   return { total, totalMin, streak, todayCount };
 }
+
 const BADGES = [
-  { id:'first', icon:'🌱', label:'Первая сессия', check:s=>s.total>=1 },
-  { id:'week', icon:'🔥', label:'7 дней подряд', check:s=>s.streak>=7 },
-  { id:'ten', icon:'⭐', label:'10 сессий', check:s=>s.total>=10 },
-  { id:'fifty', icon:'💎', label:'50 сессий', check:s=>s.total>=50 },
-  { id:'hour', icon:'⏳', label:'60 минут', check:s=>s.totalMin>=60 },
-  { id:'hundred', icon:'👑', label:'100 сессий', check:s=>s.total>=100 }
+  { id: 'first', icon: '🌱', label: 'Первая сессия', check: s => s.total >= 1 },
+  { id: 'week', icon: '🔥', label: '7 дней подряд', check: s => s.streak >= 7 },
+  { id: 'ten', icon: '⭐', label: '10 сессий', check: s => s.total >= 10 },
+  { id: 'fifty', icon: '💎', label: '50 сессий', check: s => s.total >= 50 },
+  { id: 'hour', icon: '⏳', label: '60 минут', check: s => s.totalMin >= 60 },
+  { id: 'hundred', icon: '👑', label: '100 сессий', check: s => s.total >= 100 }
 ];
+
 function renderStats() {
-  const h=loadHistory(); const s=computeStats(h);
-  document.getElementById('statTotal').textContent=s.total;
-  document.getElementById('statStreak').textContent=s.streak;
-  document.getElementById('statMinutes').textContent=s.totalMin;
-  document.getElementById('statToday').textContent=s.todayCount>0?s.todayCount:'—';
-  const ach=document.getElementById('achievements'); ach.innerHTML='';
-  BADGES.forEach(b=>{ const earned=b.check(s); const d=document.createElement('div'); d.className='badge'+(earned?' earned':'');
-    d.innerHTML=`<div class="badge-icon">${earned?b.icon:'🔒'}</div><div class="badge-lbl">${b.label}</div>`; ach.appendChild(d); });
-  const list=document.getElementById('historyList'); list.innerHTML='';
-  if (!h.length){ list.innerHTML='<div class="empty-note">Пока нет сессий. Начни первую практику!</div>'; }
-  else h.slice(0,40).forEach(e=>{ const d=new Date(e.date);
-    const ds=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
-    const row=document.createElement('div'); row.className='history-item';
-    row.innerHTML=`<span>${escapeHTML(e.name)}</span><span class="h-date">${escapeHTML(e.minutes)} мин · ${escapeHTML(ds)}</span>`; list.appendChild(row); });
+  const h = loadHistory(); 
+  const s = computeStats(h);
+  document.getElementById('statTotal').textContent = s.total;
+  document.getElementById('statStreak').textContent = s.streak;
+  document.getElementById('statMinutes').textContent = s.totalMin;
+  document.getElementById('statToday').textContent = s.todayCount > 0 ? s.todayCount : '—';
+  const ach = document.getElementById('achievements'); 
+  ach.innerHTML = '';
+  BADGES.forEach(b => { 
+    const earned = b.check(s); 
+    const d = document.createElement('div'); 
+    d.className = 'badge' + (earned ? ' earned' : '');
+    d.innerHTML = `<div class="badge-icon">${earned ? b.icon : '🔒'}</div><div class="badge-lbl">${b.label}</div>`; 
+    ach.appendChild(d); 
+  });
+  const list = document.getElementById('historyList'); 
+  list.innerHTML = '';
+  if (!h.length) { list.innerHTML = '<div class="empty-note">Пока нет сессий. Начни первую практику!</div>'; }
+  else h.slice(0, 40).forEach(e => { 
+    const d = new Date(e.date);
+    const ds = d.toLocaleDateString('ru-RU', {day: 'numeric', month: 'short'}) + ' · ' + d.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+    const row = document.createElement('div'); 
+    row.className = 'history-item';
+    row.innerHTML = `<span>${escapeHTML(e.name)}</span><span class="h-date">${escapeHTML(e.minutes)} мин · ${escapeHTML(ds)}</span>`; 
+    list.appendChild(row); 
+  });
   renderCalendarGrid(h);
 }
+
 function renderCalendarGrid(h) {
-  const grid=document.getElementById('calendarGrid'); grid.innerHTML='';
-  const byDay={};
-  h.forEach(e => { const day=localDayKey(e.date); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); });
-  const days=98, cells=[];
-  for (let i=days-1;i>=0;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
-    const key=localDayKey(d);
-    const mins=byDay[key]||0;
-    let lvl=0; if (mins>0) lvl=1; if (mins>=10) lvl=2; if (mins>=25) lvl=3;
-    cells.push(`<div class="cal-cell${lvl?(' lvl'+lvl):''}" title="${key}${mins?': '+mins+' мин':''}"></div>`);
+  const grid = document.getElementById('calendarGrid'); 
+  grid.innerHTML = '';
+  const byDay = {};
+  h.forEach(e => { const day = localDayKey(e.date); if (!day) return; byDay[day] = (byDay[day] || 0) + (e.minutes || 0); });
+  const days = 98, cells = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(); 
+    d.setDate(d.getDate() - i);
+    const key = localDayKey(d);
+    const mins = byDay[key] || 0;
+    let lvl = 0; 
+    if (mins > 0) lvl = 1; 
+    if (mins >= 10) lvl = 2; 
+    if (mins >= 25) lvl = 3;
+    cells.push(`<div class="cal-cell${lvl ? (' lvl' + lvl) : ''}" title="${key}${mins ? ': ' + mins + ' мин' : ''}"></div>`);
   }
   grid.innerHTML = cells.join('');
 }
 
+
 /* ---------- SETTINGS ---------- */
-const TONE_VARIANT_LABELS = { chime:'Колокольчик', bowl:'Поющая чаша', ocean:'Океан', crystal:'Хрусталь' };
+const TONE_VARIANT_LABELS = { chime: 'Колокольчик', bowl: 'Поющая чаша', ocean: 'Океан', crystal: 'Хрусталь' };
+
 function syncSettingsUI() {
-  document.getElementById('langSelect').value=state.lang;
-  [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle'],['musicOn','musicToggle'],['settleOn','settleToggle'],['minimalOn','minimalToggle'],['screenOffOn','screenOffToggle'],['recentFirstOn','recentFirstToggle'],['cardTickOn','cardTickToggle']].forEach(([k,id])=>{
+  document.getElementById('langSelect').value = state.lang;
+  [['bellOn', 'bellToggle'], ['hapticOn', 'hapticToggle'], ['breathNoiseOn', 'breathNoiseToggle'], 
+   ['tapSkipOn', 'tapSkipToggle'], ['noNumbersOn', 'noNumbersToggle'], ['progressiveOn', 'progressiveToggle'],
+   ['musicOn', 'musicToggle'], ['settleOn', 'settleToggle'], ['minimalOn', 'minimalToggle'],
+   ['screenOffOn', 'screenOffToggle'], ['recentFirstOn', 'recentFirstToggle'], ['cardTickOn', 'cardTickToggle']].forEach(([k, id]) => {
     document.getElementById(id).classList.toggle('on', state[k]);
   });
   document.getElementById('volCueSlider').value = state.volCue;
-  document.getElementById('volCueVal').textContent = state.volCue+'%';
+  document.getElementById('volCueVal').textContent = state.volCue + '%';
   document.getElementById('volBellSlider').value = state.volBell;
-  document.getElementById('volBellVal').textContent = state.volBell+'%';
+  document.getElementById('volBellVal').textContent = state.volBell + '%';
   document.getElementById('volMusicSlider').value = state.volMusic;
-  document.getElementById('volMusicVal').textContent = state.volMusic+'%';
+  document.getElementById('volMusicVal').textContent = state.volMusic + '%';
   updateCueModeUI();
   buildToneVariantRow();
   buildVoicePickRow();
   buildProfileRow();
   applyMinimalMode();
 }
+
 function setCueMode(mode) {
-  state.cueMode = mode; saveSettings(); vibrate(8);
+  state.cueMode = mode; 
+  saveSettings(); 
+  vibrate('tick');
   updateCueModeUI();
 }
+
 function updateCueModeUI() {
-  document.getElementById('cueVoiceBtn').classList.toggle('active', state.cueMode==='voice');
-  document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode==='tone');
-  document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode==='off');
-  document.getElementById('langRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
-  document.getElementById('voicePickRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
-  document.getElementById('toneVariantRow').style.display = state.cueMode==='tone' ? 'flex' : 'none';
+  document.getElementById('cueVoiceBtn').classList.toggle('active', state.cueMode === 'voice');
+  document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode === 'tone');
+  document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode === 'off');
+  document.getElementById('langRow').style.display = state.cueMode === 'voice' ? 'flex' : 'none';
+  document.getElementById('voicePickRow').style.display = state.cueMode === 'voice' ? 'flex' : 'none';
+  document.getElementById('toneVariantRow').style.display = state.cueMode === 'tone' ? 'flex' : 'none';
 }
+
 function buildToneVariantRow() {
-  const wrap=document.getElementById('toneVariantRowInner'); wrap.innerHTML='';
-  Object.keys(TONE_VARIANT_LABELS).forEach(k=>{
-    const o=document.createElement('div'); o.className='cat-opt'+(k===state.toneVariant?' active':''); o.textContent=TONE_VARIANT_LABELS[k];
-    o.onclick=()=>{ state.toneVariant=k; saveSettings(); buildToneVariantRow(); vibrate(8); previewTone(k); };
+  const wrap = document.getElementById('toneVariantRowInner'); 
+  wrap.innerHTML = '';
+  Object.keys(TONE_VARIANT_LABELS).forEach(k => {
+    const o = document.createElement('div'); 
+    o.className = 'cat-opt' + (k === state.toneVariant ? ' active' : ''); 
+    o.textContent = TONE_VARIANT_LABELS[k];
+    o.onclick = () => { state.toneVariant = k; saveSettings(); buildToneVariantRow(); vibrate('tick'); previewTone(k); };
     wrap.appendChild(o);
   });
 }
+
 function previewTone(variant) {
-  try { ensureAudioCtx(); const prev=state.toneVariant; state.toneVariant=variant; const savedMode=state.cueMode; state.cueMode='tone'; playTone('in', 1.4); state.cueMode=savedMode; state.toneVariant=prev; } catch(e){}
+  try { 
+    ensureAudioCtx(); 
+    const prev = state.toneVariant; 
+    state.toneVariant = variant; 
+    const savedMode = state.cueMode; 
+    state.cueMode = 'tone'; 
+    playTone('in', 1.4); 
+    state.cueMode = savedMode; 
+    state.toneVariant = prev; 
+  } catch(e) {}
 }
+
 function buildVoicePickRow() {
-  const sel=document.getElementById('voicePickSelect'); sel.innerHTML='';
-  if (!voiceList.length) refreshVoices();
-  const relevant = voiceList.filter(v => v.lang && v.lang.split('-')[0]===state.lang.split('-')[0]);
-  const list = relevant.length ? relevant : voiceList;
-  const defOpt=document.createElement('option'); defOpt.value=''; defOpt.textContent='Голос по умолчанию'; sel.appendChild(defOpt);
-  list.forEach(v => { const o=document.createElement('option'); o.value=v.voiceURI; o.textContent=v.name; sel.appendChild(o); });
-  sel.value = state.voiceURI || '';
+  const sel = document.getElementById('voicePickSelect'); 
+  sel.innerHTML = '<option value="">Голос по умолчанию</option>';
+  // В новой версии голос не нужен, но оставляем для совместимости
 }
-function onVoicePick(uri) { state.voiceURI=uri; saveSettings(); try { speak('Привет'); } catch(e){} }
+
+function onVoicePick(uri) { 
+  state.voiceURI = uri; 
+  saveSettings(); 
+}
 
 const BUILTIN_PROFILES = {
-  default: { label:'Обычный', cueMode:'voice', bellOn:true, hapticOn:true, volCue:70, volBell:70, volMusic:70, musicOn:false },
-  quiet:   { label:'Тихо (для работы)', cueMode:'off', bellOn:false, hapticOn:true, volCue:0, volBell:0, volMusic:0, musicOn:false },
-  deep:    { label:'Погружение', cueMode:'tone', bellOn:true, hapticOn:true, volCue:60, volBell:50, volMusic:85, musicOn:true }
+  default: { label: 'Обычный', cueMode: 'voice', bellOn: true, hapticOn: true, volCue: 70, volBell: 70, volMusic: 70, musicOn: false },
+  quiet:   { label: 'Тихо (для работы)', cueMode: 'off', bellOn: false, hapticOn: true, volCue: 0, volBell: 0, volMusic: 0, musicOn: false },
+  deep:    { label: 'Погружение', cueMode: 'tone', bellOn: true, hapticOn: true, volCue: 60, volBell: 50, volMusic: 85, musicOn: true }
 };
-function loadCustomProfiles() { try { return JSON.parse(localStorage.getItem('pneuma_profiles')||'{}'); } catch(e){ return {}; } }
-function saveCustomProfiles(o) { try { localStorage.setItem('pneuma_profiles', JSON.stringify(o)); } catch(e){} }
+
+function loadCustomProfiles() { try { return JSON.parse(localStorage.getItem('pneuma_profiles') || '{}'); } catch(e) { return {}; } }
+function saveCustomProfiles(o) { try { localStorage.setItem('pneuma_profiles', JSON.stringify(o)); } catch(e) {} }
+
 function buildProfileRow() {
-  const wrap=document.getElementById('profileRow'); wrap.innerHTML='';
+  const wrap = document.getElementById('profileRow'); 
+  wrap.innerHTML = '';
   const custom = loadCustomProfiles();
   const all = Object.assign({}, BUILTIN_PROFILES, custom);
   Object.keys(all).forEach(key => {
     const prof = all[key];
-    const o=document.createElement('div'); o.className='cat-opt'; o.textContent=prof.label;
-    o.onclick=()=>applyProfile(prof);
+    const o = document.createElement('div'); 
+    o.className = 'cat-opt'; 
+    o.textContent = prof.label;
+    o.onclick = () => applyProfile(prof);
     wrap.appendChild(o);
   });
-  const saveBtn=document.createElement('div'); saveBtn.className='cat-opt'; saveBtn.style.borderStyle='dashed'; saveBtn.textContent='+ Сохранить текущее';
-  saveBtn.onclick=saveCurrentAsProfile;
+  const saveBtn = document.createElement('div'); 
+  saveBtn.className = 'cat-opt'; 
+  saveBtn.style.borderStyle = 'dashed'; 
+  saveBtn.textContent = '+ Сохранить текущее';
+  saveBtn.onclick = saveCurrentAsProfile;
   wrap.appendChild(saveBtn);
 }
+
 function applyProfile(prof) {
-  state.cueMode=prof.cueMode; state.bellOn=prof.bellOn; state.hapticOn=prof.hapticOn;
-  state.volCue=prof.volCue; state.volBell=prof.volBell; state.volMusic=prof.volMusic; state.musicOn=prof.musicOn;
-  saveSettings(); vibrate(10); syncSettingsUI();
+  state.cueMode = prof.cueMode; 
+  state.bellOn = prof.bellOn; 
+  state.hapticOn = prof.hapticOn;
+  state.volCue = prof.volCue; 
+  state.volBell = prof.volBell; 
+  state.volMusic = prof.volMusic; 
+  state.musicOn = prof.musicOn;
+  saveSettings(); 
+  vibrate('tick'); 
+  syncSettingsUI();
 }
+
 function saveCurrentAsProfile() {
   const name = prompt('Название профиля:');
   if (!name || !name.trim()) return;
   const custom = loadCustomProfiles();
-  const key = 'custom_'+Date.now();
-  custom[key] = { label:name.trim(), cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic, musicOn:state.musicOn };
-  saveCustomProfiles(custom); vibrate(12); buildProfileRow();
+  const key = 'custom_' + Date.now();
+  custom[key] = { label: name.trim(), cueMode: state.cueMode, bellOn: state.bellOn, hapticOn: state.hapticOn, volCue: state.volCue, volBell: state.volBell, volMusic: state.volMusic, musicOn: state.musicOn };
+  saveCustomProfiles(custom); 
+  vibrate('tick'); 
+  buildProfileRow();
 }
 
 function applyMinimalMode() { document.body.classList.toggle('minimal-mode', state.minimalOn); }
 
 function tSet(key, id) {
-  state[key]=!state[key]; document.getElementById(id).classList.toggle('on', state[key]); saveSettings(); vibrate(8);
-  if (key==='minimalOn') applyMinimalMode();
-  if (key==='recentFirstOn') renderPatternList();
+  state[key] = !state[key]; 
+  document.getElementById(id).classList.toggle('on', state[key]); 
+  saveSettings(); 
+  vibrate('tick');
+  if (key === 'minimalOn') applyMinimalMode();
+  if (key === 'recentFirstOn') renderPatternList();
 }
-document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); buildVoicePickRow(); });
-document.getElementById('voicePickSelect').addEventListener('change', e=>{ onVoicePick(e.target.value); });
-document.getElementById('volCueSlider').addEventListener('input', e=>{ state.volCue=parseInt(e.target.value); document.getElementById('volCueVal').textContent=state.volCue+'%'; saveSettings(); });
-document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { const saved=state.cueMode; playTone('in',1.2); } });
-document.getElementById('volBellSlider').addEventListener('input', e=>{ state.volBell=parseInt(e.target.value); document.getElementById('volBellVal').textContent=state.volBell+'%'; saveSettings(); });
-document.getElementById('volBellSlider').addEventListener('change', ()=>{ bell(); });
-document.getElementById('volMusicSlider').addEventListener('input', e=>{ state.volMusic=parseInt(e.target.value); document.getElementById('volMusicVal').textContent=state.volMusic+'%'; saveSettings(); });
+
+document.getElementById('langSelect').addEventListener('change', e => { state.lang = e.target.value; saveSettings(); });
+document.getElementById('voicePickSelect').addEventListener('change', e => { onVoicePick(e.target.value); });
+document.getElementById('volCueSlider').addEventListener('input', e => { 
+  state.volCue = parseInt(e.target.value); 
+  document.getElementById('volCueVal').textContent = state.volCue + '%'; 
+  saveSettings(); 
+});
+document.getElementById('volCueSlider').addEventListener('change', () => { 
+  if (state.cueMode === 'voice') playMelodicCue('Вдох'); 
+  else if (state.cueMode === 'tone') playTone('in', 1.2); 
+});
+document.getElementById('volBellSlider').addEventListener('input', e => { 
+  state.volBell = parseInt(e.target.value); 
+  document.getElementById('volBellVal').textContent = state.volBell + '%'; 
+  saveSettings(); 
+});
+document.getElementById('volBellSlider').addEventListener('change', () => { bell(); });
+document.getElementById('volMusicSlider').addEventListener('input', e => { 
+  state.volMusic = parseInt(e.target.value); 
+  document.getElementById('volMusicVal').textContent = state.volMusic + '%'; 
+  saveSettings(); 
+});
+
 function toggleAdvanced() {
-  const adv=document.getElementById('advancedSettings'); const btn=document.getElementById('advToggle');
-  const show=adv.style.display==='none';
-  adv.style.display=show?'block':'none'; btn.textContent=show?'Скрыть продвинутые настройки ⌃':'Показать продвинутые настройки ⌄';
+  const adv = document.getElementById('advancedSettings'); 
+  const btn = document.getElementById('advToggle');
+  const show = adv.style.display === 'none';
+  adv.style.display = show ? 'block' : 'none'; 
+  btn.textContent = show ? 'Скрыть продвинутые настройки ⌃' : 'Показать продвинутые настройки ⌄';
 }
-function resetOnboarding() { try { localStorage.removeItem('pneuma_onboarded'); localStorage.removeItem('pneuma_goal'); } catch(e){} setRandomWelcomePhrase(); spawnWelcomeParticles(); document.getElementById('welcome').classList.add('active'); }
+
+function resetOnboarding() { 
+  try { localStorage.removeItem('pneuma_onboarded'); localStorage.removeItem('pneuma_goal'); } catch(e) {} 
+  setRandomWelcomePhrase(); 
+  spawnWelcomeParticles(); 
+  document.getElementById('welcome').classList.add('active'); 
+}
 
 /* ---------- EDITOR ---------- */
-let editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' };
+let editState = { key: null, glyph: '✦', cat: 'balance', type: 'cycle', inhale: 4, hold1: 4, exhale: 4, hold2: 4, breaths: 30, pace: 1.6, recover: 15, rounds: 4, inhaleMethod: 'носом', exhaleMethod: 'ртом', wimExhaleMethod: 'ртом' };
+
 function openEditor(existingKey) {
-  const custom=loadCustom();
+  const custom = loadCustom();
   if (existingKey && custom[existingKey]) {
-    const p=custom[existingKey];
-    editState.key=existingKey; document.getElementById('editName').value=p.name;
-    editState.glyph=p.glyph; editState.cat=p.cat||'balance'; editState.type=p.type;
-    if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0;
-      const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4;
-      const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0;
+    const p = custom[existingKey];
+    editState.key = existingKey; 
+    document.getElementById('editName').value = p.name;
+    editState.glyph = p.glyph; 
+    editState.cat = p.cat || 'balance'; 
+    editState.type = p.type;
+    if (p.type === 'cycle') { 
+      editState.inhale = p.phases[0].sec; 
+      editState.hold1 = p.phases[1] && p.phases[1].action === 'hold-full' ? p.phases[1].sec : 0;
+      const ex = p.phases.find(x => x.action === 'contract'); 
+      editState.exhale = ex ? ex.sec : 4;
+      const h2 = p.phases.find(x => x.action === 'hold-empty'); 
+      editState.hold2 = h2 ? h2.sec : 0;
       editState.inhaleMethod = p.phases[0].label.includes('ртом') ? 'ртом' : 'носом';
-      editState.exhaleMethod = ex && ex.label.includes('ртом') ? 'ртом' : 'носом'; }
-    else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; editState.wimExhaleMethod = p.exhaleMethod || 'ртом'; }
-    editState.rounds=p.defaultRounds;
-    document.getElementById('editorHeaderTitle').textContent='Изменить';
-    document.getElementById('deleteLink').style.display='block';
+      editState.exhaleMethod = ex && ex.label.includes('ртом') ? 'ртом' : 'носом'; 
+    }
+    else { 
+      editState.breaths = p.breaths; 
+      editState.pace = p.pace; 
+      editState.recover = p.holdRecover; 
+      editState.wimExhaleMethod = p.exhaleMethod || 'ртом'; 
+    }
+    editState.rounds = p.defaultRounds;
+    document.getElementById('editorHeaderTitle').textContent = 'Изменить';
+    document.getElementById('deleteLink').style.display = 'block';
   } else {
-    editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' };
-    document.getElementById('editName').value='';
-    document.getElementById('editorHeaderTitle').textContent='Новый паттерн';
-    document.getElementById('deleteLink').style.display='none';
+    editState = { key: null, glyph: '✦', cat: 'balance', type: 'cycle', inhale: 4, hold1: 4, exhale: 4, hold2: 4, breaths: 30, pace: 1.6, recover: 15, rounds: 4, inhaleMethod: 'носом', exhaleMethod: 'ртом', wimExhaleMethod: 'ртом' };
+    document.getElementById('editName').value = '';
+    document.getElementById('editorHeaderTitle').textContent = 'Новый паттерн';
+    document.getElementById('deleteLink').style.display = 'none';
   }
-  buildGlyphSelect(); buildCatSelect(); buildBaseSelect(); buildEditRoundSelect();
-  setEditType(editState.type); syncSlidersFromState(); bindSliders(); updateMiniPreview();
-  setEditInhale(editState.inhaleMethod); setEditExhale(editState.exhaleMethod); setEditWimExhale(editState.wimExhaleMethod);
+  buildGlyphSelect(); 
+  buildCatSelect(); 
+  buildBaseSelect(); 
+  buildEditRoundSelect();
+  setEditType(editState.type); 
+  syncSlidersFromState(); 
+  bindSliders(); 
+  updateMiniPreview();
+  setEditInhale(editState.inhaleMethod); 
+  setEditExhale(editState.exhaleMethod); 
+  setEditWimExhale(editState.wimExhaleMethod);
   showScreen('screen-editor');
 }
-function setEditInhale(m) { editState.inhaleMethod=m; document.getElementById('inhaleNoseBtn').classList.toggle('active', m==='носом'); document.getElementById('inhaleMouthBtn').classList.toggle('active', m==='ртом'); }
-function setEditExhale(m) { editState.exhaleMethod=m; document.getElementById('exhaleNoseBtn').classList.toggle('active', m==='носом'); document.getElementById('exhaleMouthBtn').classList.toggle('active', m==='ртом'); }
-function setEditWimExhale(m) { editState.wimExhaleMethod=m; document.getElementById('wimExhaleMouthBtn').classList.toggle('active', m==='ртом'); document.getElementById('wimExhaleNoseBtn').classList.toggle('active', m==='носом'); }
+
+function setEditInhale(m) { 
+  editState.inhaleMethod = m; 
+  document.getElementById('inhaleNoseBtn').classList.toggle('active', m === 'носом'); 
+  document.getElementById('inhaleMouthBtn').classList.toggle('active', m === 'ртом'); 
+}
+function setEditExhale(m) { 
+  editState.exhaleMethod = m; 
+  document.getElementById('exhaleNoseBtn').classList.toggle('active', m === 'носом'); 
+  document.getElementById('exhaleMouthBtn').classList.toggle('active', m === 'ртом'); 
+}
+function setEditWimExhale(m) { 
+  editState.wimExhaleMethod = m; 
+  document.getElementById('wimExhaleMouthBtn').classList.toggle('active', m === 'ртом'); 
+  document.getElementById('wimExhaleNoseBtn').classList.toggle('active', m === 'носом'); 
+}
+
 function buildCatSelect() {
-  const wrap=document.getElementById('editCatRow'); wrap.innerHTML='';
-  ['energy','calm','sleep','focus','balance'].forEach(k=>{ const o=document.createElement('div'); o.className='cat-opt'+(k===editState.cat?' active':''); o.textContent=CATEGORIES[k].label;
-    o.onclick=()=>{ editState.cat=k; buildCatSelect(); }; wrap.appendChild(o); });
-}
-function buildGlyphSelect() {
-  const wrap=document.getElementById('glyphSelect'); wrap.innerHTML='';
-  GLYPHS.forEach(g=>{ const c=document.createElement('div'); c.className='round-chip'+(g===editState.glyph?' active':''); c.textContent=g;
-    c.onclick=()=>{ editState.glyph=g; buildGlyphSelect(); }; wrap.appendChild(c); });
-}
-function buildBaseSelect() {
-  const wrap=document.getElementById('baseSelect'); wrap.innerHTML='';
-  ['box','coherent','wimhof','fourseven','extendedexhale'].forEach(k=>{ const pill=document.createElement('div'); pill.className='base-pill'; pill.textContent=BUILTIN[k].name;
-    pill.onclick=()=>applyBase(k, pill, wrap); wrap.appendChild(pill); });
-}
-function applyBase(key, el, wrap) {
-  wrap.querySelectorAll('.base-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active');
-  const p=BUILTIN[key]; editState.type=p.type;
-  if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0;
-    const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4;
-    const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0; }
-  else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; }
-  editState.rounds=p.defaultRounds;
-  setEditType(editState.type); syncSlidersFromState(); buildEditRoundSelect(); updateMiniPreview();
-}
-function setEditType(type) {
-  editState.type=type;
-  document.getElementById('typeCycleBtn').classList.toggle('active', type==='cycle');
-  document.getElementById('typeWimhofBtn').classList.toggle('active', type==='wimhof');
-  document.getElementById('editorCycleFields').style.display = type==='cycle'?'block':'none';
-  document.getElementById('editorWimhofFields').style.display = type==='wimhof'?'block':'none';
-}
-function buildEditRoundSelect() {
-  const wrap=document.getElementById('editRoundSelect'); wrap.innerHTML='';
-  for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===editState.rounds?' active':''); c.textContent=i;
-    c.onclick=()=>{ editState.rounds=i; buildEditRoundSelect(); }; wrap.appendChild(c); }
-  document.getElementById('editRoundCustom').value = editState.rounds;
-}
-document.getElementById('editRoundCustom').addEventListener('input', function(){
-  const n = parseInt(this.value, 10);
-  if (!n || n<1) return;
-  editState.rounds = Math.min(n, 99);
-  document.querySelectorAll('#editRoundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===editState.rounds));
-});
-function syncSlidersFromState() {
-  const set=(id,val,suf)=>{ const s=document.getElementById(id); if(s) s.value=val; const v=document.getElementById(id.replace('s','val')); if(v) v.textContent=val+suf; };
-  document.getElementById('sInhale').value=editState.inhale; document.getElementById('valInhale').textContent=editState.inhale+'с';
-  document.getElementById('sHold1').value=editState.hold1; document.getElementById('valHold1').textContent=editState.hold1+'с';
-  document.getElementById('sExhale').value=editState.exhale; document.getElementById('valExhale').textContent=editState.exhale+'с';
-  document.getElementById('sHold2').value=editState.hold2; document.getElementById('valHold2').textContent=editState.hold2+'с';
-  document.getElementById('sBreaths').value=editState.breaths; document.getElementById('valBreaths').textContent=editState.breaths;
-  document.getElementById('sPace').value=editState.pace; document.getElementById('valPace').textContent=editState.pace+'с';
-  document.getElementById('sRecover').value=editState.recover; document.getElementById('valRecover').textContent=editState.recover+'с';
-}
-function bindSliders() {
-  [['sInhale','valInhale','inhale','с'],['sHold1','valHold1','hold1','с'],['sExhale','valExhale','exhale','с'],['sHold2','valHold2','hold2','с'],['sBreaths','valBreaths','breaths',''],['sPace','valPace','pace','с'],['sRecover','valRecover','recover','с']].forEach(([inp,val,key,suf])=>{
-    const el=document.getElementById(inp); el.oninput=()=>{ editState[key]=parseFloat(el.value); document.getElementById(val).textContent=el.value+suf; updateMiniPreview(); };
+  const wrap = document.getElementById('editCatRow'); 
+  wrap.innerHTML = '';
+  ['energy', 'calm', 'sleep', 'focus', 'balance'].forEach(k => {
+    const o = document.createElement('div'); 
+    o.className = 'cat-opt' + (k === editState.cat ? ' active' : ''); 
+    o.textContent = CATEGORIES[k].label;
+    o.onclick = () => { editState.cat = k; buildCatSelect(); }; 
+    wrap.appendChild(o);
   });
 }
-let miniTimer=null;
+
+function buildGlyphSelect() {
+  const wrap = document.getElementById('glyphSelect'); 
+  wrap.innerHTML = '';
+  GLYPHS.forEach(g => {
+    const c = document.createElement('div'); 
+    c.className = 'round-chip' + (g === editState.glyph ? ' active' : ''); 
+    c.textContent = g;
+    c.onclick = () => { editState.glyph = g; buildGlyphSelect(); }; 
+    wrap.appendChild(c);
+  });
+}
+
+function buildBaseSelect() {
+  const wrap = document.getElementById('baseSelect'); 
+  wrap.innerHTML = '';
+  ['box', 'coherent', 'wimhof', 'fourseven', 'extendedexhale'].forEach(k => {
+    const pill = document.createElement('div'); 
+    pill.className = 'base-pill'; 
+    pill.textContent = BUILTIN[k].name;
+    pill.onclick = () => applyBase(k, pill, wrap); 
+    wrap.appendChild(pill);
+  });
+}
+
+function applyBase(key, el, wrap) {
+  wrap.querySelectorAll('.base-pill').forEach(p => p.classList.remove('active')); 
+  el.classList.add('active');
+  const p = BUILTIN[key]; 
+  editState.type = p.type;
+  if (p.type === 'cycle') { 
+    editState.inhale = p.phases[0].sec; 
+    editState.hold1 = p.phases[1] && p.phases[1].action === 'hold-full' ? p.phases[1].sec : 0;
+    const ex = p.phases.find(x => x.action === 'contract'); 
+    editState.exhale = ex ? ex.sec : 4;
+    const h2 = p.phases.find(x => x.action === 'hold-empty'); 
+    editState.hold2 = h2 ? h2.sec : 0; 
+  }
+  else { 
+    editState.breaths = p.breaths; 
+    editState.pace = p.pace; 
+    editState.recover = p.holdRecover; 
+  }
+  editState.rounds = p.defaultRounds;
+  setEditType(editState.type); 
+  syncSlidersFromState(); 
+  buildEditRoundSelect(); 
+  updateMiniPreview();
+}
+
+function setEditType(type) {
+  editState.type = type;
+  document.getElementById('typeCycleBtn').classList.toggle('active', type === 'cycle');
+  document.getElementById('typeWimhofBtn').classList.toggle('active', type === 'wimhof');
+  document.getElementById('editorCycleFields').style.display = type === 'cycle' ? 'block' : 'none';
+  document.getElementById('editorWimhofFields').style.display = type === 'wimhof' ? 'block' : 'none';
+}
+
+function buildEditRoundSelect() {
+  const wrap = document.getElementById('editRoundSelect'); 
+  wrap.innerHTML = '';
+  for (let i = 1; i <= 10; i++) { 
+    const c = document.createElement('div'); 
+    c.className = 'round-chip' + (i === editState.rounds ? ' active' : ''); 
+    c.textContent = i;
+    c.onclick = () => { editState.rounds = i; buildEditRoundSelect(); }; 
+    wrap.appendChild(c); 
+  }
+  document.getElementById('editRoundCustom').value = editState.rounds;
+}
+
+document.getElementById('editRoundCustom').addEventListener('input', function() {
+  const n = parseInt(this.value, 10);
+  if (!n || n < 1) return;
+  editState.rounds = Math.min(n, 99);
+  document.querySelectorAll('#editRoundSelect .round-chip').forEach((c, idx) => c.classList.toggle('active', idx + 1 === editState.rounds));
+});
+
+function syncSlidersFromState() {
+  document.getElementById('sInhale').value = editState.inhale; 
+  document.getElementById('valInhale').textContent = editState.inhale + 'с';
+  document.getElementById('sHold1').value = editState.hold1; 
+  document.getElementById('valHold1').textContent = editState.hold1 + 'с';
+  document.getElementById('sExhale').value = editState.exhale; 
+  document.getElementById('valExhale').textContent = editState.exhale + 'с';
+  document.getElementById('sHold2').value = editState.hold2; 
+  document.getElementById('valHold2').textContent = editState.hold2 + 'с';
+  document.getElementById('sBreaths').value = editState.breaths; 
+  document.getElementById('valBreaths').textContent = editState.breaths;
+  document.getElementById('sPace').value = editState.pace; 
+  document.getElementById('valPace').textContent = editState.pace + 'с';
+  document.getElementById('sRecover').value = editState.recover; 
+  document.getElementById('valRecover').textContent = editState.recover + 'с';
+}
+
+function bindSliders() {
+  [['sInhale', 'valInhale', 'inhale', 'с'], ['sHold1', 'valHold1', 'hold1', 'с'], ['sExhale', 'valExhale', 'exhale', 'с'],
+   ['sHold2', 'valHold2', 'hold2', 'с'], ['sBreaths', 'valBreaths', 'breaths', ''], ['sPace', 'valPace', 'pace', 'с'],
+   ['sRecover', 'valRecover', 'recover', 'с']].forEach(([inp, val, key, suf]) => {
+    const el = document.getElementById(inp); 
+    el.oninput = () => { 
+      editState[key] = parseFloat(el.value); 
+      document.getElementById(val).textContent = el.value + suf; 
+      updateMiniPreview(); 
+    };
+  });
+}
+
+let miniTimer = null;
 function updateMiniPreview() {
-  clearTimeout(miniTimer); const mr=document.getElementById('miniRing');
-  mr.style.transition='transform 1.2s ease'; mr.style.transform='scale(0.6)';
-  const inS=editState.type==='wimhof'?editState.pace:editState.inhale;
-  const exS=editState.type==='wimhof'?editState.pace*0.75:editState.exhale;
-  function loop(){ mr.style.transition=`transform ${inS}s ease`; mr.style.transform='scale(1.15)';
-    miniTimer=setTimeout(()=>{ mr.style.transition=`transform ${exS}s ease`; mr.style.transform='scale(0.6)';
-      miniTimer=setTimeout(loop, exS*1000+200); }, inS*1000+200); }
+  clearTimeout(miniTimer); 
+  const mr = document.getElementById('miniRing');
+  mr.style.transition = 'transform 1.2s ease'; 
+  mr.style.transform = 'scale(0.6)';
+  const inS = editState.type === 'wimhof' ? editState.pace : editState.inhale;
+  const exS = editState.type === 'wimhof' ? editState.pace * 0.75 : editState.exhale;
+  function loop() { 
+    mr.style.transition = `transform ${inS}s ease`; 
+    mr.style.transform = 'scale(1.15)';
+    miniTimer = setTimeout(() => { 
+      mr.style.transition = `transform ${exS}s ease`; 
+      mr.style.transform = 'scale(0.6)';
+      miniTimer = setTimeout(loop, exS * 1000 + 200); 
+    }, inS * 1000 + 200); 
+  }
   loop();
 }
+
 function saveCustomPattern() {
-  const name=document.getElementById('editName').value.trim();
-  if (!name){ document.getElementById('editName').focus(); return; }
-  const key=editState.key||('custom_'+Date.now()); const custom=loadCustom();
-  const st=CAT_STYLE[editState.cat]||CAT_STYLE.balance;
+  const name = document.getElementById('editName').value.trim();
+  if (!name) { document.getElementById('editName').focus(); return; }
+  const key = editState.key || ('custom_' + Date.now()); 
+  const custom = loadCustom();
   let obj;
-  if (editState.type==='wimhof') {
-    obj={ name, cat:editState.cat, desc:`${editState.breaths} вдохов · темп ${editState.pace}с · восстановление ${editState.recover}с`,
-      glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'wimhof', breaths:editState.breaths, pace:editState.pace, holdRecover:editState.recover, exhaleMethod:editState.wimExhaleMethod, safety:true };
+  if (editState.type === 'wimhof') {
+    obj = { name, cat: editState.cat, desc: `${editState.breaths} вдохов · темп ${editState.pace}с · восстановление ${editState.recover}с`,
+      glyph: editState.glyph, level: 'Свой', defaultRounds: editState.rounds, type: 'wimhof', breaths: editState.breaths, pace: editState.pace, holdRecover: editState.recover, exhaleMethod: editState.wimExhaleMethod, safety: true };
   } else {
     const inLabel = 'Вдох ' + editState.inhaleMethod;
     const exLabel = 'Выдох ' + editState.exhaleMethod;
-    const phases=[ph(inLabel,inLabel,editState.inhale,'expand')];
-    if (editState.hold1>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold1,'hold-full'));
-    phases.push(ph(exLabel,exLabel,editState.exhale,'contract'));
-    if (editState.hold2>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold2,'hold-empty'));
-    const d=[`Вдох ${editState.inhale}`]; if(editState.hold1>0)d.push(`держи ${editState.hold1}`); d.push(`выдох ${editState.exhale}`); if(editState.hold2>0)d.push(`держи ${editState.hold2}`);
-    obj={ name, cat:editState.cat, desc:d.join(' — '), glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'cycle', phases };
+    const phases = [ph(inLabel, inLabel, editState.inhale, 'expand')];
+    if (editState.hold1 > 0) phases.push(ph('Задержи дыхание', 'Задержи дыхание', editState.hold1, 'hold-full'));
+    phases.push(ph(exLabel, exLabel, editState.exhale, 'contract'));
+    if (editState.hold2 > 0) phases.push(ph('Задержи дыхание', 'Задержи дыхание', editState.hold2, 'hold-empty'));
+    const d = [`Вдох ${editState.inhale}`]; 
+    if (editState.hold1 > 0) d.push(`держи ${editState.hold1}`); 
+    d.push(`выдох ${editState.exhale}`); 
+    if (editState.hold2 > 0) d.push(`держи ${editState.hold2}`);
+    obj = { name, cat: editState.cat, desc: d.join(' — '), glyph: editState.glyph, level: 'Свой', defaultRounds: editState.rounds, type: 'cycle', phases };
   }
-  custom[key]=obj; saveCustom(custom); vibrate(12); renderHome(); showScreen('screen-home');
+  custom[key] = obj; 
+  saveCustom(custom); 
+  vibrate('tick'); 
+  renderHome(); 
+  showScreen('screen-home');
 }
+
 function deleteCustomPattern() {
   if (!editState.key) return;
-  const custom=loadCustom(); delete custom[editState.key]; saveCustom(custom);
-  const favs=loadFavs().filter(k=>k!==editState.key); saveFavs(favs);
-  vibrate(20); renderHome(); showScreen('screen-home');
+  const custom = loadCustom(); 
+  delete custom[editState.key]; 
+  saveCustom(custom);
+  const favs = loadFavs().filter(k => k !== editState.key); 
+  saveFavs(favs);
+  vibrate('tick'); 
+  renderHome(); 
+  showScreen('screen-home');
 }
 
 /* ---------- ONBOARDING ---------- */
@@ -2219,38 +2736,42 @@ const WELCOME_PHRASES = [
   'Один вдох — и всё немного иначе. Что выбираешь на сегодня?',
   'Тело слушает дыхание внимательнее, чем мысли. Куда направим внимание?'
 ];
+
 function setRandomWelcomePhrase() {
   const el = document.getElementById('welcomeSub');
-  el.textContent = WELCOME_PHRASES[Math.floor(Math.random()*WELCOME_PHRASES.length)];
+  el.textContent = WELCOME_PHRASES[Math.floor(Math.random() * WELCOME_PHRASES.length)];
 }
+
 function spawnWelcomeParticles() {
   const wrap = document.getElementById('welcomeParticles');
   wrap.innerHTML = '';
   const count = 14;
-  for (let i=0;i<count;i++){
+  for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'welcome-particle';
-    const size = 3 + Math.random()*5;
-    p.style.width = size+'px'; p.style.height = size+'px';
-    p.style.left = (Math.random()*100)+'%';
-    p.style.top = (40+Math.random()*55)+'%';
-    const duration = 9 + Math.random()*8;
-    const delay = Math.random()*10;
-    p.style.animationDuration = duration+'s';
-    p.style.animationDelay = delay+'s';
+    const size = 3 + Math.random() * 5;
+    p.style.width = size + 'px'; 
+    p.style.height = size + 'px';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.top = (40 + Math.random() * 55) + '%';
+    const duration = 9 + Math.random() * 8;
+    const delay = Math.random() * 10;
+    p.style.animationDuration = duration + 's';
+    p.style.animationDelay = delay + 's';
     wrap.appendChild(p);
   }
 }
+
 function pickGoal(goal) {
-  if (goal) { try { localStorage.setItem('pneuma_goal', goal); } catch(e){} }
-  try { localStorage.setItem('pneuma_onboarded','1'); } catch(e){}
+  if (goal) { try { localStorage.setItem('pneuma_goal', goal); } catch(e) {} }
+  try { localStorage.setItem('pneuma_onboarded', '1'); } catch(e) {}
   document.getElementById('welcome').classList.remove('active');
-  vibrate(12); renderHome();
+  vibrate('tick'); 
+  renderHome();
 }
 
 /* ---------- INIT ---------- */
 loadSettings();
-preloadAudioCues();
 if (!localStorage.getItem('pneuma_onboarded')) {
   setRandomWelcomePhrase();
   spawnWelcomeParticles();
@@ -2259,19 +2780,18 @@ if (!localStorage.getItem('pneuma_onboarded')) {
 renderHome();
 
 /* ---------- TELEGRAM WEBAPP ---------- */
-(function initTelegram(){
+(function initTelegram() {
   try {
     const tg = window.Telegram && window.Telegram.WebApp;
     if (!tg) return;
     tg.ready();
     tg.expand();
-    try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch(e){}
-    try { tg.setHeaderColor && tg.setHeaderColor('#100F1C'); } catch(e){}
-    try { tg.setBackgroundColor && tg.setBackgroundColor('#100F1C'); } catch(e){}
-    try { tg.BackButton && tg.BackButton.onClick(()=>{ const s=document.getElementById('screen-session'); if (s && s.classList.contains('active')) exitSession(); }); } catch(e){}
-  } catch(e){}
+    try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch(e) {}
+    try { tg.setHeaderColor && tg.setHeaderColor('#100F1C'); } catch(e) {}
+    try { tg.setBackgroundColor && tg.setBackgroundColor('#100F1C'); } catch(e) {}
+    try { tg.BackButton && tg.BackButton.onClick(() => { const s = document.getElementById('screen-session'); if (s && s.classList.contains('active')) exitSession(); }); } catch(e) {}
+  } catch(e) {}
 })();
-
 </script>
 </body>
 </html>
