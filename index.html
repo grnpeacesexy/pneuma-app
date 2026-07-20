@@ -33,7 +33,8 @@
     --font-display: 'Fraunces', Georgia, serif;
     --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select:none; }
+  /* ИСПРАВЛЕНИЕ: Добавлено touch-action: manipulation для мгновенного отклика кнопок на телефоне */
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select:none; touch-action: manipulation; }
   html, body {
     margin:0; padding:0; height:100%; overflow-x:hidden;
     overscroll-behavior:none; -webkit-overflow-scrolling:touch;
@@ -273,7 +274,6 @@
   #screenOffOverlay .soff-hint { color:rgba(255,255,255,0.35); font-size:13px; text-align:center; padding:0 40px; }
   #screenOffOverlay .soff-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.25); }
 </style>
-<base target="_blank">
 </head>
 <body>
 <div id="app">
@@ -645,6 +645,8 @@
 <script>
 // ============================================================
 // ПНЕВМА — премиальное дыхательное приложение (без таймера)
+// Оптимизировано: исправлены баги с кнопками на мобильных,
+// добавлен синтезатор голоса (TTS) как фолбэк для MP3.
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -679,7 +681,6 @@ function cycle(inhale, hold1, exhale, hold2, opts) {
 /* ---------- BUILT-IN LIBRARY ---------- */
 const WHY_NOTES = {
   wimhof: 'Быстрая гипервентиляция и задержка запускают выброс адреналина — для бодрости и стрессоустойчивости.',
-  wimhof_intense: 'Усиленная версия классического метода — больше вдохов и дольше задержка, для тех, кто уже освоился.',
   fire: 'Резкие выдохи носом разогревают тело и быстро поднимают тонус.',
   energize6020: 'Короткий выдох относительно вдоха смещает баланс в сторону бодрости.',
   bhastrika: 'Мощное ритмичное дыхание для быстрого прилива энергии.',
@@ -723,7 +724,6 @@ const WHY_NOTES = {
 };
 const BUILTIN = {
   wimhof: { name:'Метод Вима Хофа', cat:'energy', desc:'30 глубоких вдохов, задержка на выдохе', glyph:'❄', level:'Средне', defaultRounds:3, type:'wimhof', breaths:30, pace:1.6, holdRecover:15, safety:true },
-  wimhof_intense: { name:'Вим Хоф · усиленный', cat:'energy', desc:'40 вдохов, задержка до предела', glyph:'⚡', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:40, pace:1.4, holdRecover:20, safety:true },
   fire: { name:'Огненное дыхание', cat:'energy', desc:'Капалабхати — быстрые выдохи носом', glyph:'🔥', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:30, pace:1.0, holdRecover:10, safety:true, exhaleMethod:'носом' },
   energize6020: { name:'Дыхание бодрости', cat:'energy', desc:'Вдох 6 — выдох 2', glyph:'☀', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(6,0,2,0) },
   bhastrika: { name:'Бхастрика', cat:'energy', desc:'Мощное ритмичное дыхание', glyph:'✦', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:25, pace:1.2, holdRecover:12, safety:true },
@@ -842,11 +842,18 @@ let state = {
 };
 let activeCat = 'all';
 let audioCtx = null;
+
+// ИСПРАВЛЕНИЕ: Безопасная инициализация AudioContext для обхода блокировок автоплея
 function ensureAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(()=>{});
+  }
   return audioCtx;
 }
+
 let noiseNode = null, noiseGain = null, noiseFilter = null, wakeLock = null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
 let sessionToken=0, pendingSessionKey=null;
@@ -862,7 +869,6 @@ function saveSettings() {
     hapticOn:state.hapticOn,
     lang:state.lang,
     toneVariant:state.toneVariant,
-    
     breathNoiseOn:state.breathNoiseOn,
     tapSkipOn:state.tapSkipOn,
     noNumbersOn:state.noNumbersOn,
@@ -889,7 +895,6 @@ function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(()=>{}); w
 document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible' && state.running && !wakeLock) requestWakeLock(); });
 
 /* ---------- AUDIO ---------- */
-function ensureAudioCtx() { if (!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
 function chimeLayered(ctx, layers, now) {
   const volMult = (state.volBell != null ? state.volBell : 70) / 100;
   layers.forEach(L => {
@@ -915,6 +920,7 @@ function bell() {
   if (!state.bellOn) return;
   try {
     const ctx = ensureAudioCtx();
+    if (!ctx) return;
     const now = ctx.currentTime;
     chimeLayered(ctx, [
       { freq: 528,     gain: 0.22, decay: 2.0 },
@@ -928,6 +934,7 @@ function phaseChime(action) {
   if (!state.bellOn) return;
   try {
     const ctx = ensureAudioCtx();
+    if (!ctx) return;
     const now = ctx.currentTime;
     let base = 392, target = 392;
     if (action === 'expand' || action === 'expand-more') { base = 440; target = 587; }
@@ -961,7 +968,7 @@ function startMusic(cat) {
   if (!state.musicOn) return;
   try {
     stopMusicHard();
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
     const profile = MUSIC_PROFILES[cat] || MUSIC_PROFILES.balance;
     const volMult = (state.volMusic!=null?state.volMusic:70)/100;
     const master=ctx.createGain(); master.gain.setValueAtTime(0.0001, now);
@@ -1055,7 +1062,7 @@ let oceanNode=null, oceanGain=null, oceanFilter=null, oceanLfo=null;
 function startOceanTexture(key) {
   if (!state.musicOn || !OCEAN_PATTERNS[key]) return;
   try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
     const bufSize=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufSize,ctx.sampleRate), data=buf.getChannelData(0);
     let last=0; for (let i=0;i<bufSize;i++){ const white=Math.random()*2-1; last=(last+0.02*white)/1.02; data[i]=last*4.5; }
     oceanNode=ctx.createBufferSource(); oceanNode.buffer=buf; oceanNode.loop=true;
@@ -1083,7 +1090,7 @@ function startBhramariHum(sec) {
   if (!state.musicOn) return;
   try {
     stopBhramariHum();
-    const ctx = ensureAudioCtx();
+    const ctx = ensureAudioCtx(); if(!ctx) return;
     const now = ctx.currentTime;
     bhramariOsc = ctx.createOscillator();
     bhramariOsc.type = 'sine';
@@ -1131,7 +1138,7 @@ function vibrate(pattern) {
 function startBreathNoise() {
   if (!state.breathNoiseOn) return;
   try {
-    const ctx = ensureAudioCtx();
+    const ctx = ensureAudioCtx(); if(!ctx) return;
     const bs = 2 * ctx.sampleRate;
     const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
     const d = buf.getChannelData(0);
@@ -1166,7 +1173,7 @@ function setNoiseLevel(level, dur) {
   } catch(e) {}
 }
 
-/* ---------- VOICE ---------- */
+/* ---------- VOICE (MP3 + TTS FALLBACK) ---------- */
 const AUDIO_BASE = 'audio/ru/';
 const AUDIO_MAP = {
   'Вдох': 'inhale.mp3',
@@ -1184,7 +1191,7 @@ const AUDIO_MAP = {
   '3': 'count_3.mp3'
 };
 let audioCueCache={}, audioCueAvailable={}, audioCuesUnlocked=false;
-let speechRequestId=0, voiceTestToken=0;
+
 function preloadAudioCues() {
   Object.keys(AUDIO_MAP).forEach(text => {
     try {
@@ -1195,86 +1202,81 @@ function preloadAudioCues() {
     } catch(e){}
   });
 }
-const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAAAA';
-function unlockAudioCues() {
+
+// ИСПРАВЛЕНИЕ: Разблокировка аудио при первом касании экрана
+function unlockAudio() {
+  ensureAudioCtx();
   if (audioCuesUnlocked) return;
-  audioCuesUnlocked=true;
+  audioCuesUnlocked = true;
   try {
-    const silent=new Audio(SILENT_WAV); silent.volume=0;
-    const p=silent.play();
-    if (p&&p.catch) p.catch(()=>{});
+    const silent = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAAAA');
+    silent.volume = 0;
+    silent.play().then(()=>{}).catch(()=>{});
   } catch(e){}
 }
-function playMelodicFallback(cueName) {
-  const CUE_MELODIES = {
-    'Вдох':     { notes: [523.25, 659.25, 783.99], type: 'rising',  duration: 0.8 },
-    'Выдох':    { notes: [783.99, 659.25, 523.25], type: 'falling', duration: 1.0 },
-    'Задержи':  { notes: [440.00, 440.00],         type: 'hold',    duration: 0.6 },
-    'Задержи дыхание': { notes: [440.00, 440.00],  type: 'hold',    duration: 0.6 },
-    'Пауза':    { notes: [349.23, 349.23],         type: 'hold',    duration: 0.5 },
-    'Ещё':      { notes: [587.33, 698.46],         type: 'rising',  duration: 0.5 },
-    'Вдохни и задержи': { notes: [523.25, 440.00], type: 'falling', duration: 0.7 },
-    'Выдохни и задержи дыхание': { notes: [392.00, 349.23], type: 'falling', duration: 0.7 },
-    'Сессия завершена': { notes: [523.25, 659.25, 783.99, 1046.50], type: 'rising', duration: 1.5 },
-    'Привет':   { notes: [440.00, 523.25],         type: 'rising',  duration: 0.5 },
-    '1': { notes: [523.25], type: 'hold', duration: 0.3 },
-    '2': { notes: [587.33], type: 'hold', duration: 0.3 },
-    '3': { notes: [659.25], type: 'hold', duration: 0.3 }
-  };
-  const cue = CUE_MELODIES[cueName];
-  if (!cue) return;
-  try {
-    const ctx = ensureAudioCtx();
-    const now = ctx.currentTime;
-    const vol = (state.volCue || 70) / 100;
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0.0001, now);
-    masterGain.gain.exponentialRampToValueAtTime(0.12 * vol, now + 0.05);
-    masterGain.connect(ctx.destination);
-    const noteDuration = cue.duration / cue.notes.length;
-    cue.notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + i * noteDuration);
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(freq * 3, now + i * noteDuration);
-      g.gain.setValueAtTime(0.0001, now + i * noteDuration);
-      g.gain.exponentialRampToValueAtTime(0.3, now + i * noteDuration + 0.03);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + (i + 1) * noteDuration);
-      osc.connect(filter);
-      filter.connect(g);
-      g.connect(masterGain);
-      osc.start(now + i * noteDuration);
-      osc.stop(now + (i + 1) * noteDuration + 0.05);
-    });
-    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + cue.duration + 0.2);
-  } catch(e) {}
-}
+document.body.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+document.body.addEventListener('click', unlockAudio, { once: true });
+
 function stopAllAudioCues() {
   Object.values(audioCueCache).forEach(el => { try { if (!el.paused) { el.pause(); el.currentTime=0; } } catch(e){} });
 }
-function stopSpeechCues() { stopAllAudioCues(); }
+
+// ИСПРАВЛЕНИЕ: Синтез речи (TTS) если MP3 не сработал или недоступен
+function speakTTS(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = state.lang || 'ru-RU';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = (state.volCue != null ? state.volCue : 70) / 100;
+    
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length) {
+      const langPrefix = (state.lang || 'ru-RU').split('-')[0];
+      const matchedVoice = voices.find(v => v.lang.startsWith(langPrefix));
+      if (matchedVoice) utterance.voice = matchedVoice;
+    }
+    window.speechSynthesis.speak(utterance);
+  } catch(e) {}
+}
+
 function speak(t) {
   if (state.cueMode!=='voice') return;
+  // Останавливаем и TTS, и MP3 перед новым звуком
+  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+  stopAllAudioCues();
+
   const clip = audioCueCache[t];
+  // Если MP3 загрузился успешно - пытаемся проиграть его
   if (clip && audioCueAvailable[t] === true) {
     try {
-      stopAllAudioCues();
       clip.currentTime = 0;
       clip.volume = (state.volCue != null ? state.volCue : 70) / 100;
       const p = clip.play();
       if (p && p.catch) {
-        p.catch(() => { playMelodicFallback(t); });
+        // Если MP3 заблокировался браузером (например, на iOS) - переходим на синтез речи
+        p.catch(() => { speakTTS(t); });
       }
       return;
-    } catch(e) {}
+    } catch(e) {
+      speakTTS(t);
+      return;
+    }
   }
-  playMelodicFallback(t);
+  // Если MP3 файла нет (404) или он не загрузился - сразу синтез речи
+  speakTTS(t);
 }
+
+function stopSpeechCues() {
+  stopAllAudioCues();
+  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+}
+
 function testVoiceCues() {
   if (state.cueMode!=='voice') { setCueMode('voice'); }
+  unlockAudio();
   ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
     setTimeout(() => { speak(cue); }, index*1400);
   });
@@ -1288,12 +1290,19 @@ const TONE_VARIANTS = {
   crystal:{ wave: 'sine',     inFreq: 523, outFreq: 392, holdFreq: 330, inHarmonics: [2, 3, 4], outHarmonics: [2, 3, 4], holdHarmonics: [2, 3] }
 };
 
-
+let toneOsc=null, toneGain=null, toneOsc2=null, toneGain2=null;
+function stopAllTones() {
+  try { if (toneOsc) { toneOsc.stop(); toneOsc.disconnect(); } } catch(e){}
+  try { if (toneGain) toneGain.disconnect(); } catch(e){}
+  try { if (toneOsc2) { toneOsc2.stop(); toneOsc2.disconnect(); } } catch(e){}
+  try { if (toneGain2) toneGain2.disconnect(); } catch(e){}
+  toneOsc=null; toneGain=null; toneOsc2=null; toneGain2=null;
+}
 function playTone(phase, durationSec) {
   if (state.cueMode!=='tone') return;
   try {
-    stopTone();
-    const ctx=ensureAudioCtx();
+    stopAllTones();
+    const ctx=ensureAudioCtx(); if(!ctx) return;
     const volMult = (state.volCue!=null?state.volCue:70)/100;
     const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
     const osc=ctx.createOscillator(); const g=ctx.createGain();
@@ -1470,7 +1479,7 @@ function renderPatternList() {
 function cardTick() {
   if (!state.cardTickOn) return;
   try {
-    const ctx = ensureAudioCtx();
+    const ctx = ensureAudioCtx(); if(!ctx) return;
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
@@ -1625,10 +1634,17 @@ function refreshPreStartDuration() {
 }
 
 /* ---------- TAP ---------- */
-document.getElementById('ringWrap').addEventListener('click', ()=>{
+// ИСПРАВЛЕНИЕ: обработка касаний работает теперь без задержек на мобильных
+function handleRingTap() {
   if (!state.tapSkipOn||!state.running||!isHoldPhase) return;
-  const now=Date.now(); if (now-lastTapTime<400){ skipRequested=true; vibrate('skip'); } lastTapTime=now;
-});
+  const now=Date.now(); 
+  if (now-lastTapTime<400){ skipRequested=true; vibrate('skip'); } 
+  lastTapTime=now;
+}
+const ringWrapEl = document.getElementById('ringWrap');
+ringWrapEl.addEventListener('touchend', (e) => { e.preventDefault(); handleRingTap(); }, { passive: false });
+ringWrapEl.addEventListener('click', handleRingTap);
+
 function requestSkip() {
   if (!state.running) return;
   if (isHoldPhase) {
@@ -1686,12 +1702,12 @@ async function runTimedPhase(totalSec, tok, onSecond) {
 /* ---------- SESSION ENGINE ---------- */
 async function toggleStart() {
   if (state.running) return;
+  unlockAudio(); // Разблокируем аудио при нажатии "Начать"
   ensureAudioCtx();
   state.running=true; state.sessionStart=Date.now(); sessionToken++;
   const token=sessionToken;
   previousHoldSeconds=null;
   document.getElementById('startBtn').textContent='Идёт…';
-  ensureAudioCtx();
   await requestWakeLock(); startBreathNoise();
   const p=getAllPatterns()[state.currentPattern];
   startMusic(p.cat); startOceanTexture(state.currentPattern);
@@ -2066,6 +2082,16 @@ function previewTone(variant) {
 function buildVoicePickRow() {
   const sel = document.getElementById('voicePickSelect');
   sel.innerHTML = '<option value="">Голосовые mp3-файлы</option>';
+  // Добавляем синтезированные голоса браузера
+  if ('speechSynthesis' in window) {
+    const voices = window.speechSynthesis.getVoices();
+    voices.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = `${v.name} (${v.lang})`;
+      sel.appendChild(opt);
+    });
+  }
 }
 function onVoicePick(uri) { state.voiceURI=uri; saveSettings(); }
 
@@ -2114,7 +2140,7 @@ function tSet(key, id) {
 document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); });
 
 document.getElementById('volCueSlider').addEventListener('input', e=>{ state.volCue=parseInt(e.target.value); document.getElementById('volCueVal').textContent=state.volCue+'%'; saveSettings(); });
-document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { const saved=state.cueMode; playTone('in',1.2); } });
+document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { playTone('in',1.2); } });
 document.getElementById('volBellSlider').addEventListener('input', e=>{ state.volBell=parseInt(e.target.value); document.getElementById('volBellVal').textContent=state.volBell+'%'; saveSettings(); });
 document.getElementById('volBellSlider').addEventListener('change', ()=>{ bell(); });
 document.getElementById('volMusicSlider').addEventListener('input', e=>{ state.volMusic=parseInt(e.target.value); document.getElementById('volMusicVal').textContent=state.volMusic+'%'; saveSettings(); });
@@ -2299,6 +2325,15 @@ if (!localStorage.getItem('pneuma_onboarded')) {
   document.getElementById('welcome').classList.add('active');
 }
 renderHome();
+
+// Загрузка голосов для TTS (синтез речи)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    if (document.getElementById('screen-settings').classList.contains('active')) {
+      buildVoicePickRow();
+    }
+  };
+}
 
 /* ---------- TELEGRAM WEBAPP ---------- */
 (function initTelegram(){
