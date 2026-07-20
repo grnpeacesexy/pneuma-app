@@ -33,6 +33,7 @@
     --font-display: 'Fraunces', Georgia, serif;
     --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   }
+  /* ИСПРАВЛЕНИЕ: Добавлено touch-action: manipulation для мгновенного отклика кнопок */
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select:none; touch-action: manipulation; }
   html, body {
     margin:0; padding:0; height:100%; overflow-x:hidden;
@@ -41,38 +42,36 @@
     color: var(--text-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    transition: background 1.5s ease;
   }
   #app { min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; position:relative; }
 
-  .screen { display:none; flex:1; flex-direction:column; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); }
+  .screen { display:none; flex:1; flex-direction:column; animation: fadeIn 0.4s ease; padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); }
   .screen.active { display:flex; }
-  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
   @keyframes riseIn { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
 
   /* ============ HOME ============ */
   .home-header { margin-bottom: 6px; }
-  .greeting { font-family: var(--font-display); font-size:28px; font-weight:600; letter-spacing:0.2px; line-height:1.15; }
+  .greeting { font-family: var(--font-display); font-size:26px; font-weight:600; letter-spacing:0.2px; line-height:1.15; }
   .greeting-sub { color: var(--text-secondary); font-size:14px; margin-top:4px; }
   .header-row { display:flex; align-items:flex-start; justify-content:space-between; }
-  .icon-btn { width:42px; height:42px; border-radius:50%; border:0.5px solid var(--border); background: rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center; color: var(--text-secondary); font-size:18px; flex-shrink:0; transition: all 0.2s; }
-  .icon-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.06); }
+  .icon-btn { width:40px; height:40px; border-radius:50%; border:0.5px solid var(--border); background: rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center; color: var(--text-secondary); font-size:18px; flex-shrink:0; }
+  .icon-btn:active { transform: scale(0.92); }
 
   .hero-card {
-    margin-top:22px; border-radius:24px; padding:24px; position:relative; overflow:hidden;
+    margin-top:22px; border-radius:22px; padding:22px; position:relative; overflow:hidden;
     background: linear-gradient(150deg, rgba(139,124,246,0.22), rgba(139,124,246,0.05));
     border:0.5px solid var(--border-strong);
-    animation: riseIn 0.6s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: riseIn 0.5s ease;
   }
   .hero-eyebrow { font-size:11px; letter-spacing:1px; text-transform:uppercase; color: var(--accent); font-weight:600; margin-bottom:10px; }
-  .hero-name { font-family: var(--font-display); font-size:24px; font-weight:600; margin-bottom:4px; }
+  .hero-name { font-family: var(--font-display); font-size:22px; font-weight:600; margin-bottom:4px; }
   .hero-desc { font-size:13px; color: var(--text-secondary); line-height:1.5; margin-bottom:16px; max-width:85%; }
   .hero-meta { display:flex; gap:14px; font-size:12px; color: var(--text-muted); }
-  .hero-play { position:absolute; right:20px; bottom:20px; width:54px; height:54px; border-radius:50%; background: var(--accent); color:#0B0A12; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 6px 20px rgba(139,124,246,0.45); transition: transform 0.2s; }
+  .hero-play { position:absolute; right:20px; bottom:20px; width:52px; height:52px; border-radius:50%; background: var(--accent); color:#0B0A12; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 6px 20px rgba(139,124,246,0.45); }
   .hero-play:active { transform: scale(0.94); }
-  .repeat-card { margin-top:12px; border-radius:18px; padding:14px 16px; display:flex; align-items:center; gap:12px; background: rgba(255,255,255,0.03); border:0.5px solid var(--border-strong); animation: riseIn 0.6s ease; }
-  .repeat-glyph { width:40px; height:40px; border-radius:12px; background: rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .repeat-card { margin-top:12px; border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; background: rgba(255,255,255,0.03); border:0.5px solid var(--border-strong); animation: riseIn 0.5s ease; }
+  .repeat-glyph { width:38px; height:38px; border-radius:12px; background: rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
   .repeat-text { flex:1; min-width:0; }
   .repeat-title { font-size:14px; font-weight:600; }
   .repeat-sub { font-size:12px; color: var(--text-muted); margin-top:2px; }
@@ -85,11 +84,13 @@
   .section-label { font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color: var(--text-muted); font-weight:600; margin: 22px 0 12px; }
 
   .pattern-list { display:flex; flex-direction:column; gap:11px; overflow-y:auto; flex:1; padding-bottom: 20px; }
-  .pattern-card { display:flex; align-items:center; gap:14px; padding:16px; border-radius:20px; background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 0.5px solid var(--border); position: relative; animation: riseIn 0.4s ease backwards; transition: transform 0.15s, border-color 0.2s; }
-  .pattern-card:active { transform: scale(0.98); border-color: var(--border-strong); }
-  .pattern-glyph { width:50px; height:50px; border-radius:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .pattern-card { display:flex; align-items:center; gap:14px; padding:15px; border-radius:18px; background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); border: 0.5px solid var(--border); position: relative; animation: riseIn 0.4s ease backwards; }
+  .pattern-card:active { transform: scale(0.985); }
+  .pattern-card:active .pattern-glyph { animation: glyphPulse 0.4s ease; }
+  @keyframes glyphPulse { 0%{ transform:scale(1); } 40%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
+  .pattern-glyph { width:48px; height:48px; border-radius:15px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:21px; }
   .pattern-info { flex:1; min-width:0; }
-  .pattern-name { font-size:16px; font-weight:600; margin:0 0 3px; }
+  .pattern-name { font-size:15.5px; font-weight:600; margin:0 0 3px; }
   .pattern-desc { font-size:12.5px; color: var(--text-secondary); margin:0; line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
   .pattern-meta { font-size:11px; color: var(--text-muted); margin-top:6px; display:flex; gap:10px; align-items:center; }
   .pattern-spark { display:flex; gap:3px; margin-top:6px; }
@@ -99,24 +100,24 @@
   .fav-star.on { color: var(--gold); }
   .card-edit-btn { padding:6px; color: var(--text-muted); font-size:15px; flex-shrink:0; }
 
-  .fab { position:fixed; right:22px; bottom: max(22px, env(safe-area-inset-bottom)); width:56px; height:56px; border-radius:50%; background: var(--accent); color:#0B0A12; font-size:26px; display:flex; align-items:center; justify-content:center; box-shadow: 0 8px 24px rgba(139,124,246,0.4); z-index: 10; transition: transform 0.2s; }
-  .fab:active { transform: scale(0.92); }
+  .fab { position:fixed; right:22px; bottom: max(22px, env(safe-area-inset-bottom)); width:56px; height:56px; border-radius:50%; background: var(--accent); color:#0B0A12; font-size:26px; display:flex; align-items:center; justify-content:center; box-shadow: 0 8px 24px rgba(139,124,246,0.4); z-index: 10; }
+  .fab:active { transform: scale(0.94); }
   .empty-note { color: var(--text-muted); font-size:14px; text-align:center; padding:50px 20px; line-height:1.6; }
 
   /* ============ SESSION ============ */
   #screen-session { padding:0; justify-content:space-between; }
   .session-fade-bg { position:absolute; inset:0; background: var(--bg); opacity:0; transition: opacity 1.5s ease; pointer-events:none; z-index:0; }
   .session-top { display:flex; align-items:center; justify-content:space-between; padding: max(20px, env(safe-area-inset-top)) 20px 0; z-index:2; }
-  .session-title { font-family: var(--font-display); font-size:18px; font-weight:600; text-align:center; flex:1; padding:0 8px; }
+  .session-title { font-family: var(--font-display); font-size:17px; font-weight:600; text-align:center; flex:1; padding:0 8px; }
 
   .breathe-stage { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; z-index:2; min-height: 360px; }
-  .ring-wrap { position:relative; width:300px; height:300px; display:flex; align-items:center; justify-content:center; }
-  #progressRing { position:absolute; width:300px; height:300px; transform: rotate(-90deg); }
+  .ring-wrap { position:relative; width:290px; height:290px; display:flex; align-items:center; justify-content:center; }
+  #progressRing { position:absolute; width:290px; height:290px; transform: rotate(-90deg); }
   #progressRing circle { fill:none; stroke-width:2; }
   #progressTrack { stroke: rgba(255,255,255,0.06); }
   #progressBar { stroke: var(--accent); stroke-linecap:round; transition: stroke-dashoffset 0.4s linear; }
-  #glow { position:absolute; width:260px; height:260px; border-radius:50%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); filter: blur(10px); transform: scale(0.5); transition: transform 4s cubic-bezier(0.45,0,0.55,1), opacity 4s ease; opacity: 0.55; }
-  #ring { position:relative; width:210px; height:210px; border-radius:50%; border: 1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); display:flex; align-items:center; justify-content:center; flex-direction:column; transform: scale(0.55); transition: transform 4s cubic-bezier(0.45,0,0.55,1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset; }
+  #glow { position:absolute; width:250px; height:250px; border-radius:50%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); filter: blur(8px); transform: scale(0.5); transition: transform 4s cubic-bezier(0.45,0,0.55,1), opacity 4s ease; opacity: 0.55; }
+  #ring { position:relative; width:200px; height:200px; border-radius:50%; border: 1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); display:flex; align-items:center; justify-content:center; flex-direction:column; transform: scale(0.55); transition: transform 4s cubic-bezier(0.45,0,0.55,1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset; }
   #ring.pulse { animation: livePulse var(--pulse-speed, 2.4s) ease-in-out infinite; }
   @keyframes livePulse { 0%,100%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 24px 3px rgba(139,124,246,0.18);} 50%{ box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 0 36px 8px rgba(139,124,246,0.34);} }
   #ring.phase-flash { animation: phaseFlash var(--flash-speed, 0.5s) ease-out; }
@@ -130,7 +131,7 @@
 
   .ripple-layer { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity 1.8s ease; z-index:0; }
   #screen-session.cat-calm .ripple-layer { opacity:1; }
-  .ripple-ring { position:absolute; width:220px; height:220px; border-radius:50%; border:1px solid var(--accent); opacity:0; animation: rippleOut 4.5s ease-out infinite; }
+  .ripple-ring { position:absolute; width:210px; height:210px; border-radius:50%; border:1px solid var(--accent); opacity:0; animation: rippleOut 4.5s ease-out infinite; }
   @keyframes rippleOut { 0%{ transform:scale(1); opacity:0.3; } 100%{ transform:scale(1.7); opacity:0; } }
 
   .spark-layer { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity 1.8s ease; z-index:0; }
@@ -142,19 +143,17 @@
     25%{ opacity:0.85; }
     100%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-145px) scale(1.15); }
   }
-  
-  /* Улучшенные числа и текст */
-  #counter { font-size:48px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; transition: opacity 0.3s; }
-  #phaseWord { font-family: var(--font-display); font-size:18px; color: var(--text-secondary); margin-top:4px; letter-spacing:0.3px; text-align:center; padding:0 20px; transition: opacity 0.3s; }
-  #roundInfo { font-size:12px; color: var(--text-muted); margin-top:24px; letter-spacing:0.5px; transition: color 0.3s ease; }
+  #counter { font-size:44px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; }
+  #phaseWord { font-family: var(--font-display); font-size:16px; color: var(--text-secondary); margin-top:2px; letter-spacing:0.3px; text-align:center; padding:0 20px; }
+  #roundInfo { font-size:12px; color: var(--text-muted); margin-top:20px; letter-spacing:0.5px; transition: color 0.3s ease; }
   #roundInfo.round-done-flash { color: var(--accent); font-weight:600; }
   #tapHint { font-size:11px; color: var(--text-muted); margin-top:8px; opacity:0; transition: opacity 0.4s; text-align:center; height:14px; }
   #tapHint.show { opacity:1; }
 
   .session-controls { display:flex; gap:10px; padding: 0 20px max(20px, env(safe-area-inset-bottom)); z-index:2; }
-  .btn { flex:1; padding:16px; border-radius:16px; font-size:15px; font-weight:600; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); color: var(--text-primary); display:flex; align-items:center; justify-content:center; gap:8px; transition: transform 0.1s, background 0.2s; }
-  .btn:active { transform: scale(0.97); background: rgba(255,255,255,0.05); }
-  .btn-primary { background: var(--accent); border-color: var(--accent); color:#0B0A12; box-shadow: 0 4px 15px rgba(139,124,246, 0.3); }
+  .btn { flex:1; padding:16px; border-radius:16px; font-size:15px; font-weight:600; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); color: var(--text-primary); display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color:#0B0A12; }
   .btn-ghost { background:transparent; color: var(--text-secondary); }
   #startBtn { flex:1.4; }
   .wake-warning { font-size:11px; color: var(--gold); text-align:center; padding:0 20px 8px; z-index:2; }
@@ -162,23 +161,22 @@
   /* ============ SESSION COMPLETE ============ */
   #screen-complete { align-items:center; justify-content:center; text-align:center; }
   .complete-mark { width:80px; height:80px; border-radius:50%; background: var(--c-balance-bg); color: var(--c-balance); display:flex; align-items:center; justify-content:center; font-size:36px; margin-bottom:24px; animation: riseIn 0.5s ease; }
-  .complete-title { font-family: var(--font-display); font-size:28px; font-weight:600; margin-bottom:8px; }
+  .complete-title { font-family: var(--font-display); font-size:26px; font-weight:600; margin-bottom:8px; }
   .complete-sub { color: var(--text-secondary); font-size:15px; margin-bottom:28px; }
   .complete-stats { display:flex; gap:28px; margin-bottom:36px; }
   .complete-stat { text-align:center; }
-  .complete-stat .num { font-family: var(--font-display); font-size:30px; font-weight:600; color: var(--accent); }
+  .complete-stat .num { font-family: var(--font-display); font-size:28px; font-weight:600; color: var(--accent); }
   .complete-stat .lbl { font-size:12px; color: var(--text-muted); margin-top:2px; }
   .mood-row { display:flex; gap:12px; margin-bottom:28px; }
-  .mood-btn { width:52px; height:52px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); font-size:24px; display:flex; align-items:center; justify-content:center; transition: transform 0.1s; }
-  .mood-btn:active { transform: scale(0.9); }
+  .mood-btn { width:52px; height:52px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); font-size:24px; display:flex; align-items:center; justify-content:center; }
   .mood-btn.sel { border-color: var(--accent); background: var(--accent-glow); }
 
   /* ============ STATS ============ */
   .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
-  .header .brand { font-family: var(--font-display); font-size:24px; font-weight:600; }
+  .header .brand { font-family: var(--font-display); font-size:22px; font-weight:600; }
   .stat-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top: 4px; }
   .stat-card { background: rgba(255,255,255,0.03); border:0.5px solid var(--border); border-radius:16px; padding:16px; }
-  .stat-num { font-family: var(--font-display); font-size:30px; font-weight:600; }
+  .stat-num { font-family: var(--font-display); font-size:28px; font-weight:600; }
   .stat-label { font-size:12px; color: var(--text-secondary); margin-top:4px; }
   .achievements { display:flex; gap:10px; overflow-x:auto; margin:20px -20px 0; padding:0 20px 8px; }
   .calendar-grid { display:grid; grid-template-columns: repeat(14, 1fr); gap:4px; margin-top:12px; }
@@ -253,11 +251,10 @@
   @keyframes particleFloat { 0%{ transform:translateY(0) scale(0.8); opacity:0; } 15%{ opacity:0.35; } 85%{ opacity:0.2; } 100%{ transform:translateY(-140px) scale(1.1); opacity:0; } }
   .welcome-ring { position:relative; z-index:1; width:120px; height:120px; border-radius:50%; border:1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); margin-bottom:32px; animation: welcomeBreath 6s ease-in-out infinite; box-shadow: 0 0 40px 8px rgba(139,124,246,0.2); }
   @keyframes welcomeBreath { 0%,100%{ transform:scale(0.85);} 50%{ transform:scale(1.1);} }
-  .welcome-title { position:relative; z-index:1; font-family: var(--font-display); font-size:32px; font-weight:600; margin-bottom:10px; }
+  .welcome-title { position:relative; z-index:1; font-family: var(--font-display); font-size:30px; font-weight:600; margin-bottom:10px; }
   .welcome-sub { position:relative; z-index:1; color: var(--text-secondary); font-size:15px; line-height:1.6; margin-bottom:36px; max-width:300px; }
   .goal-grid { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:320px; margin-bottom:20px; }
-  .goal-btn { padding:18px 12px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); text-align:center; transition: transform 0.1s; }
-  .goal-btn:active { transform: scale(0.96); }
+  .goal-btn { padding:18px 12px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); text-align:center; }
   .goal-btn .g-icon { font-size:26px; margin-bottom:6px; }
   .goal-btn .g-lbl { font-size:13px; font-weight:500; }
   .welcome-skip { color: var(--text-muted); font-size:14px; padding:12px; }
@@ -647,9 +644,9 @@
 
 <script>
 // ============================================================
-// BREATH OS — Премиальное дыхательное приложение
-// Аудио-движок полностью переписан: MP3 проигрываются через 
-// Web Audio API для обхода блокировок iOS/Android.
+// ПНЕВМА — премиальное дыхательное приложение (без таймера)
+// Оптимизировано: исправлены баги с кнопками на мобильных,
+// добавлен синтезатор голоса (TTS) как фолбэк для MP3.
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -682,8 +679,53 @@ function cycle(inhale, hold1, exhale, hold2, opts) {
 }
 
 /* ---------- BUILT-IN LIBRARY ---------- */
+const WHY_NOTES = {
+  wimhof: 'Быстрая гипервентиляция и задержка запускают выброс адреналина — для бодрости и стрессоустойчивости.',
+  wimhof_intense: 'Усиленная версия классического метода — больше вдохов и дольше задержка, для тех, кто уже освоился.',
+  fire: 'Резкие выдохи носом разогревают тело и быстро поднимают тонус.',
+  energize6020: 'Короткий выдох относительно вдоха смещает баланс в сторону бодрости.',
+  bhastrika: 'Мощное ритмичное дыхание для быстрого прилива энергии.',
+  tonic444: 'Ровный вдох-задержка-выдох без нижней паузы — мягкая тонизация.',
+  coherent: 'Дыхание в резонансном ритме приводит нервную систему в равновесие.',
+  box: 'Равные фазы дыхания используют для быстрого возврата к ясности.',
+  sigh: 'Двойной вдох и долгий выдох сбрасывает физиологическое напряжение.',
+  extendedexhale: 'Выдох длиннее вдоха активирует парасимпатику.',
+  calm46: 'Мягкое замедление ритма без резких задержек.',
+  soothe: 'Небольшая задержка и удлинённый выдох создают ощущение укрытия.',
+  fourseven: 'Классика доктора Вайля — помогает уснуть.',
+  deepsleep: 'Углублённая версия 4-7-8 для более глубокого расслабления.',
+  slow39: 'Очень длинный выдох — тело считывает это как сигнал безопасности.',
+  moon: 'Медленный вечерний ритм без усилий.',
+  unwind: 'Максимально длинный выдох разгружает нервную систему.',
+  rhythm55: 'Равные вдох и выдох создают устойчивый фон для концентрации.',
+  concentrate: 'Удлинённый квадрат с задержками держит внимание собранным.',
+  triangle: 'Три фазы вместо четырёх — простой ритм для входа в фокус.',
+  natural: 'Просто наблюдение за естественным ритмом — без управления.',
+  ground: 'Асимметричные фазы возвращают внимание в тело.',
+  balance55: 'Ровный ритм без крайностей для устойчивого состояния.',
+  reset: 'Короткие паузы после вдоха и выдоха — мягкая перезагрузка.',
+  nadishodhana: 'Попеременное дыхание через ноздри для баланса полушарий.',
+  suryabhedana: 'Вдох через правую ноздрю стимулирует активность.',
+  chandrabhedana: 'Вдох через левую ноздрю охлаждает и расслабляет.',
+  ujjayi: 'Лёгкое сужение горла создаёт устойчивый ритм для медитации.',
+  sitali: 'Вдох через свёрнутый язык физически охлаждает.',
+  sitkari: 'Вдох сквозь сжатые зубы — охлаждающий эффект.',
+  bhramari: 'Гудение на выдохе успокаивает нервную систему.',
+  dirgha: 'Трёхчастное йогическое дыхание — полное дыхание.',
+  reversebreath: 'Обратное дыхание из цигун для концентрации.',
+  qigong: 'Медленное дыхание животом с паузами.',
+  viloma: 'Дыхание со ступенчатыми паузами тренирует контроль.',
+  tummo: 'Тибетская техника внутреннего огня — мощная энергия.',
+  anulomaviloma: 'Попеременное дыхание с задержкой — углублённая версия.',
+  anapanasati: 'Осознанное наблюдение за дыханием — без изменения ритма.',
+  buteyko: 'Очень лёгкое, тихое дыхание малым объёмом.',
+  liuzijue: 'Шесть исцеляющих звуков цигун — каждый со своим органом.',
+  holotropic: 'Быстрое непрерывное дыхание ртом — только для подготовленных.',
+  lamaze: 'Ритмичное поверхностное дыхание — переключение внимания.'
+};
 const BUILTIN = {
   wimhof: { name:'Метод Вима Хофа', cat:'energy', desc:'30 глубоких вдохов, задержка на выдохе', glyph:'❄', level:'Средне', defaultRounds:3, type:'wimhof', breaths:30, pace:1.6, holdRecover:15, safety:true },
+  wimhof_intense: { name:'Вим Хоф · усиленный', cat:'energy', desc:'40 вдохов, задержка до предела', glyph:'⚡', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:40, pace:1.4, holdRecover:20, safety:true },
   fire: { name:'Огненное дыхание', cat:'energy', desc:'Капалабхати — быстрые выдохи носом', glyph:'🔥', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:30, pace:1.0, holdRecover:10, safety:true, exhaleMethod:'носом' },
   energize6020: { name:'Дыхание бодрости', cat:'energy', desc:'Вдох 6 — выдох 2', glyph:'☀', level:'Легко', defaultRounds:8, type:'cycle', phases: cycle(6,0,2,0) },
   bhastrika: { name:'Бхастрика', cat:'energy', desc:'Мощное ритмичное дыхание', glyph:'✦', level:'Сложно', defaultRounds:3, type:'wimhof', breaths:25, pace:1.2, holdRecover:12, safety:true },
@@ -720,7 +762,7 @@ const BUILTIN = {
   sitali: { name:'Ситали (Охлаждающее)', cat:'calm', desc:'Вдох через свёрнутый язык, выдох носом', glyph:'❆', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох через свёрнутый язык', exLabel:'Выдох носом'}) },
   sitkari: { name:'Ситкари', cat:'calm', desc:'Вдох сквозь сжатые зубы, выдох носом', glyph:'⌇', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох сквозь сжатые зубы', exLabel:'Выдох носом'}) },
   bhramari: { name:'Брахмари (Гудение пчелы)', cat:'calm', desc:'Вдох носом, выдох с гудением "м-м-м"', glyph:'🐝', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(4,0,6,0,{exLabel:'Выдох с гудением "м-м-м"'}) },
-  dirgha: { name:'Дирга Пранаяма', cat:'balance', desc:'Полное йогическое дыхание', glyph:'❉', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,0,6,0,{inLabel:'Вдох: живот→рёбра→грудь', exLabel:'Выдох: грудь→рёбра→живот'}) },
+  dirgha: { name:'Дирга Пранаяма (Трёхчастное)', cat:'balance', desc:'Полное йогическое дыхание', glyph:'❉', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,0,6,0,{inLabel:'Вдох: живот→рёбра→грудь', exLabel:'Выдох: грудь→рёбра→живот'}) },
   reversebreath: { name:'Обратное дыхание', cat:'focus', desc:'Живот внутрь на вдохе, наружу на выдохе', glyph:'⟲', level:'Средне', defaultRounds:6, type:'cycle', phases: cycle(5,0,5,0,{inLabel:'Вдох, живот внутрь', exLabel:'Выдох, живот наружу'}) },
   qigong: { name:'Цигун-дыхание', cat:'balance', desc:'Медленное дыхание животом с паузами', glyph:'◈', level:'Легко', defaultRounds:6, type:'cycle', phases: cycle(6,3,6,3) },
   viloma: { name:'Вилома (Прерывистое)', cat:'focus', desc:'Вдох частями с паузами, плавный выдох', glyph:'⋮', level:'Средне', defaultRounds:6, type:'cycle', phases: [
@@ -738,15 +780,15 @@ const BUILTIN = {
     ph('Вдох правой','Вдох',4,'expand'),
     ph('Зажми правую, выдох левой','Выдох',4,'contract')
   ] },
-  anapanasati: { name:'Анапанасати', cat:'balance', desc:'Дыхание не меняется, просто наблюдение', glyph:'☁', level:'Легко', defaultRounds:10, type:'cycle', phases: cycle(4,0,4,0,{inLabel:'Вдох — наблюдай', exLabel:'Выдох — наблюдай'}) },
-  buteyko: { name:'Метод Бутейко', cat:'calm', desc:'Очень лёгкое, тихое дыхание с паузой', glyph:'◌', level:'Средне', defaultRounds:8, type:'cycle', phases: cycle(3,0,3,2,{inLabel:'Тихий вдох носом', exLabel:'Тихий выдох носом'}) },
-  liuzijue: { name:'Шесть исцеляющих звуков', cat:'balance', desc:'Каждый выдох со своим звуком', glyph:'六', level:'Средне', defaultRounds:2, type:'cycle', phases: [
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Сюй"','Выдох',6,'contract'),
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Хэ"','Выдох',6,'contract'),
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Ху"','Выдох',6,'contract'),
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Сы"','Выдох',6,'contract'),
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Чуй"','Выдох',6,'contract'),
-    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Си"','Выдох',6,'contract')
+  anapanasati: { name:'Анапанасати (Осознанное наблюдение)', cat:'balance', desc:'Дыхание не меняется, просто наблюдение', glyph:'☁', level:'Легко', defaultRounds:10, type:'cycle', phases: cycle(4,0,4,0,{inLabel:'Вдох — наблюдай', exLabel:'Выдох — наблюдай'}) },
+  buteyko: { name:'Метод Бутейко', cat:'calm', desc:'Очень лёгкое, тихое дыхание с паузой после выдоха', glyph:'◌', level:'Средне', defaultRounds:8, type:'cycle', phases: cycle(3,0,3,2,{inLabel:'Тихий вдох носом', exLabel:'Тихий выдох носом'}) },
+  liuzijue: { name:'Шесть исцеляющих звуков (цигун)', cat:'balance', desc:'Каждый выдох со своим звуком', glyph:'六', level:'Средне', defaultRounds:2, type:'cycle', phases: [
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Сюй" (печень)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Хэ" (сердце)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Ху" (селезёнка)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Сы" (лёгкие)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Чуй" (почки)','Выдох',6,'contract'),
+    ph('Вдох носом','Вдох',4,'expand'), ph('Выдох "Си" (тройной обогреватель)','Выдох',6,'contract')
   ] },
   holotropic: { name:'Холотропное дыхание', cat:'energy', desc:'Быстрое непрерывное дыхание ртом', glyph:'◎', level:'Сложно', defaultRounds:20, type:'cycle', safety:true, phases: cycle(2,0,2,0,{inLabel:'Вдох ртом без паузы', exLabel:'Выдох ртом без паузы'}) },
   lamaze: { name:'Ламаз (дыхание в родах)', cat:'focus', desc:'Лёгкое ритмичное дыхание ртом', glyph:'♀', level:'Легко', defaultRounds:10, type:'cycle', phases: cycle(1.5,0,1.5,0,{inLabel:'Лёгкий вдох ртом', exLabel:'Лёгкий выдох ртом'}) }
@@ -764,21 +806,46 @@ function loadHistory() { try { return JSON.parse(localStorage.getItem('pneuma_hi
 function saveHistoryEntry(e) { const h=loadHistory(); h.unshift(e); try { localStorage.setItem('pneuma_history', JSON.stringify(h.slice(0,200))); } catch(x){} }
 function loadUsage() { try { return JSON.parse(localStorage.getItem('pneuma_usage')||'{}'); } catch(e){ return {}; } }
 function bumpUsage(key) { const u=loadUsage(); u[key]=(u[key]||0)+1; try { localStorage.setItem('pneuma_usage', JSON.stringify(u)); } catch(e){} }
-function escapeHTML(value) { return String(value==null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
-function localDayKey(value) { const d = value instanceof Date ? value : new Date(value); if (Number.isNaN(d.getTime())) return ''; const m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0'); return `${d.getFullYear()}-${m}-${day}`; }
+function escapeHTML(value) {
+  return String(value==null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function localDayKey(value) {
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  const m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${d.getFullYear()}-${m}-${day}`;
+}
 
 /* ---------- STATE ---------- */
 let state = {
-  currentPattern:'wimhof', rounds:3, cueMode:'voice', bellOn:true, hapticOn:true, lang:'ru-RU', toneVariant:'chime', voiceURI:'',
-  breathNoiseOn:true, tapSkipOn:true, noNumbersOn:false, progressiveOn:false, musicOn:false, settleOn:true,
-  volCue:70, volBell:70, volMusic:70, minimalOn:false, screenOffOn:false, recentFirstOn:false, cardTickOn:true, running:false, sessionStart:null
+  currentPattern:'wimhof',
+  rounds:3,
+  cueMode:'voice',
+  bellOn:true,
+  hapticOn:true,
+  lang:'ru-RU',
+  toneVariant:'chime',
+  voiceURI:'',
+  breathNoiseOn:true,
+  tapSkipOn:true,
+  noNumbersOn:false,
+  progressiveOn:false,
+  musicOn:false,
+  settleOn:true,
+  volCue:70,
+  volBell:70,
+  volMusic:70,
+  minimalOn:false,
+  screenOffOn:false,
+  recentFirstOn:false,
+  cardTickOn:true,
+  running:false,
+  sessionStart:null
 };
 let activeCat = 'all';
 let audioCtx = null;
-let audioBuffers = {}; // Кэш для декодированных MP3 файлов
-let audioCuesLoaded = false;
 
-// Инициализация AudioContext (обязательно для мобильных устройств)
+// ИСПРАВЛЕНИЕ: Безопасная инициализация AudioContext для обхода блокировок автоплея
 function ensureAudioCtx() {
   if (!audioCtx) {
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
@@ -789,21 +856,360 @@ function ensureAudioCtx() {
   return audioCtx;
 }
 
+// Разблокировка аудио при первом касании экрана (требование iOS/Android)
+function unlockAudio() {
+  ensureAudioCtx();
+}
+document.body.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
+document.body.addEventListener('click', unlockAudio, { once: true });
+
+let noiseNode = null, noiseGain = null, noiseFilter = null, wakeLock = null;
+let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
+let sessionToken=0, pendingSessionKey=null;
+let lastSessionData = null;
+let previousHoldSeconds = null;
+
+function loadSettings() { try { Object.assign(state, JSON.parse(localStorage.getItem('pneuma_settings')||'{}')); } catch(e){} }
+function saveSettings() {
+  try { localStorage.setItem('pneuma_settings', JSON.stringify({
+    rounds:state.rounds,
+    cueMode:state.cueMode,
+    bellOn:state.bellOn,
+    hapticOn:state.hapticOn,
+    lang:state.lang,
+    toneVariant:state.toneVariant,
+    breathNoiseOn:state.breathNoiseOn,
+    tapSkipOn:state.tapSkipOn,
+    noNumbersOn:state.noNumbersOn,
+    progressiveOn:state.progressiveOn,
+    musicOn:state.musicOn,
+    settleOn:state.settleOn,
+    volCue:state.volCue,
+    volBell:state.volBell,
+    volMusic:state.volMusic,
+    minimalOn:state.minimalOn,
+    screenOffOn:state.screenOffOn,
+    recentFirstOn:state.recentFirstOn,
+    cardTickOn:state.cardTickOn
+  })); } catch(e){}
+}
+let seenIntro={}; try { seenIntro = JSON.parse(localStorage.getItem('pneuma_seen_intro')||'{}'); } catch(e){}
+
+async function requestWakeLock() {
+  try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); document.getElementById('wakeWarning').style.display='none'; }
+    else { document.getElementById('wakeWarning').style.display='block'; } }
+  catch(e){ document.getElementById('wakeWarning').style.display='block'; }
+}
+function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock=null; } }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible' && state.running && !wakeLock) requestWakeLock(); });
+
+/* ---------- AUDIO ---------- */
+function chimeLayered(ctx, layers, now) {
+  const volMult = (state.volBell != null ? state.volBell : 70) / 100;
+  layers.forEach(L => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = L.wave || 'sine';
+    osc.frequency.setValueAtTime(L.freq, now);
+    if (L.freqEnd) osc.frequency.linearRampToValueAtTime(L.freqEnd, now + (L.glideTime || 0.28));
+    filter.type = 'lowpass';
+    filter.frequency.value = L.freq * 6;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, L.gain * volMult), now + (L.attack || 0.02));
+    g.gain.exponentialRampToValueAtTime(0.0001, now + (L.decay || 0.5));
+    osc.connect(filter);
+    filter.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + (L.decay || 0.5) + 0.05);
+  });
+}
+function bell() {
+  if (!state.bellOn) return;
+  try {
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    chimeLayered(ctx, [
+      { freq: 528,     gain: 0.22, decay: 2.0 },
+      { freq: 528 * 2, gain: 0.08, decay: 1.2 },
+      { freq: 528 * 3, gain: 0.04, decay: 0.8 },
+      { freq: 528 * 0.5, gain: 0.06, decay: 2.5 }
+    ], now);
+  } catch(e) {}
+}
+function phaseChime(action) {
+  if (!state.bellOn) return;
+  try {
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    let base = 392, target = 392;
+    if (action === 'expand' || action === 'expand-more') { base = 440; target = 587; }
+    else if (action === 'contract') { base = 440; target = 330; }
+    else { base = 349; target = 349; }
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(base, now);
+    osc.frequency.exponentialRampToValueAtTime(target, now + 0.35);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.15, now + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.6);
+  } catch(e) {}
+}
+
+/* ---------- MUSIC ---------- */
+const MUSIC_PROFILES = {
+  calm:    { chordA:[130.81,164.81,196.00], chordB:[146.83,174.61,220.00], wave:'sine',     peak:0.028, swell:9,  filter:1200, fadeOut:4.5, driftSec:26 },
+  sleep:   { chordA:[98.00,123.47,146.83],  chordB:[87.31,110.00,130.81],  wave:'sine',     peak:0.024, swell:13, filter:800,  fadeOut:7,   driftSec:38 },
+  energy:  { chordA:[130.81,164.81,196.00], chordB:[130.81,164.81,196.00], wave:'triangle', peak:0.030, swell:2.2,filter:1800, pulse:true, fadeOut:1.8, driftSec:999 },
+  focus:   { chordA:[146.83,220.00],        chordB:[164.81,246.94],        wave:'sine',     peak:0.022, swell:0,  filter:1400, fadeOut:3,   driftSec:44 },
+  balance: { chordA:[130.81,196.00],        chordB:[146.83,220.00],        wave:'triangle', peak:0.026, swell:6,  filter:1300, fadeOut:4,   driftSec:22 }
+};
+let musicNodes=null, musicProfile=null;
+function startMusic(cat) {
+  if (!state.musicOn) return;
+  try {
+    stopMusicHard();
+    const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
+    const profile = MUSIC_PROFILES[cat] || MUSIC_PROFILES.balance;
+    const volMult = (state.volMusic!=null?state.volMusic:70)/100;
+    const master=ctx.createGain(); master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.peak*volMult), now+3);
+    const filter=ctx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=profile.filter;
+    filter.connect(master); master.connect(ctx.destination);
+
+    const oscs=[], gains=[];
+    profile.chordA.forEach((freq,i) => {
+      const osc=ctx.createOscillator(); const g=ctx.createGain();
+      osc.type=profile.wave; osc.frequency.value=freq;
+      osc.detune.value = (i - (profile.chordA.length-1)/2) * 4;
+      g.gain.value = 1/profile.chordA.length;
+      osc.connect(g); g.connect(filter); osc.start(now);
+      oscs.push(osc); gains.push(g);
+    });
+
+    const shimmerGainTotal=ctx.createGain(); shimmerGainTotal.gain.value=0.28;
+    shimmerGainTotal.connect(filter);
+    const shimmerOscs=[], shimmerGains=[];
+    profile.chordA.forEach((freq,i) => {
+      const osc=ctx.createOscillator(); const g=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=freq*2;
+      osc.detune.value = (i - (profile.chordA.length-1)/2) * 6;
+      g.gain.value = 1/profile.chordA.length;
+      osc.connect(g); g.connect(shimmerGainTotal); osc.start(now);
+      shimmerOscs.push(osc); shimmerGains.push(g);
+    });
+
+    let lfo=null, lfoGain=null;
+    if (profile.swell > 0) {
+      lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 1/profile.swell;
+      lfoGain=ctx.createGain(); lfoGain.gain.value = profile.pulse ? profile.peak*0.35 : profile.peak*0.25;
+      lfo.connect(lfoGain); lfoGain.connect(master.gain); lfo.start(now);
+    }
+    const shimmerLfo=ctx.createOscillator(); shimmerLfo.type='sine'; shimmerLfo.frequency.value = 1/(profile.swell>0 ? profile.swell*0.62 : 7);
+    const shimmerLfoGain=ctx.createGain(); shimmerLfoGain.gain.value = shimmerGainTotal.gain.value*0.5;
+    shimmerLfo.connect(shimmerLfoGain); shimmerLfoGain.connect(shimmerGainTotal.gain); shimmerLfo.start(now);
+
+    musicNodes = { oscs, gains, shimmerOscs, shimmerGains, shimmerGainTotal, lfo, lfoGain, shimmerLfo, master, filter, driftTimer:null, currentChord:'A' };
+    musicProfile = profile;
+
+    if (profile.driftSec < 999) {
+      const scheduleDrift = () => {
+        musicNodes.driftTimer = setTimeout(() => {
+          if (!musicNodes) return;
+          const target = musicNodes.currentChord==='A' ? profile.chordB : profile.chordA;
+          const t=ctx.currentTime;
+          musicNodes.oscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i], t+6); });
+          musicNodes.shimmerOscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i]*2, t+6); });
+          musicNodes.currentChord = musicNodes.currentChord==='A' ? 'B' : 'A';
+          scheduleDrift();
+        }, profile.driftSec*1000);
+      };
+      scheduleDrift();
+    }
+  } catch(e){}
+}
+function stopMusic(fadeSec) {
+  if (!musicNodes) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    const { oscs, shimmerOscs, lfo, shimmerLfo, master, driftTimer } = musicNodes;
+    if (driftTimer) clearTimeout(driftTimer);
+    const fade = fadeSec!==undefined ? fadeSec : ((musicProfile&&musicProfile.fadeOut)||3);
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(Math.max(master.gain.value,0.0001), now);
+    master.gain.exponentialRampToValueAtTime(0.0001, now+fade);
+    oscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
+    shimmerOscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
+    if (lfo) try{ lfo.stop(now+fade+0.1); }catch(e){}
+    if (shimmerLfo) try{ shimmerLfo.stop(now+fade+0.1); }catch(e){}
+  } catch(e){}
+  musicNodes=null; musicProfile=null;
+}
+function stopMusicHard() {
+  if (!musicNodes) return;
+  try {
+    if (musicNodes.driftTimer) clearTimeout(musicNodes.driftTimer);
+    musicNodes.oscs.forEach(o=>{ try{o.stop();}catch(e){} });
+    musicNodes.shimmerOscs.forEach(o=>{ try{o.stop();}catch(e){} });
+    if (musicNodes.lfo) try{musicNodes.lfo.stop();}catch(e){}
+    if (musicNodes.shimmerLfo) try{musicNodes.shimmerLfo.stop();}catch(e){}
+  } catch(e){}
+  musicNodes=null; musicProfile=null;
+}
+
+/* ---------- TECHNIQUE TEXTURES ---------- */
+const OCEAN_PATTERNS = { ujjayi:1, sitali:1, sitkari:1 };
+let oceanNode=null, oceanGain=null, oceanFilter=null, oceanLfo=null;
+function startOceanTexture(key) {
+  if (!state.musicOn || !OCEAN_PATTERNS[key]) return;
+  try {
+    const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
+    const bufSize=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufSize,ctx.sampleRate), data=buf.getChannelData(0);
+    let last=0; for (let i=0;i<bufSize;i++){ const white=Math.random()*2-1; last=(last+0.02*white)/1.02; data[i]=last*4.5; }
+    oceanNode=ctx.createBufferSource(); oceanNode.buffer=buf; oceanNode.loop=true;
+    oceanFilter=ctx.createBiquadFilter(); oceanFilter.type='bandpass'; oceanFilter.frequency.value=500; oceanFilter.Q.value=0.6;
+    oceanGain=ctx.createGain(); oceanGain.gain.setValueAtTime(0.0001, now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.02, now+2.5);
+    oceanNode.connect(oceanFilter); oceanFilter.connect(oceanGain); oceanGain.connect(ctx.destination); oceanNode.start();
+    oceanLfo=ctx.createOscillator(); oceanLfo.type='sine'; oceanLfo.frequency.value=1/6;
+    const lfoGain=ctx.createGain(); lfoGain.gain.value=220;
+    oceanLfo.connect(lfoGain); lfoGain.connect(oceanFilter.frequency); oceanLfo.start(now);
+  } catch(e){}
+}
+function stopOceanTexture(fadeSec) {
+  if (!oceanNode) return;
+  try {
+    const ctx=ensureAudioCtx(); const now=ctx.currentTime;
+    oceanGain.gain.cancelScheduledValues(now); oceanGain.gain.setValueAtTime(Math.max(oceanGain.gain.value,0.0001), now);
+    oceanGain.gain.exponentialRampToValueAtTime(0.0001, now+(fadeSec||1.5));
+    oceanNode.stop(now+(fadeSec||1.5)+0.1); if (oceanLfo) oceanLfo.stop(now+(fadeSec||1.5)+0.1);
+  } catch(e){}
+  oceanNode=null; oceanGain=null; oceanFilter=null; oceanLfo=null;
+}
+let bhramariOsc=null, bhramariGain=null;
+function startBhramariHum(sec) {
+  if (!state.musicOn) return;
+  try {
+    stopBhramariHum();
+    const ctx = ensureAudioCtx(); if(!ctx) return;
+    const now = ctx.currentTime;
+    bhramariOsc = ctx.createOscillator();
+    bhramariOsc.type = 'sine';
+    bhramariOsc.frequency.value = 110;
+    const modulator = ctx.createOscillator();
+    modulator.frequency.value = 12;
+    const modGain = ctx.createGain();
+    modGain.gain.value = 30;
+    modulator.connect(modGain);
+    modGain.connect(bhramariOsc.frequency);
+    modulator.start(now);
+    modulator.stop(now + sec + 0.1);
+    bhramariGain = ctx.createGain();
+    bhramariGain.gain.setValueAtTime(0.0001, now);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.04, now + 0.6);
+    bhramariGain.gain.exponentialRampToValueAtTime(0.0001, now + sec);
+    bhramariOsc.connect(bhramariGain);
+    bhramariGain.connect(ctx.destination);
+    bhramariOsc.start(now);
+    bhramariOsc.stop(now + sec + 0.1);
+  } catch(e) {}
+}
+function stopBhramariHum() {
+  try { if (bhramariOsc) { bhramariOsc.stop(); bhramariOsc.disconnect(); } } catch(e){}
+  try { if (bhramariGain) bhramariGain.disconnect(); } catch(e){}
+  bhramariOsc=null; bhramariGain=null;
+}
+
+const HAPTIC_PATTERNS = {
+  inhale:    [8, 30, 8],
+  exhale:    [12, 20],
+  hold:      [5, 100, 5, 100, 5],
+  bell:      [20, 40, 20, 40, 20],
+  complete:  [15, 50, 15, 50, 15, 50, 15],
+  tick:      [5],
+  skip:      [15, 30, 15]
+};
+function vibrate(pattern) {
+  if (!state.hapticOn || !navigator.vibrate) return;
+  try {
+    if (typeof pattern === 'string') navigator.vibrate(HAPTIC_PATTERNS[pattern] || [10]);
+    else navigator.vibrate(pattern);
+  } catch(e) {}
+}
+function startBreathNoise() {
+  if (!state.breathNoiseOn) return;
+  try {
+    const ctx = ensureAudioCtx(); if(!ctx) return;
+    const bs = 2 * ctx.sampleRate;
+    const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < bs; i++) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.015 * white) / 1.015;
+      d[i] = last * 3.5;
+    }
+    noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buf;
+    noiseNode.loop = true;
+    noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 280;
+    noiseFilter.Q.value = 0.8;
+    noiseGain = ctx.createGain();
+    noiseGain.gain.value = 0.0001;
+    noiseNode.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noiseNode.start();
+  } catch(e) {}
+}
+function stopBreathNoise() { try { if (noiseNode){ noiseNode.stop(); noiseNode.disconnect(); noiseNode=null; } } catch(e){} }
+function setNoiseLevel(level, dur) {
+  if (!noiseGain || !state.breathNoiseOn) return;
+  try {
+    const ctx = ensureAudioCtx();
+    noiseGain.gain.cancelScheduledValues(ctx.currentTime);
+    noiseGain.gain.linearRampToValueAtTime(Math.min(level, 0.012), ctx.currentTime + dur);
+  } catch(e) {}
+}
+
+/* ---------- VOICE (MP3 + TTS FALLBACK) ---------- */
+const AUDIO_BASE = 'audio/ru/';
+const AUDIO_MAP = {
+  'Вдох': 'inhale.mp3',
+  'Выдох': 'exhale.mp3',
+  'Задержи': 'hold.mp3',
+  'Задержи дыхание': 'hold_breath.mp3',
+  'Пауза': 'pause.mp3',
+  'Ещё': 'more.mp3',
+  'Вдохни и задержи': 'inhale_hold.mp3',
+  'Выдохни и задержи дыхание': 'exhale_hold.mp3',
+  'Сессия завершена': 'session_complete.mp3',
+  'Привет': 'hello.mp3',
+  '1': 'count_1.mp3',
+  '2': 'count_2.mp3',
+  '3': 'count_3.mp3'
+};
+
+let audioBuffers = {}; // Кэш для декодированных MP3 файлов
+let audioCuesLoaded = false;
+let activeMp3Source = null;
+
 // Загрузка и декодирование MP3 через Web Audio API (Решает проблему блокировки на iOS/Telegram)
 async function loadAudioCues() {
   if (audioCuesLoaded) return;
   ensureAudioCtx();
   if (!audioCtx) return;
   
-  const AUDIO_BASE = 'audio/ru/';
-  const AUDIO_MAP = {
-    'Вдох': 'inhale.mp3', 'Выдох': 'exhale.mp3', 'Задержи': 'hold.mp3',
-    'Задержи дыхание': 'hold_breath.mp3', 'Пауза': 'pause.mp3', 'Ещё': 'more.mp3',
-    'Вдохни и задержи': 'inhale_hold.mp3', 'Выдохни и задержи дыхание': 'exhale_hold.mp3',
-    'Сессия завершена': 'session_complete.mp3', 'Привет': 'hello.mp3',
-    '1': 'count_1.mp3', '2': 'count_2.mp3', '3': 'count_3.mp3'
-  };
-
   const keys = Object.keys(AUDIO_MAP);
   for (let i = 0; i < keys.length; i++) {
     const text = keys[i];
@@ -824,193 +1230,15 @@ async function loadAudioCues() {
   audioCuesLoaded = true;
 }
 
-let noiseNode = null, noiseGain = null, noiseFilter = null, wakeLock = null;
-let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
-let sessionToken=0, pendingSessionKey=null;
-let lastSessionData = null, previousHoldSeconds = null;
-
-function loadSettings() { try { Object.assign(state, JSON.parse(localStorage.getItem('pneuma_settings')||'{}')); } catch(e){} }
-function saveSettings() {
-  try { localStorage.setItem('pneuma_settings', JSON.stringify({
-    rounds:state.rounds, cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, lang:state.lang, toneVariant:state.toneVariant,
-    breathNoiseOn:state.breathNoiseOn, tapSkipOn:state.tapSkipOn, noNumbersOn:state.noNumbersOn, progressiveOn:state.progressiveOn,
-    musicOn:state.musicOn, settleOn:state.settleOn, volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic,
-    minimalOn:state.minimalOn, screenOffOn:state.screenOffOn, recentFirstOn:state.recentFirstOn, cardTickOn:state.cardTickOn
-  })); } catch(e){}
-}
-let seenIntro={}; try { seenIntro = JSON.parse(localStorage.getItem('pneuma_seen_intro')||'{}'); } catch(e){}
-let seenWhy={}; try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why')||'{}'); } catch(e){}
-
-async function requestWakeLock() {
-  try { if ('wakeLock' in navigator) { wakeLock = await navigator.wakeLock.request('screen'); document.getElementById('wakeWarning').style.display='none'; }
-    else { document.getElementById('wakeWarning').style.display='block'; } }
-  catch(e){ document.getElementById('wakeWarning').style.display='block'; }
-}
-function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock=null; } }
-document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible' && state.running && !wakeLock) requestWakeLock(); });
-
-/* ---------- AUDIO CHIMES & TONES ---------- */
-function chimeLayered(ctx, layers, now) {
-  const volMult = (state.volBell != null ? state.volBell : 70) / 100;
-  layers.forEach(L => {
-    const osc = ctx.createOscillator(); const g = ctx.createGain(); const filter = ctx.createBiquadFilter();
-    osc.type = L.wave || 'sine'; osc.frequency.setValueAtTime(L.freq, now);
-    if (L.freqEnd) osc.frequency.linearRampToValueAtTime(L.freqEnd, now + (L.glideTime || 0.28));
-    filter.type = 'lowpass'; filter.frequency.value = L.freq * 6;
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, L.gain * volMult), now + (L.attack || 0.02));
-    g.gain.exponentialRampToValueAtTime(0.0001, now + (L.decay || 0.5));
-    osc.connect(filter); filter.connect(g); g.connect(ctx.destination);
-    osc.start(now); osc.stop(now + (L.decay || 0.5) + 0.05);
-  });
-}
-function bell() {
-  if (!state.bellOn) return;
-  try { const ctx = ensureAudioCtx(); if(!ctx) return; chimeLayered(ctx, [{ freq: 528, gain: 0.22, decay: 2.0 }, { freq: 1056, gain: 0.08, decay: 1.2 }, { freq: 264, gain: 0.06, decay: 2.5 }], ctx.currentTime); } catch(e){}
-}
-function phaseChime(action) {
-  if (!state.bellOn) return;
-  try {
-    const ctx = ensureAudioCtx(); if(!ctx) return; const now = ctx.currentTime;
-    let base = 392, target = 392;
-    if (action === 'expand' || action === 'expand-more') { base = 440; target = 587; }
-    else if (action === 'contract') { base = 440; target = 330; }
-    const osc = ctx.createOscillator(); const g = ctx.createGain();
-    osc.type = 'sine'; osc.frequency.setValueAtTime(base, now);
-    osc.frequency.exponentialRampToValueAtTime(target, now + 0.35);
-    g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.15, now + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-    osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now + 0.6);
-  } catch(e){}
-}
-
-/* ---------- TONES (синтез) ---------- */
-const TONE_VARIANTS = {
-  chime:  { wave: 'sine', inFreq: 392, outFreq: 294, holdFreq: 220 },
-  bowl:   { wave: 'sine', inFreq: 220, outFreq: 174, holdFreq: 147 },
-  ocean:  { wave: 'triangle', inFreq: 330, outFreq: 247, holdFreq: 196 },
-  crystal:{ wave: 'sine', inFreq: 523, outFreq: 392, holdFreq: 330 }
-};
-let toneOsc=null, toneGain=null, toneOsc2=null, toneGain2=null;
-function stopAllTones() { try { if (toneOsc) toneOsc.stop(); } catch(e){} try { if (toneOsc2) toneOsc2.stop(); } catch(e){} toneOsc=null; toneOsc2=null; }
-function playTone(phase, durationSec) {
-  if (state.cueMode!=='tone') return;
-  try {
-    stopAllTones(); const ctx=ensureAudioCtx(); if(!ctx) return;
-    const volMult = (state.volCue!=null?state.volCue:70)/100;
-    const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
-    const osc=ctx.createOscillator(); const g=ctx.createGain();
-    osc.type = variant.wave; const freq = phase==='in' ? variant.inFreq : phase==='out' ? variant.outFreq : variant.holdFreq;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    g.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.5);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
-    osc.connect(g); g.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + durationSec + 0.1);
-    toneOsc=osc;
-  } catch(e){}
-}
-let holdToneInterval=null;
-function startHoldTone() { if (state.cueMode!=='tone') return; stopHoldTone(); playTone('hold', 6); holdToneInterval = setInterval(()=>{ if (state.cueMode==='tone') playTone('hold', 6); }, 5800); }
-function stopHoldTone() { if (holdToneInterval) { clearInterval(holdToneInterval); holdToneInterval = null; } stopAllTones(); }
-
-/* ---------- MUSIC & EFFECTS ---------- */
-const MUSIC_PROFILES = {
-  calm:    { chordA:[130.81,164.81,196.00], chordB:[146.83,174.61,220.00], wave:'sine', peak:0.028, swell:9, filter:1200, fadeOut:4.5, driftSec:26 },
-  sleep:   { chordA:[98.00,123.47,146.83], chordB:[87.31,110.00,130.81], wave:'sine', peak:0.024, swell:13, filter:800, fadeOut:7, driftSec:38 },
-  energy:  { chordA:[130.81,164.81,196.00], chordB:[130.81,164.81,196.00], wave:'triangle', peak:0.030, swell:2.2,filter:1800, pulse:true, fadeOut:1.8, driftSec:999 },
-  focus:   { chordA:[146.83,220.00], chordB:[164.81,246.94], wave:'sine', peak:0.022, swell:0, filter:1400, fadeOut:3, driftSec:44 },
-  balance: { chordA:[130.81,196.00], chordB:[146.83,220.00], wave:'triangle', peak:0.026, swell:6, filter:1300, fadeOut:4, driftSec:22 }
-};
-let musicNodes=null, musicProfile=null;
-function startMusic(cat) {
-  if (!state.musicOn) return;
-  try {
-    stopMusicHard(); const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
-    const profile = MUSIC_PROFILES[cat] || MUSIC_PROFILES.balance;
-    const volMult = (state.volMusic!=null?state.volMusic:70)/100;
-    const master=ctx.createGain(); master.gain.setValueAtTime(0.0001, now); master.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.peak*volMult), now+3);
-    const filter=ctx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=profile.filter; filter.connect(master); master.connect(ctx.destination);
-    const oscs=[];
-    profile.chordA.forEach((freq,i) => {
-      const osc=ctx.createOscillator(); const g=ctx.createGain(); osc.type=profile.wave; osc.frequency.value=freq;
-      osc.detune.value = (i - (profile.chordA.length-1)/2) * 4; g.gain.value = 1/profile.chordA.length; osc.connect(g); g.connect(filter); osc.start(now); oscs.push(osc);
-    });
-    let lfo=null;
-    if (profile.swell > 0) { lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 1/profile.swell; const lfoGain=ctx.createGain(); lfoGain.gain.value = profile.peak*0.25; lfo.connect(lfoGain); lfoGain.connect(master.gain); lfo.start(now); }
-    musicNodes = { oscs, lfo, master, driftTimer:null, currentChord:'A' }; musicProfile = profile;
-    if (profile.driftSec < 999) {
-      const scheduleDrift = () => { musicNodes.driftTimer = setTimeout(() => { if (!musicNodes) return; const target = musicNodes.currentChord==='A' ? profile.chordB : profile.chordA; const t=ctx.currentTime; musicNodes.oscs.forEach((o,i)=>{ o.frequency.linearRampToValueAtTime(target[i], t+6); }); musicNodes.currentChord = musicNodes.currentChord==='A' ? 'B' : 'A'; scheduleDrift(); }, profile.driftSec*1000); };
-      scheduleDrift();
-    }
-  } catch(e){}
-}
-function stopMusic(fadeSec) {
-  if (!musicNodes) return;
-  try {
-    const ctx=ensureAudioCtx(); const now=ctx.currentTime; const { oscs, lfo, master, driftTimer } = musicNodes;
-    if (driftTimer) clearTimeout(driftTimer);
-    const fade = fadeSec!==undefined ? fadeSec : ((musicProfile&&musicProfile.fadeOut)||3);
-    master.gain.cancelScheduledValues(now); master.gain.setValueAtTime(Math.max(master.gain.value,0.0001), now); master.gain.exponentialRampToValueAtTime(0.0001, now+fade);
-    oscs.forEach(o=>{ try{ o.stop(now+fade+0.1); }catch(e){} });
-    if (lfo) try{ lfo.stop(now+fade+0.1); }catch(e){}
-  } catch(e){}
-  musicNodes=null; musicProfile=null;
-}
-function stopMusicHard() { if (!musicNodes) return; try { if (musicNodes.driftTimer) clearTimeout(musicNodes.driftTimer); musicNodes.oscs.forEach(o=>{ try{o.stop();}catch(e){} }); if (musicNodes.lfo) try{musicNodes.lfo.stop();}catch(e){} } catch(e){} musicNodes=null; musicProfile=null; }
-
-const OCEAN_PATTERNS = { ujjayi:1, sitali:1, sitkari:1 };
-let oceanNode=null, oceanGain=null, oceanFilter=null, oceanLfo=null;
-function startOceanTexture(key) {
-  if (!state.musicOn || !OCEAN_PATTERNS[key]) return;
-  try {
-    const ctx=ensureAudioCtx(); if(!ctx) return; const now=ctx.currentTime;
-    const bufSize=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufSize,ctx.sampleRate), data=buf.getChannelData(0);
-    let last=0; for (let i=0;i<bufSize;i++){ const white=Math.random()*2-1; last=(last+0.02*white)/1.02; data[i]=last*4.5; }
-    oceanNode=ctx.createBufferSource(); oceanNode.buffer=buf; oceanNode.loop=true;
-    oceanFilter=ctx.createBiquadFilter(); oceanFilter.type='bandpass'; oceanFilter.frequency.value=500; oceanFilter.Q.value=0.6;
-    oceanGain=ctx.createGain(); oceanGain.gain.setValueAtTime(0.0001, now); oceanGain.gain.exponentialRampToValueAtTime(0.02, now+2.5);
-    oceanNode.connect(oceanFilter); oceanFilter.connect(oceanGain); oceanGain.connect(ctx.destination); oceanNode.start();
-    oceanLfo=ctx.createOscillator(); oceanLfo.type='sine'; oceanLfo.frequency.value=1/6; const lfoGain=ctx.createGain(); lfoGain.gain.value=220; oceanLfo.connect(lfoGain); lfoGain.connect(oceanFilter.frequency); oceanLfo.start(now);
-  } catch(e){}
-}
-function stopOceanTexture(fadeSec) { if (!oceanNode) return; try { const ctx=ensureAudioCtx(); const now=ctx.currentTime; oceanGain.gain.cancelScheduledValues(now); oceanGain.gain.setValueAtTime(Math.max(oceanGain.gain.value,0.0001), now); oceanGain.gain.exponentialRampToValueAtTime(0.0001, now+(fadeSec||1.5)); oceanNode.stop(now+(fadeSec||1.5)+0.1); if (oceanLfo) oceanLfo.stop(now+(fadeSec||1.5)+0.1); } catch(e){} oceanNode=null; oceanGain=null; oceanFilter=null; oceanLfo=null; }
-
-let bhramariOsc=null, bhramariGain=null;
-function startBhramariHum(sec) {
-  if (!state.musicOn) return;
-  try {
-    stopBhramariHum(); const ctx = ensureAudioCtx(); if(!ctx) return; const now = ctx.currentTime;
-    bhramariOsc = ctx.createOscillator(); bhramariOsc.type = 'sine'; bhramariOsc.frequency.value = 110;
-    const modulator = ctx.createOscillator(); modulator.frequency.value = 12; const modGain = ctx.createGain(); modGain.gain.value = 30; modulator.connect(modGain); modGain.connect(bhramariOsc.frequency); modulator.start(now); modulator.stop(now + sec + 0.1);
-    bhramariGain = ctx.createGain(); bhramariGain.gain.setValueAtTime(0.0001, now); bhramariGain.gain.exponentialRampToValueAtTime(0.04, now + 0.6); bhramariGain.gain.exponentialRampToValueAtTime(0.0001, now + sec);
-    bhramariOsc.connect(bhramariGain); bhramariGain.connect(ctx.destination); bhramariOsc.start(now); bhramariOsc.stop(now + sec + 0.1);
-  } catch(e) {}
-}
-function stopBhramariHum() { try { if (bhramariOsc) bhramariOsc.stop(); } catch(e){} try { if (bhramariGain) bhramariGain.disconnect(); } catch(e){} bhramariOsc=null; bhramariGain=null; }
-
-const HAPTIC_PATTERNS = { inhale: [8, 30, 8], exhale: [12, 20], hold: [5, 100, 5, 100, 5], bell: [20, 40, 20, 40, 20], complete: [15, 50, 15, 50, 15, 50, 15], tick: [5], skip: [15, 30, 15] };
-function vibrate(pattern) { if (!state.hapticOn || !navigator.vibrate) return; try { navigator.vibrate(typeof pattern === 'string' ? (HAPTIC_PATTERNS[pattern] || [10]) : pattern); } catch(e) {} }
-
-function startBreathNoise() {
-  if (!state.breathNoiseOn) return;
-  try {
-    const ctx = ensureAudioCtx(); if(!ctx) return; const bs = 2 * ctx.sampleRate; const buf = ctx.createBuffer(1, bs, ctx.sampleRate); const d = buf.getChannelData(0); let last = 0;
-    for (let i = 0; i < bs; i++) { const white = Math.random() * 2 - 1; last = (last + 0.015 * white) / 1.015; d[i] = last * 3.5; }
-    noiseNode = ctx.createBufferSource(); noiseNode.buffer = buf; noiseNode.loop = true;
-    noiseFilter = ctx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 280; noiseFilter.Q.value = 0.8;
-    noiseGain = ctx.createGain(); noiseGain.gain.value = 0.0001; noiseNode.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination); noiseNode.start();
-  } catch(e) {}
-}
-function stopBreathNoise() { try { if (noiseNode){ noiseNode.stop(); noiseNode.disconnect(); noiseNode=null; } } catch(e){} }
-function setNoiseLevel(level, dur) { if (!noiseGain || !state.breathNoiseOn) return; try { const ctx = ensureAudioCtx(); noiseGain.gain.cancelScheduledValues(ctx.currentTime); noiseGain.gain.linearRampToValueAtTime(Math.min(level, 0.012), ctx.currentTime + dur); } catch(e) {} }
-
-/* ---------- VOICE (MP3 + TTS FALLBACK) ---------- */
 // Функция синтеза речи (используется ТОЛЬКО если MP3 не загрузился)
 function speakTTS(text) {
   if (!('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = state.lang || 'ru-RU'; utterance.rate = 1.0; utterance.pitch = 1.0;
+    utterance.lang = state.lang || 'ru-RU';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
     utterance.volume = (state.volCue != null ? state.volCue : 70) / 100;
     const voices = window.speechSynthesis.getVoices();
     if (voices.length) {
@@ -1026,6 +1254,7 @@ function speakTTS(text) {
 function playMp3Buffer(text) {
   if (!audioCtx || !audioBuffers[text]) return false;
   try {
+    if (activeMp3Source) { try { activeMp3Source.stop(); } catch(e){} }
     const source = audioCtx.createBufferSource();
     source.buffer = audioBuffers[text];
     const gainNode = audioCtx.createGain();
@@ -1033,6 +1262,7 @@ function playMp3Buffer(text) {
     source.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     source.start(0);
+    activeMp3Source = source;
     return true;
   } catch(e) { return false; }
 }
@@ -1048,8 +1278,13 @@ function speak(t) {
   speakTTS(t);
 }
 
+function stopSpeechCues() {
+  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+  if (activeMp3Source) { try { activeMp3Source.stop(); } catch(e){} activeMp3Source = null; }
+}
+
 function testVoiceCues() {
-  if (state.cueMode!=='voice') setCueMode('voice');
+  if (state.cueMode!=='voice') { setCueMode('voice'); }
   ensureAudioCtx();
   loadAudioCues().then(() => {
     ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
@@ -1058,7 +1293,70 @@ function testVoiceCues() {
   });
 }
 
-/* ---------- INITIALIZATION ---------- */
+/* ---------- TONES ---------- */
+const TONE_VARIANTS = {
+  chime:  { wave: 'sine',     inFreq: 392, outFreq: 294, holdFreq: 220, inHarmonics: [2, 3], outHarmonics: [2, 3], holdHarmonics: [2] },
+  bowl:   { wave: 'sine',     inFreq: 220, outFreq: 174, holdFreq: 147, inHarmonics: [2, 4], outHarmonics: [2, 4], holdHarmonics: [2] },
+  ocean:  { wave: 'triangle', inFreq: 330, outFreq: 247, holdFreq: 196, inHarmonics: [2, 3], outHarmonics: [2, 3], holdHarmonics: [2] },
+  crystal:{ wave: 'sine',     inFreq: 523, outFreq: 392, holdFreq: 330, inHarmonics: [2, 3, 4], outHarmonics: [2, 3, 4], holdHarmonics: [2, 3] }
+};
+
+let toneOsc=null, toneGain=null, toneOsc2=null, toneGain2=null;
+function stopAllTones() {
+  try { if (toneOsc) { toneOsc.stop(); toneOsc.disconnect(); } } catch(e){}
+  try { if (toneGain) toneGain.disconnect(); } catch(e){}
+  try { if (toneOsc2) { toneOsc2.stop(); toneOsc2.disconnect(); } } catch(e){}
+  try { if (toneGain2) toneGain2.disconnect(); } catch(e){}
+  toneOsc=null; toneGain=null; toneOsc2=null; toneGain2=null;
+}
+function playTone(phase, durationSec) {
+  if (state.cueMode!=='tone') return;
+  try {
+    stopAllTones();
+    const ctx=ensureAudioCtx(); if(!ctx) return;
+    const volMult = (state.volCue!=null?state.volCue:70)/100;
+    const variant = TONE_VARIANTS[state.toneVariant] || TONE_VARIANTS.chime;
+    const osc=ctx.createOscillator(); const g=ctx.createGain();
+    const osc2=ctx.createOscillator(); const g2=ctx.createGain();
+    osc.type = variant.wave; osc2.type = variant.wave;
+    const freq = phase==='in' ? variant.inFreq : phase==='out' ? variant.outFreq : variant.holdFreq;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc2.frequency.setValueAtTime(freq*2, ctx.currentTime);
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g2.gain.setValueAtTime(0.0001, ctx.currentTime);
+    if (phase==='in') {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.7);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.7);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+    } else if (phase==='out') {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.16*volMult), ctx.currentTime + durationSec*0.15);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.15);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+    } else {
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.09*volMult), ctx.currentTime + 1.5);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.05*volMult), ctx.currentTime + durationSec*0.5);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+      g2.gain.exponentialRampToValueAtTime(Math.max(0.0001,0.025*volMult), ctx.currentTime + 1.5);
+      g2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+    }
+    osc.connect(g); g.connect(ctx.destination);
+    osc2.connect(g2); g2.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + durationSec + 0.1);
+    osc2.start(); osc2.stop(ctx.currentTime + durationSec + 0.1);
+    toneOsc=osc; toneGain=g; toneOsc2=osc2; toneGain2=g2;
+  } catch(e){}
+}
+let holdToneInterval=null;
+function startHoldTone() {
+  if (state.cueMode!=='tone') return;
+  stopHoldTone();
+  playTone('hold', 6);
+  holdToneInterval = setInterval(()=>{ if (state.cueMode==='tone') playTone('hold', 6); }, 5800);
+}
+function stopHoldTone() { if (holdToneInterval) { clearInterval(holdToneInterval); holdToneInterval = null; } stopAllTones(); }
+
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function sleepInterruptible(ms, tok) {
   const step=100; let el=0;
@@ -1066,141 +1364,361 @@ async function sleepInterruptible(ms, tok) {
   return true;
 }
 
+/* ---------- GREETING ---------- */
 function timeOfDay() { const h=new Date().getHours(); if (h<6) return 'night'; if (h<12) return 'morning'; if (h<18) return 'day'; return 'evening'; }
 function greetingFor(t) { return {morning:'Доброе утро', day:'Добрый день', evening:'Добрый вечер', night:'Тихой ночи'}[t]; }
 function recommendedKey() {
-  const t=timeOfDay(); const goal = localStorage.getItem('pneuma_goal');
-  if (goal==='energy') return 'wimhof'; if (goal==='calm') return 'coherent'; if (goal==='focus') return 'triangle'; if (goal==='sleep') return 'fourseven';
-  if (t==='morning') return 'wimhof'; if (t==='night'||t==='evening') return 'fourseven'; return 'coherent';
+  const t=timeOfDay();
+  const goal = localStorage.getItem('pneuma_goal');
+  if (goal==='energy') return 'wimhof';
+  if (goal==='calm') return 'coherent';
+  if (goal==='focus') return 'triangle';
+  if (goal==='sleep') return 'fourseven';
+  if (t==='morning') return 'wimhof';
+  if (t==='night'||t==='evening') return 'fourseven';
+  return 'coherent';
 }
 
+/* ---------- RENDER HOME ---------- */
 function renderHome() {
   const t=timeOfDay();
   document.getElementById('greetingText').textContent = greetingFor(t);
   const subs={morning:'Начни день с дыхания', day:'Найди минуту для себя', evening:'Замедлись перед вечером', night:'Отпусти день'};
   document.getElementById('greetingSub').textContent = subs[t];
-  renderHero(); renderRepeatCard(); renderCatTabs(); renderPatternList();
+  renderHero();
+  renderRepeatCard();
+  renderCatTabs();
+  renderPatternList();
 }
 
 function renderRepeatCard() {
-  const slot=document.getElementById('repeatSlot'); const h=loadHistory();
+  const slot=document.getElementById('repeatSlot');
+  const h=loadHistory();
   if (!h.length) { slot.innerHTML=''; return; }
-  const lastKey = h[0].key; const p = getAllPatterns()[lastKey];
+  const lastKey = h[0].key;
+  const p = getAllPatterns()[lastKey];
   if (!p || lastKey===recommendedKey()) { slot.innerHTML=''; return; }
   const dayLabel = daysAgoLabel(h[0].date);
-  slot.innerHTML = `<div class="repeat-card"><div class="repeat-glyph">${escapeHTML(p.glyph)}</div><div class="repeat-text"><div class="repeat-title">Повторить: ${escapeHTML(p.name)}</div><div class="repeat-sub">${escapeHTML(dayLabel)}</div></div><div class="repeat-play">↻</div></div>`;
+  slot.innerHTML = `
+    <div class="repeat-card">
+      <div class="repeat-glyph">${escapeHTML(p.glyph)}</div>
+      <div class="repeat-text"><div class="repeat-title">Повторить: ${escapeHTML(p.name)}</div><div class="repeat-sub">${escapeHTML(dayLabel)}</div></div>
+      <div class="repeat-play">↻</div>
+    </div>`;
   slot.querySelector('.repeat-card').onclick=()=>openSession(lastKey);
 }
-function daysAgoLabel(iso) { const then=new Date(iso); const now=new Date(); const startThen=new Date(then.getFullYear(),then.getMonth(),then.getDate()); const startNow=new Date(now.getFullYear(),now.getMonth(),now.getDate()); const days=Math.round((startNow-startThen)/86400000); if (days<=0) return 'сегодня'; if (days===1) return 'вчера'; if (days<7) return `${days} дн. назад`; return 'практика из истории'; }
+function daysAgoLabel(iso) {
+  const then=new Date(iso); const now=new Date();
+  const startThen=new Date(then.getFullYear(),then.getMonth(),then.getDate());
+  const startNow=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const days=Math.round((startNow-startThen)/86400000);
+  if (days<=0) return 'сегодня';
+  if (days===1) return 'вчера';
+  if (days<7) return `${days} дн. назад`;
+  return 'практика из истории';
+}
 
 function renderHero() {
-  const key = recommendedKey(); const p = getAllPatterns()[key];
+  const key = recommendedKey();
+  const p = getAllPatterns()[key];
   if (!p) { document.getElementById('heroSlot').innerHTML=''; return; }
   const est = estimateMinutes(p);
-  document.getElementById('heroSlot').innerHTML = `<div class="hero-card" onclick="openSession('${key}')"><div class="hero-eyebrow">Рекомендуем сейчас</div><div class="hero-name">${escapeHTML(p.name)}</div><div class="hero-desc">${escapeHTML(p.desc)}</div><div class="hero-meta"><span>~${est} мин</span><span>${escapeHTML(p.level)}</span><span>${escapeHTML(CATEGORIES[p.cat].label)}</span></div><div class="hero-play">▶</div></div>`;
+  document.getElementById('heroSlot').innerHTML = `
+    <div class="hero-card" onclick="openSession('${key}')">
+      <div class="hero-eyebrow">Рекомендуем сейчас</div>
+      <div class="hero-name">${escapeHTML(p.name)}</div>
+      <div class="hero-desc">${escapeHTML(p.desc)}</div>
+      <div class="hero-meta"><span>~${est} мин</span><span>${escapeHTML(p.level)}</span><span>${escapeHTML(CATEGORIES[p.cat].label)}</span></div>
+      <div class="hero-play">▶</div>
+    </div>`;
 }
 
 function renderCatTabs() {
   const wrap=document.getElementById('catTabs'); wrap.innerHTML='';
-  Object.keys(CATEGORIES).forEach(k => { const t=document.createElement('div'); t.className='cat-tab'+(k===activeCat?' active':''); t.textContent=CATEGORIES[k].label; t.onclick=()=>{ activeCat=k; renderCatTabs(); renderPatternList(); }; wrap.appendChild(t); });
+  Object.keys(CATEGORIES).forEach(k => {
+    const t=document.createElement('div'); t.className='cat-tab'+(k===activeCat?' active':''); t.textContent=CATEGORIES[k].label;
+    t.onclick=()=>{ activeCat=k; renderCatTabs(); renderPatternList(); };
+    wrap.appendChild(t);
+  });
 }
-function estimateMinutes(p) { let perRound=0; if (p.type==='wimhof') { perRound = p.breaths*(p.pace+p.pace*0.75) + 45 + p.holdRecover + 5; } else { perRound = p.phases.reduce((s,ph)=>s+ph.sec,0); } return Math.max(1, Math.round(perRound*p.defaultRounds/60)); }
+
+function estimateMinutes(p) {
+  let perRound=0;
+  if (p.type==='wimhof') { perRound = p.breaths*(p.pace+p.pace*0.75) + 45 + p.holdRecover + 5; }
+  else { perRound = p.phases.reduce((s,ph)=>s+ph.sec,0); }
+  return Math.max(1, Math.round(perRound*p.defaultRounds/60));
+}
 
 function renderPatternList() {
-  const all=getAllPatterns(); const custom=loadCustom(); const favs=loadFavs(); const usage=loadUsage(); const hist = loadHistory(); const dayMap = buildPatternDayMap(hist);
+  const all=getAllPatterns(); const custom=loadCustom(); const favs=loadFavs(); const usage=loadUsage();
+  const hist = loadHistory();
+  const dayMap = buildPatternDayMap(hist);
   const list=document.getElementById('patternList'); list.innerHTML='';
+
   let keys = Object.keys(all);
   if (activeCat!=='all') keys = keys.filter(k => all[k].cat===activeCat);
-  const lastPracticed = {}; if (state.recentFirstOn) { hist.forEach(e => { if (e.key && !lastPracticed[e.key]) lastPracticed[e.key]=e.date; }); }
-  keys.sort((a,b) => { const fa=favs.includes(a)?0:1, fb=favs.includes(b)?0:1; if (fa!==fb) return fa-fb; if (state.recentFirstOn) { const ra=lastPracticed[a], rb=lastPracticed[b]; if (ra && rb) return new Date(rb)-new Date(ra); if (ra && !rb) return -1; if (!ra && rb) return 1; } return 0; });
-  if (activeCat==='all' && favs.length) { const favKeys = keys.filter(k=>favs.includes(k)); if (favKeys.length) addSectionLabel(list, 'Избранное'); favKeys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k]))); const rest = keys.filter(k=>!favs.includes(k)); addSectionLabel(list, 'Все практики'); rest.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k]))); } else { keys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k]))); }
+
+  const lastPracticed = {};
+  if (state.recentFirstOn) { hist.forEach(e => { if (e.key && !lastPracticed[e.key]) lastPracticed[e.key]=e.date; }); }
+
+  keys.sort((a,b) => {
+    const fa=favs.includes(a)?0:1, fb=favs.includes(b)?0:1;
+    if (fa!==fb) return fa-fb;
+    if (state.recentFirstOn) {
+      const ra=lastPracticed[a], rb=lastPracticed[b];
+      if (ra && rb) return new Date(rb)-new Date(ra);
+      if (ra && !rb) return -1;
+      if (!ra && rb) return 1;
+    }
+    return 0;
+  });
+
+  if (activeCat==='all' && favs.length) {
+    const favKeys = keys.filter(k=>favs.includes(k));
+    if (favKeys.length) addSectionLabel(list, 'Избранное');
+    favKeys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+    const rest = keys.filter(k=>!favs.includes(k));
+    addSectionLabel(list, 'Все практики');
+    rest.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+  } else {
+    keys.forEach((k,i)=>list.appendChild(patternCard(k, all[k], custom[k], favs, usage, i, dayMap[k])));
+  }
+
   if (!keys.length) { const e=document.createElement('div'); e.className='empty-note'; e.textContent='Здесь пока пусто. Создай свой паттерн кнопкой +'; list.appendChild(e); }
 }
-function cardTick() { if (!state.cardTickOn) return; try { const ctx = ensureAudioCtx(); if(!ctx) return; const now = ctx.currentTime; const osc = ctx.createOscillator(); const g = ctx.createGain(); osc.type = 'sine'; osc.frequency.value = 1200; g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.04, now + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, now + 0.09); osc.connect(g); g.connect(ctx.destination); osc.start(now); osc.stop(now + 0.1); } catch(e) {} }
-function buildPatternDayMap(hist) { const map={}; hist.forEach(entry => { const day = localDayKey(entry.date); if (!day || !entry.key) return; (map[entry.key]=map[entry.key]||new Set()).add(day); }); return map; }
-function sparklineHTML(daySet) { if (!daySet || !daySet.size) return ''; let dots=''; for (let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const key=localDayKey(d); dots += `<span class="spark-dot${daySet.has(key)?' on':''}"></span>`; } return `<div class="pattern-spark">${dots}</div>`; }
+
+function cardTick() {
+  if (!state.cardTickOn) return;
+  try {
+    const ctx = ensureAudioCtx(); if(!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 1200;
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.04, now + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  } catch(e) {}
+}
+
+function buildPatternDayMap(hist) {
+  const map={};
+  hist.forEach(entry => {
+    const day = localDayKey(entry.date);
+    if (!day || !entry.key) return;
+    (map[entry.key]=map[entry.key]||new Set()).add(day);
+  });
+  return map;
+}
+function sparklineHTML(daySet) {
+  if (!daySet || !daySet.size) return '';
+  let dots='';
+  for (let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const key=localDayKey(d);
+    dots += `<span class="spark-dot${daySet.has(key)?' on':''}"></span>`;
+  }
+  return `<div class="pattern-spark">${dots}</div>`;
+}
 function addSectionLabel(list, text) { const l=document.createElement('div'); l.className='section-label'; l.textContent=text; l.style.margin='4px 0 8px'; list.appendChild(l); }
+
 function patternCard(key, p, isCustom, favs, usage, idx, daySet) {
-  const st = CAT_STYLE[p.cat] || CAT_STYLE.balance; const est = estimateMinutes(p); const isFav = favs.includes(key);
+  const st = CAT_STYLE[p.cat] || CAT_STYLE.balance;
+  const est = estimateMinutes(p);
+  const isFav = favs.includes(key);
   const card=document.createElement('div'); card.className='pattern-card'; card.style.animationDelay=(idx*0.03)+'s';
-  card.innerHTML = `<div class="pattern-glyph" style="background:${st.bg}; color:${st.fg};">${escapeHTML(p.glyph)}</div><div class="pattern-info"><p class="pattern-name">${escapeHTML(p.name)}</p><p class="pattern-desc">${escapeHTML(p.desc)}</p><div class="pattern-meta"><span>~${est} мин</span><span>${escapeHTML(p.level||'')}</span>${isCustom?'<span>· свой</span>':''}</div>${sparklineHTML(daySet)}</div>${isCustom?`<div class="card-edit-btn" data-edit="${key}">✎</div>`:''}<div class="fav-star ${isFav?'on':''}" data-fav="${key}">${isFav?'★':'☆'}</div>`;
-  card.addEventListener('click', (e)=>{ if (e.target.closest('[data-fav]')) { toggleFav(key); return; } if (e.target.closest('[data-edit]')) { openEditor(key); return; } cardTick(); openSession(key); });
+  card.innerHTML = `
+    <div class="pattern-glyph" style="background:${st.bg}; color:${st.fg};">${escapeHTML(p.glyph)}</div>
+    <div class="pattern-info">
+      <p class="pattern-name">${escapeHTML(p.name)}</p>
+      <p class="pattern-desc">${escapeHTML(p.desc)}</p>
+      <div class="pattern-meta"><span>~${est} мин</span><span>${escapeHTML(p.level||'')}</span>${isCustom?'<span>· свой</span>':''}</div>
+      ${sparklineHTML(daySet)}
+    </div>
+    ${isCustom?`<div class="card-edit-btn" data-edit="${key}">✎</div>`:''}
+    <div class="fav-star ${isFav?'on':''}" data-fav="${key}">${isFav?'★':'☆'}</div>`;
+  card.addEventListener('click', (e)=>{
+    if (e.target.closest('[data-fav]')) { toggleFav(key); return; }
+    if (e.target.closest('[data-edit]')) { openEditor(key); return; }
+    cardTick();
+    openSession(key);
+  });
   return card;
 }
-function toggleFav(key) { const favs=loadFavs(); const i=favs.indexOf(key); if (i>=0) favs.splice(i,1); else favs.push(key); saveFavs(favs); vibrate('tick'); renderPatternList(); }
+function toggleFav(key) {
+  const favs=loadFavs(); const i=favs.indexOf(key);
+  if (i>=0) favs.splice(i,1); else favs.push(key);
+  saveFavs(favs); vibrate('tick'); renderPatternList();
+}
 
 /* ---------- NAV ---------- */
-function showScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.getElementById('addFab').style.display = (id==='screen-home') ? 'flex' : 'none'; }
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('addFab').style.display = (id==='screen-home') ? 'flex' : 'none';
+}
 function closeSub() { clearTimeout(miniTimer); renderHome(); showScreen('screen-home'); }
 function openStats() { renderStats(); showScreen('screen-stats'); }
 function openSettings() { syncSettingsUI(); showScreen('screen-settings'); }
 
 /* ---------- SESSION START ---------- */
+let seenWhy={}; try { seenWhy = JSON.parse(localStorage.getItem('pneuma_seen_why')||'{}'); } catch(e){}
 function openSession(key) {
-  const p=getAllPatterns()[key]; if (!p) { renderHome(); showScreen('screen-home'); return; }
+  const p=getAllPatterns()[key];
+  if (!p) { renderHome(); showScreen('screen-home'); return; }
   const why = WHY_NOTES[key];
-  if (why && !seenWhy[key] && !p.safety) { document.getElementById('whyTitle').textContent = p.name; document.getElementById('whyText').textContent = why; document.getElementById('whyOverlay').classList.add('active'); seenWhy[key]=true; try { localStorage.setItem('pneuma_seen_why', JSON.stringify(seenWhy)); } catch(e){} pendingSessionKey=key; return; }
+  if (why && !seenWhy[key] && !p.safety) {
+    document.getElementById('whyTitle').textContent = p.name;
+    document.getElementById('whyText').textContent = why;
+    document.getElementById('whyOverlay').classList.add('active');
+    seenWhy[key]=true; try { localStorage.setItem('pneuma_seen_why', JSON.stringify(seenWhy)); } catch(e){}
+    pendingSessionKey=key; return;
+  }
   proceedToSafetyOrLaunch(key);
 }
 function dismissWhy() { document.getElementById('whyOverlay').classList.remove('active'); if (pendingSessionKey){ proceedToSafetyOrLaunch(pendingSessionKey); pendingSessionKey=null; } }
 function proceedToSafetyOrLaunch(key) {
   const p=getAllPatterns()[key];
-  if (p.safety && !seenIntro[key]) { document.getElementById('introOverlay').classList.add('active'); seenIntro[key]=true; try { localStorage.setItem('pneuma_seen_intro', JSON.stringify(seenIntro)); } catch(e){} pendingSessionKey=key; return; }
+  if (p.safety && !seenIntro[key]) {
+    document.getElementById('introOverlay').classList.add('active');
+    seenIntro[key]=true; try { localStorage.setItem('pneuma_seen_intro', JSON.stringify(seenIntro)); } catch(e){}
+    pendingSessionKey=key; return;
+  }
   launchSession(key);
 }
 function dismissIntro() { document.getElementById('introOverlay').classList.remove('active'); if (pendingSessionKey){ launchSession(pendingSessionKey); pendingSessionKey=null; } }
 
 function launchSession(key) {
-  state.currentPattern=key; const p=getAllPatterns()[key]; state.rounds = p.defaultRounds;
-  document.getElementById('sessionTitle').textContent=p.name; document.getElementById('roundInfo').textContent=`Раунд 1 из ${state.rounds}`;
+  state.currentPattern=key;
+  const p=getAllPatterns()[key];
+  state.rounds = p.defaultRounds;
+  document.getElementById('sessionTitle').textContent=p.name;
+  document.getElementById('roundInfo').textContent=`Раунд 1 из ${state.rounds}`;
   resetRing(); resetProgress();
-  document.getElementById('startBtn').textContent='Начать'; document.getElementById('counter').textContent='—'; document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
-  document.getElementById('tapHint').classList.remove('show'); document.getElementById('wakeWarning').style.display='none';
+  document.getElementById('startBtn').textContent='Начать';
+  document.getElementById('counter').textContent='—';
+  document.getElementById('phaseWord').textContent=`~${estimateMinutes(p)} мин`;
+  document.getElementById('tapHint').classList.remove('show');
+  document.getElementById('wakeWarning').style.display='none';
   const st=CAT_STYLE[p.cat]||CAT_STYLE.balance;
-  document.documentElement.style.setProperty('--accent', st.fg); document.documentElement.style.setProperty('--accent-glow', st.fg+'55');
+  document.documentElement.style.setProperty('--accent', st.fg);
+  document.documentElement.style.setProperty('--accent-glow', st.fg+'55');
   const speeds = { energy:{flash:'0.28s', pulse:'1.5s'}, sleep:{flash:'0.9s', pulse:'3.6s'}, calm:{flash:'0.65s', pulse:'2.8s'}, focus:{flash:'0.45s', pulse:'2.2s'}, balance:{flash:'0.5s', pulse:'2.4s'} };
   const sp = speeds[p.cat] || speeds.balance;
-  document.documentElement.style.setProperty('--flash-speed', sp.flash); document.documentElement.style.setProperty('--pulse-speed', sp.pulse);
-  const sessionEl=document.getElementById('screen-session'); sessionEl.className = sessionEl.className.replace(/\bcat-\w+\b/g,'').trim() + ' cat-'+p.cat;
+  document.documentElement.style.setProperty('--flash-speed', sp.flash);
+  document.documentElement.style.setProperty('--pulse-speed', sp.pulse);
+  const sessionEl=document.getElementById('screen-session');
+  sessionEl.className = sessionEl.className.replace(/\bcat-\w+\b/g,'').trim() + ' cat-'+p.cat;
   showScreen('screen-session');
 }
 function exitSession() { stopSession(); document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666'); renderHome(); showScreen('screen-home'); }
 
-function openSessionOpts() { if (state.running) { vibrate('tick'); return; } buildRoundSelect(); document.getElementById('optsSheet').classList.add('active'); }
+/* ---------- SESSION OPTS SHEET ---------- */
+function openSessionOpts() {
+  if (state.running) { vibrate('tick'); return; }
+  buildRoundSelect(); document.getElementById('optsSheet').classList.add('active');
+}
 function closeOptsSheet() { document.getElementById('optsSheet').classList.remove('active'); }
-function buildRoundSelect() { const wrap=document.getElementById('roundSelect'); wrap.innerHTML=''; for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===state.rounds?' active':''); c.textContent=i; c.onclick=()=>{ state.rounds=i; buildRoundSelect(); refreshPreStartDuration(); }; wrap.appendChild(c); } document.getElementById('roundCustom').value = state.rounds; }
-document.getElementById('roundCustom').addEventListener('input', function(){ const n = parseInt(this.value, 10); if (!n || n<1) return; state.rounds = Math.min(n, 99); refreshPreStartDuration(); document.querySelectorAll('#roundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===state.rounds)); });
-function refreshPreStartDuration() { document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`; if (state.running) return; const p=getAllPatterns()[state.currentPattern]; if (p) document.getElementById('phaseWord').textContent = `~${estimateMinutes(p)} мин`; }
+function buildRoundSelect() {
+  const wrap=document.getElementById('roundSelect'); wrap.innerHTML='';
+  for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===state.rounds?' active':''); c.textContent=i;
+    c.onclick=()=>{ state.rounds=i; buildRoundSelect(); refreshPreStartDuration(); }; wrap.appendChild(c); }
+  document.getElementById('roundCustom').value = state.rounds;
+}
+document.getElementById('roundCustom').addEventListener('input', function(){
+  const n = parseInt(this.value, 10);
+  if (!n || n<1) return;
+  state.rounds = Math.min(n, 99);
+  refreshPreStartDuration();
+  document.querySelectorAll('#roundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===state.rounds));
+});
+function refreshPreStartDuration() {
+  document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`;
+  if (state.running) return;
+  const p=getAllPatterns()[state.currentPattern];
+  if (p) document.getElementById('phaseWord').textContent = `~${estimateMinutes(p)} мин`;
+}
 
-function handleRingTap() { if (!state.tapSkipOn||!state.running||!isHoldPhase) return; const now=Date.now(); if (now-lastTapTime<400){ skipRequested=true; vibrate('skip'); } lastTapTime=now; }
+/* ---------- TAP ---------- */
+// ИСПРАВЛЕНИЕ: обработка касаний работает теперь без задержек на мобильных
+function handleRingTap() {
+  if (!state.tapSkipOn||!state.running||!isHoldPhase) return;
+  const now=Date.now(); 
+  if (now-lastTapTime<400){ skipRequested=true; vibrate('skip'); } 
+  lastTapTime=now;
+}
 const ringWrapEl = document.getElementById('ringWrap');
 ringWrapEl.addEventListener('touchend', (e) => { e.preventDefault(); handleRingTap(); }, { passive: false });
 ringWrapEl.addEventListener('click', handleRingTap);
-function requestSkip() { if (!state.running) return; if (isHoldPhase) { skipRequested = true; } else { breathingSkipRequested = true; skipRequested = true; } vibrate('skip'); }
+
+function requestSkip() {
+  if (!state.running) return;
+  if (isHoldPhase) {
+    skipRequested = true;
+  } else {
+    breathingSkipRequested = true;
+    skipRequested = true;
+  }
+  vibrate('skip');
+}
 
 /* ---------- RING / PROGRESS ---------- */
-const ring=()=>document.getElementById('ring'); const glow=()=>document.getElementById('glow'); const CIRC = 2*Math.PI*140;
+const ring=()=>document.getElementById('ring');
+const glow=()=>document.getElementById('glow');
+const CIRC = 2*Math.PI*140;
 function resetProgress() { const bar=document.getElementById('progressBar'); bar.style.strokeDasharray=CIRC; bar.style.strokeDashoffset=CIRC; }
 function setProgress(frac) { document.getElementById('progressBar').style.strokeDashoffset = CIRC*(1-frac); }
-function resetRing() { ring().classList.remove('pulse','hold-chase','hold-behind','hold-ahead'); ring().style.transition='transform 0.6s ease, border-radius 0.6s ease'; ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%'; glow().style.transition='transform 0.6s ease, opacity 0.6s ease'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.55'; }
-function setRingDuration(sec) { ring().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), border-radius ${sec}s ease-in-out`; glow().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), opacity ${sec}s ease`; }
-function ringAction(a) { switch(a){ case 'expand': ring().classList.add('pulse'); ring().style.transform='scale(1)'; ring().style.borderRadius='46% 54% 48% 52%'; glow().style.transform='scale(1.35)'; glow().style.opacity='0.85'; break; case 'expand-more': ring().style.transform='scale(1.08)'; ring().style.borderRadius='44% 56% 46% 54%'; glow().style.transform='scale(1.5)'; glow().style.opacity='0.95'; break; case 'contract': ring().classList.add('pulse'); ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.5'; break; case 'hold-full': case 'hold-empty': ring().classList.remove('pulse'); ring().style.borderRadius='50%'; break; } }
+function resetRing() {
+  ring().classList.remove('pulse','hold-chase','hold-behind','hold-ahead');
+  ring().style.transition='transform 0.6s ease, border-radius 0.6s ease'; ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%';
+  glow().style.transition='transform 0.6s ease, opacity 0.6s ease'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.55';
+}
+function setRingDuration(sec) {
+  ring().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), border-radius ${sec}s ease-in-out`;
+  glow().style.transition=`transform ${sec}s cubic-bezier(0.45,0,0.55,1), opacity ${sec}s ease`;
+}
+function ringAction(a) {
+  switch(a){
+    case 'expand': ring().classList.add('pulse'); ring().style.transform='scale(1)'; ring().style.borderRadius='46% 54% 48% 52%'; glow().style.transform='scale(1.35)'; glow().style.opacity='0.85'; break;
+    case 'expand-more': ring().style.transform='scale(1.08)'; ring().style.borderRadius='44% 56% 46% 54%'; glow().style.transform='scale(1.5)'; glow().style.opacity='0.95'; break;
+    case 'contract': ring().classList.add('pulse'); ring().style.transform='scale(0.55)'; ring().style.borderRadius='50%'; glow().style.transform='scale(0.5)'; glow().style.opacity='0.5'; break;
+    case 'hold-full': case 'hold-empty': ring().classList.remove('pulse'); ring().style.borderRadius='50%'; break;
+  }
+}
 function fadeBg(on) { document.getElementById('sessionFadeBg').style.opacity = on?'0.4':'0'; }
 
 async function runTimedPhase(totalSec, tok, onSecond) {
-  let remain=Math.ceil(totalSec); const total=remain; const longEnoughForVoiceCountdown = total > 6;
-  while (remain>0){ if (sessionToken!==tok) return false; if (skipRequested){ skipRequested=false; return false; } if (remain<=3 && remain>=1) { if (longEnoughForVoiceCountdown) speak(String(remain)); else vibrate('tick'); } if (onSecond) onSecond(remain); setProgress((total-remain+1)/total); const ok=await sleepInterruptible(1000, tok); if (!ok) return false; remain--; }
+  let remain=Math.ceil(totalSec); const total=remain;
+  const longEnoughForVoiceCountdown = total > 6;
+  while (remain>0){
+    if (sessionToken!==tok) return false;
+    if (skipRequested){ skipRequested=false; return false; }
+    if (remain<=3 && remain>=1) {
+      if (longEnoughForVoiceCountdown) speak(String(remain));
+      else vibrate('tick');
+    }
+    if (onSecond) onSecond(remain);
+    setProgress((total-remain+1)/total);
+    const ok=await sleepInterruptible(1000, tok); if (!ok) return false;
+    remain--;
+  }
   return true;
 }
 
 /* ---------- SESSION ENGINE ---------- */
 async function toggleStart() {
   if (state.running) return;
-  // Разблокируем аудио и загружаем MP3 при первом нажатии "Начать"
   ensureAudioCtx();
-  await loadAudioCues(); 
+  await loadAudioCues(); // Загружаем MP3 файлы в кэш при старте
   
-  state.running=true; state.sessionStart=Date.now(); sessionToken++; const token=sessionToken; previousHoldSeconds=null;
+  state.running=true; state.sessionStart=Date.now(); sessionToken++;
+  const token=sessionToken;
+  previousHoldSeconds=null;
   document.getElementById('startBtn').textContent='Идёт…';
   await requestWakeLock(); startBreathNoise();
   const p=getAllPatterns()[state.currentPattern];
@@ -1208,177 +1726,640 @@ async function toggleStart() {
   document.getElementById('screen-session').classList.add('session-live');
   bumpUsage(state.currentPattern);
   if (state.screenOffOn) { setTimeout(()=>{ if (state.running) document.getElementById('screenOffOverlay').classList.add('active'); }, 1200); }
-  try { await runSession(token); } catch(e) { if (state.running) stopSession(); document.getElementById('phaseWord').textContent='Не удалось продолжить. Попробуй начать ещё раз.'; }
+  try {
+    await runSession(token);
+  } catch(e) {
+    if (state.running) stopSession();
+    document.getElementById('phaseWord').textContent='Не удалось продолжить. Попробуй начать ещё раз.';
+  }
 }
+
 function exitScreenOff() { document.getElementById('screenOffOverlay').classList.remove('active'); vibrate('tick'); }
 
 function stopSession() {
   if (!state.running) return;
-  state.running = false; sessionToken++;
-  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
-  stopBreathNoise(); stopHoldTone(); stopBhramariHum(); releaseWakeLock(); stopMusic(1.2); stopOceanTexture(1);
-  document.getElementById('screen-session').classList.remove('session-live'); document.getElementById('screenOffOverlay').classList.remove('active'); closeOptsSheet();
-  isHoldPhase = false; resetRing(); resetProgress();
-  document.getElementById('counter').textContent = '—'; document.getElementById('phaseWord').textContent = 'Пауза'; document.getElementById('startBtn').textContent = 'Начать';
-  if (state.sessionStart) { const m = Math.max(1, Math.round((Date.now() - state.sessionStart) / 60000)); logSession(m); state.sessionStart = null; showComplete(m); return; }
-  state.sessionStart = null; renderHome(); showScreen('screen-home');
+  state.running = false;
+  sessionToken++;
+  stopSpeechCues();
+  stopBreathNoise();
+  stopHoldTone();
+  stopBhramariHum();
+  releaseWakeLock();
+  stopMusic(1.2);
+  stopOceanTexture(1);
+  document.getElementById('screen-session').classList.remove('session-live');
+  document.getElementById('screenOffOverlay').classList.remove('active');
+  closeOptsSheet();
+  isHoldPhase = false;
+  resetRing();
+  resetProgress();
+  document.getElementById('counter').textContent = '—';
+  document.getElementById('phaseWord').textContent = 'Пауза';
+  document.getElementById('startBtn').textContent = 'Начать';
+
+  if (state.sessionStart) {
+    const m = Math.max(1, Math.round((Date.now() - state.sessionStart) / 60000));
+    logSession(m);
+    state.sessionStart = null;
+    showComplete(m);
+    return;
+  }
+  state.sessionStart = null;
+  renderHome();
+  showScreen('screen-home');
 }
+
 function logSession(minutes) { const p=getAllPatterns()[state.currentPattern]; saveHistoryEntry({ name:p.name, key:state.currentPattern, date:new Date().toISOString(), minutes }); }
 
-async function flashRoundComplete(round, total, tok) { if (sessionToken!==tok) return; document.getElementById('roundInfo').textContent = `Раунд ${round} из ${total} завершён`; document.getElementById('roundInfo').classList.add('round-done-flash'); vibrate('bell'); await sleep(900); document.getElementById('roundInfo').classList.remove('round-done-flash'); }
+async function flashRoundComplete(round, total, tok) {
+  if (sessionToken!==tok) return;
+  document.getElementById('roundInfo').textContent = `Раунд ${round} из ${total} завершён`;
+  document.getElementById('roundInfo').classList.add('round-done-flash');
+  vibrate('bell');
+  await sleep(900);
+  document.getElementById('roundInfo').classList.remove('round-done-flash');
+}
 
 async function runSession(tok) {
-  const p = getAllPatterns()[state.currentPattern]; const counter = document.getElementById('counter'); const phaseWord = document.getElementById('phaseWord'); const roundInfo = document.getElementById('roundInfo');
-  if (state.settleOn !== false) { phaseWord.textContent = 'Устройся поудобнее'; counter.textContent = ''; resetProgress(); fadeBg(true); await sleep(2600); if (sessionToken !== tok) return; fadeBg(false); }
+  const p = getAllPatterns()[state.currentPattern];
+  const counter = document.getElementById('counter');
+  const phaseWord = document.getElementById('phaseWord');
+  const roundInfo = document.getElementById('roundInfo');
+
+  if (state.settleOn !== false) {
+    phaseWord.textContent = 'Устройся поудобнее';
+    counter.textContent = '';
+    resetProgress();
+    fadeBg(true);
+    await sleep(2600);
+    if (sessionToken !== tok) return;
+    fadeBg(false);
+  }
+
   for (let round = 1; round <= state.rounds && state.running; round++) {
     roundInfo.textContent = `Раунд ${round} из ${state.rounds}`;
+
     if (p.type === 'wimhof') {
-      const pace = p.pace || 1.6, exhalePace = pace * 0.75; const exhaleMethod = p.exhaleMethod || 'ртом'; const inhaleText = 'Вдох носом'; const exhaleText = 'Выдох ' + exhaleMethod;
-      isHoldPhase = false; breathingSkipRequested = false;
+      const pace = p.pace || 1.6, exhalePace = pace * 0.75;
+      const exhaleMethod = p.exhaleMethod || 'ртом';
+      const inhaleText = 'Вдох носом';
+      const exhaleText = 'Выдох ' + exhaleMethod;
+      isHoldPhase = false;
+      breathingSkipRequested = false;
       for (let i = 1; i <= p.breaths; i++) {
-        if (sessionToken !== tok || !state.running) return; if (breathingSkipRequested) { breathingSkipRequested = false; break; }
-        setRingDuration(pace); ringAction('expand'); setNoiseLevel(0.014, pace * 0.4); phaseWord.textContent = inhaleText; speak('Вдох'); playTone('in', pace); counter.textContent = ''; vibrate('tick'); setProgress(i / p.breaths);
-        await sleepInterruptible(pace * 1000, tok); if (sessionToken !== tok || !state.running) return; if (breathingSkipRequested) { breathingSkipRequested = false; break; }
-        ringAction('contract'); setNoiseLevel(0.006, exhalePace * 0.4); phaseWord.textContent = exhaleText; speak('Выдох'); playTone('out', exhalePace); await sleepInterruptible(exhalePace * 1000, tok);
+        if (sessionToken !== tok || !state.running) return;
+        if (breathingSkipRequested) { breathingSkipRequested = false; break; }
+        setRingDuration(pace); ringAction('expand'); setNoiseLevel(0.014, pace * 0.4);
+        phaseWord.textContent = inhaleText; speak('Вдох'); playTone('in', pace);
+        counter.textContent = '';
+        vibrate('tick');
+        setProgress(i / p.breaths);
+        await sleepInterruptible(pace * 1000, tok);
+        if (sessionToken !== tok || !state.running) return;
+        if (breathingSkipRequested) { breathingSkipRequested = false; break; }
+        ringAction('contract'); setNoiseLevel(0.006, exhalePace * 0.4);
+        phaseWord.textContent = exhaleText; speak('Выдох'); playTone('out', exhalePace);
+        await sleepInterruptible(exhalePace * 1000, tok);
       }
-      breathingSkipRequested = false; if (sessionToken !== tok || !state.running) return;
-      setRingDuration(0.6); ringAction('contract'); ring().style.transform = 'scale(0.4)'; phaseWord.textContent = 'Выдохни и держи'; counter.textContent = ''; resetProgress(); bell(); speak('Выдохни и задержи дыхание'); playTone('out', 2); vibrate('hold'); setNoiseLevel(0.0001, 1); await sleep(2200); if (sessionToken !== tok || !state.running) return;
-      const holdTarget = state.progressiveOn ? (60 + (round - 1) * 20) : 120; const beatTarget = state.progressiveOn ? previousHoldSeconds : null;
-      isHoldPhase = true; document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn); startHoldTone();
+      breathingSkipRequested = false;
+      if (sessionToken !== tok || !state.running) return;
+      setRingDuration(0.6); ringAction('contract'); ring().style.transform = 'scale(0.4)';
+      phaseWord.textContent = 'Выдохни и держи';
+      counter.textContent = '';
+      resetProgress();
+      bell();
+      speak('Выдохни и задержи дыхание');
+      playTone('out', 2);
+      vibrate('hold');
+      setNoiseLevel(0.0001, 1);
+      await sleep(2200);
+      if (sessionToken !== tok || !state.running) return;
+
+      const holdTarget = state.progressiveOn ? (60 + (round - 1) * 20) : 120;
+      const beatTarget = state.progressiveOn ? previousHoldSeconds : null;
+      isHoldPhase = true;
+      document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn);
+      startHoldTone();
       if (beatTarget) { ring().classList.add('hold-chase'); roundInfo.textContent = `Раунд ${round} из ${state.rounds} · держи дольше ${beatTarget}″`; }
-      const hs = Date.now(); skipRequested = false; let finalHoldSeconds = 0;
+      const hs = Date.now();
+      skipRequested = false;
+      let finalHoldSeconds = 0;
       while (sessionToken === tok && state.running) {
-        const s = Math.floor((Date.now() - hs) / 1000); finalHoldSeconds = s; counter.textContent = state.noNumbersOn ? '' : (s + '″');
-        if (beatTarget) { if (s < beatTarget) { ring().classList.add('hold-behind'); ring().classList.remove('hold-ahead'); } else { ring().classList.remove('hold-behind'); ring().classList.add('hold-ahead'); if (s === beatTarget) vibrate('bell'); } }
-        if (skipRequested) { skipRequested = false; break; } if (!state.tapSkipOn && s >= holdTarget) break; await sleep(150);
+        const s = Math.floor((Date.now() - hs) / 1000);
+        finalHoldSeconds = s;
+        counter.textContent = state.noNumbersOn ? '' : (s + '″');
+        if (beatTarget) {
+          if (s < beatTarget) { ring().classList.add('hold-behind'); ring().classList.remove('hold-ahead'); }
+          else { ring().classList.remove('hold-behind'); ring().classList.add('hold-ahead'); if (s === beatTarget) vibrate('bell'); }
+        }
+        if (skipRequested) { skipRequested = false; break; }
+        if (!state.tapSkipOn && s >= holdTarget) break;
+        await sleep(150);
       }
-      stopHoldTone(); ring().classList.remove('hold-chase', 'hold-behind', 'hold-ahead'); if (state.progressiveOn) previousHoldSeconds = finalHoldSeconds; isHoldPhase = false; document.getElementById('tapHint').classList.remove('show'); roundInfo.textContent = `Раунд ${round} из ${state.rounds}`; if (sessionToken !== tok || !state.running) return;
-      phaseWord.textContent = `Вдохни, держи ${p.holdRecover} сек`; bell(); speak('Вдохни и задержи'); playTone('in', Math.min(p.holdRecover, 3)); vibrate('skip'); setRingDuration(1.2); ring().style.transform = 'scale(1)'; startHoldTone();
-      await runTimedPhase(p.holdRecover, tok, s => { counter.textContent = state.noNumbersOn ? '' : s; }); stopHoldTone(); if (sessionToken !== tok || !state.running) return;
-      setRingDuration(5); ringAction('contract'); setNoiseLevel(0.008, 5 * 0.4); phaseWord.textContent = 'Выдох ртом'; counter.textContent = ''; resetProgress(); speak('Выдох'); playTone('out', 5); vibrate('tick'); await sleepInterruptible(5000, tok); if (sessionToken !== tok || !state.running) return; if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
+      stopHoldTone();
+      ring().classList.remove('hold-chase', 'hold-behind', 'hold-ahead');
+      if (state.progressiveOn) previousHoldSeconds = finalHoldSeconds;
+      isHoldPhase = false;
+      document.getElementById('tapHint').classList.remove('show');
+      roundInfo.textContent = `Раунд ${round} из ${state.rounds}`;
+      if (sessionToken !== tok || !state.running) return;
+
+      phaseWord.textContent = `Вдохни, держи ${p.holdRecover} сек`;
+      bell();
+      speak('Вдохни и задержи');
+      playTone('in', Math.min(p.holdRecover, 3));
+      vibrate('skip');
+      setRingDuration(1.2);
+      ring().style.transform = 'scale(1)';
+      startHoldTone();
+      await runTimedPhase(p.holdRecover, tok, s => { counter.textContent = state.noNumbersOn ? '' : s; });
+      stopHoldTone();
+      if (sessionToken !== tok || !state.running) return;
+
+      setRingDuration(5);
+      ringAction('contract');
+      setNoiseLevel(0.008, 5 * 0.4);
+      phaseWord.textContent = 'Выдох ртом';
+      counter.textContent = '';
+      resetProgress();
+      speak('Выдох');
+      playTone('out', 5);
+      vibrate('tick');
+      await sleepInterruptible(5000, tok);
+      if (sessionToken !== tok || !state.running) return;
+      if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
     } else {
       for (const phase of p.phases) {
-        if (sessionToken !== tok || !state.running) return; isHoldPhase = (phase.action === 'hold-full' || phase.action === 'hold-empty'); setRingDuration(phase.sec); ringAction(phase.action); phaseWord.textContent = phase.label; document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn && isHoldPhase); phaseChime(phase.action); speak(phase.voice); vibrate(phase.action === 'contract' ? 'exhale' : 'inhale');
+        if (sessionToken !== tok || !state.running) return;
+        isHoldPhase = (phase.action === 'hold-full' || phase.action === 'hold-empty');
+        setRingDuration(phase.sec);
+        ringAction(phase.action);
+        phaseWord.textContent = phase.label;
+        document.getElementById('tapHint').classList.toggle('show', state.tapSkipOn && isHoldPhase);
+        phaseChime(phase.action);
+        speak(phase.voice);
+        vibrate(phase.action === 'contract' ? 'exhale' : 'inhale');
         if (state.currentPattern === 'bhramari' && phase.action === 'contract') startBhramariHum(phase.sec);
-        ring().classList.remove('phase-flash'); void ring().offsetWidth; ring().classList.add('phase-flash');
-        if (phase.action === 'expand' || phase.action === 'expand-more') { setNoiseLevel(0.014, phase.sec * 0.4); playTone('in', phase.sec); } else if (phase.action === 'contract') { setNoiseLevel(0.006, phase.sec * 0.4); playTone('out', phase.sec); } else { setNoiseLevel(0.0001, 0.5); startHoldTone(); }
-        counter.textContent = state.noNumbersOn ? '' : Math.ceil(phase.sec); skipRequested = false; const done = await runTimedPhase(phase.sec, tok, s => { if (!state.noNumbersOn) counter.textContent = s; });
-        if (isHoldPhase) stopHoldTone(); isHoldPhase = false; if (sessionToken !== tok || !state.running) return; if (!done && !state.tapSkipOn) return;
+        ring().classList.remove('phase-flash');
+        void ring().offsetWidth;
+        ring().classList.add('phase-flash');
+        if (phase.action === 'expand' || phase.action === 'expand-more') { setNoiseLevel(0.014, phase.sec * 0.4); playTone('in', phase.sec); }
+        else if (phase.action === 'contract') { setNoiseLevel(0.006, phase.sec * 0.4); playTone('out', phase.sec); }
+        else { setNoiseLevel(0.0001, 0.5); startHoldTone(); }
+        counter.textContent = state.noNumbersOn ? '' : Math.ceil(phase.sec);
+        skipRequested = false;
+        const done = await runTimedPhase(phase.sec, tok, s => { if (!state.noNumbersOn) counter.textContent = s; });
+        if (isHoldPhase) stopHoldTone();
+        isHoldPhase = false;
+        if (sessionToken !== tok || !state.running) return;
+        if (!done && !state.tapSkipOn) return;
       }
       if (round < state.rounds) await flashRoundComplete(round, state.rounds, tok);
     }
   }
+
   if (state.running) {
-    state.running = false; phaseWord.textContent = ''; counter.textContent = ''; setProgress(1); await sleep(700); speak('Сессия завершена'); bell(); vibrate('complete'); stopBreathNoise(); stopHoldTone(); stopBhramariHum(); releaseWakeLock(); stopMusic(); stopOceanTexture(3);
-    document.getElementById('screen-session').classList.remove('session-live'); document.getElementById('screenOffOverlay').classList.remove('active'); closeOptsSheet(); isHoldPhase = false;
-    let minutes = 1; if (state.sessionStart) { minutes = Math.max(1, Math.round((Date.now() - state.sessionStart) / 60000)); logSession(minutes); state.sessionStart = null; } showComplete(minutes);
+    state.running = false;
+    phaseWord.textContent = '';
+    counter.textContent = '';
+    setProgress(1);
+    await sleep(700);
+    speak('Сессия завершена');
+    bell();
+    vibrate('complete');
+    stopBreathNoise();
+    stopHoldTone();
+    stopBhramariHum();
+    releaseWakeLock();
+    stopMusic();
+    stopOceanTexture(3);
+    document.getElementById('screen-session').classList.remove('session-live');
+    document.getElementById('screenOffOverlay').classList.remove('active');
+    closeOptsSheet();
+    isHoldPhase = false;
+    let minutes = 1;
+    if (state.sessionStart) {
+      minutes = Math.max(1, Math.round((Date.now() - state.sessionStart) / 60000));
+      logSession(minutes);
+      state.sessionStart = null;
+    }
+    showComplete(minutes);
   }
 }
 
-/* ---------- COMPLETE & STATS ---------- */
+/* ---------- COMPLETE SCREEN ---------- */
 function showComplete(minutes) {
-  const h=loadHistory(); const stats=computeStats(h);
-  document.getElementById('cStatMin').textContent=minutes; document.getElementById('cStatStreak').textContent=stats.streak; document.getElementById('cStatTotal').textContent=stats.total;
+  const h=loadHistory();
+  const stats=computeStats(h);
+  document.getElementById('cStatMin').textContent=minutes;
+  document.getElementById('cStatStreak').textContent=stats.streak;
+  document.getElementById('cStatTotal').textContent=stats.total;
   const msgs=['Ты нашёл время для себя','Тело благодарит','Спокойствие внутри','Ещё один шаг к практике'];
   document.getElementById('completeSub').textContent = msgs[Math.floor(Math.random()*msgs.length)];
   const p=getAllPatterns()[state.currentPattern];
   document.getElementById('completeSummary').textContent = p ? `${state.rounds} ${roundsWord(state.rounds)} «${p.name}» — ${minutes} мин` : '';
   document.getElementById('completeFact').textContent = buildWeeklyFact(h, minutes);
-  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel')); lastSessionData={minutes};
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  lastSessionData={minutes};
   document.documentElement.style.setProperty('--accent','#8B7CF6'); document.documentElement.style.setProperty('--accent-glow','#8B7CF666');
   showScreen('screen-complete');
 }
-function buildWeeklyFact(h, todayMinutes) { const now=new Date(); const todayStr=now.toDateString(); const sevenDaysAgo=new Date(now); sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7); const priorWeek = h.filter(e => { const d=new Date(e.date); return d>=sevenDaysAgo && d.toDateString()!==todayStr; }); if (priorWeek.length < 3) return ''; const byDay = {}; priorWeek.forEach(e => { const day=localDayKey(e.date); if(day) byDay[day]=(byDay[day]||0)+(e.minutes||0); }); const days = Object.keys(byDay); const avgMin = days.length ? (Object.values(byDay).reduce((a,b)=>a+b,0)/days.length) : 0; if (avgMin<=0) return ''; const diff = todayMinutes - avgMin; if (Math.abs(diff) < 1) return `Как и в среднем за неделю — ${Math.round(avgMin)} мин.`; if (diff > 0) return `Дольше, чем в среднем за неделю (${Math.round(avgMin)} мин).`; return `Короче, чем в среднем за неделю (${Math.round(avgMin)} мин).`; }
-function roundsWord(n) { const n10=n%10, n100=n%100; if (n100>=11 && n100<=14) return 'раундов'; if (n10===1) return 'раунд'; if (n10>=2 && n10<=4) return 'раунда'; return 'раундов'; }
+function buildWeeklyFact(h, todayMinutes) {
+  const now=new Date();
+  const todayStr=now.toDateString();
+  const sevenDaysAgo=new Date(now); sevenDaysAgo.setDate(sevenDaysAgo.getDate()-7);
+  const priorWeek = h.filter(e => { const d=new Date(e.date); return d>=sevenDaysAgo && d.toDateString()!==todayStr; });
+  if (priorWeek.length < 3) return '';
+  const byDay = {};
+  priorWeek.forEach(e => { const day=localDayKey(e.date); if(day) byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  const days = Object.keys(byDay);
+  const avgMin = days.length ? (Object.values(byDay).reduce((a,b)=>a+b,0)/days.length) : 0;
+  if (avgMin<=0) return '';
+  const diff = todayMinutes - avgMin;
+  if (Math.abs(diff) < 1) return `Как и в среднем за неделю — ${Math.round(avgMin)} мин.`;
+  if (diff > 0) return `Дольше, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
+  return `Короче, чем в среднем за неделю (${Math.round(avgMin)} мин).`;
+}
+function roundsWord(n) {
+  const n10=n%10, n100=n%100;
+  if (n100>=11 && n100<=14) return 'раундов';
+  if (n10===1) return 'раунд';
+  if (n10>=2 && n10<=4) return 'раунда';
+  return 'раундов';
+}
 function pickMood(el, mood) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel')); el.classList.add('sel'); vibrate('tick'); if (lastSessionData) lastSessionData.mood=mood; }
 function finishComplete() { renderHome(); showScreen('screen-home'); }
-function extendSession() { const key = state.currentPattern; if (!key) { finishComplete(); return; } openSession(key); state.rounds = 3; document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`; toggleStart(); }
+function extendSession() {
+  const key = state.currentPattern;
+  if (!key) { finishComplete(); return; }
+  openSession(key);
+  state.rounds = 3;
+  document.getElementById('roundInfo').textContent = `Раунд 1 из ${state.rounds}`;
+  toggleStart();
+}
 
-function computeStats(h) { const total=h.length; const totalMin=h.reduce((s,e)=>s+(e.minutes||0),0); let streak=0, cursor=new Date(); const days=new Set(h.map(e=>new Date(e.date).toDateString())); while (days.has(cursor.toDateString())){ streak++; cursor.setDate(cursor.getDate()-1); } const today=new Date().toDateString(); const todayCount=h.filter(e=>new Date(e.date).toDateString()===today).length; return { total, totalMin, streak, todayCount }; }
-const BADGES = [ { id:'first', icon:'🌱', label:'Первая сессия', check:s=>s.total>=1 }, { id:'week', icon:'🔥', label:'7 дней подряд', check:s=>s.streak>=7 }, { id:'ten', icon:'⭐', label:'10 сессий', check:s=>s.total>=10 }, { id:'fifty', icon:'💎', label:'50 сессий', check:s=>s.total>=50 }, { id:'hour', icon:'⏳', label:'60 минут', check:s=>s.totalMin>=60 }, { id:'hundred', icon:'👑', label:'100 сессий', check:s=>s.total>=100 } ];
+/* ---------- STATS ---------- */
+function computeStats(h) {
+  const total=h.length;
+  const totalMin=h.reduce((s,e)=>s+(e.minutes||0),0);
+  let streak=0, cursor=new Date();
+  const days=new Set(h.map(e=>new Date(e.date).toDateString()));
+  while (days.has(cursor.toDateString())){ streak++; cursor.setDate(cursor.getDate()-1); }
+  const today=new Date().toDateString();
+  const todayCount=h.filter(e=>new Date(e.date).toDateString()===today).length;
+  return { total, totalMin, streak, todayCount };
+}
+const BADGES = [
+  { id:'first', icon:'🌱', label:'Первая сессия', check:s=>s.total>=1 },
+  { id:'week', icon:'🔥', label:'7 дней подряд', check:s=>s.streak>=7 },
+  { id:'ten', icon:'⭐', label:'10 сессий', check:s=>s.total>=10 },
+  { id:'fifty', icon:'💎', label:'50 сессий', check:s=>s.total>=50 },
+  { id:'hour', icon:'⏳', label:'60 минут', check:s=>s.totalMin>=60 },
+  { id:'hundred', icon:'👑', label:'100 сессий', check:s=>s.total>=100 }
+];
 function renderStats() {
   const h=loadHistory(); const s=computeStats(h);
-  document.getElementById('statTotal').textContent=s.total; document.getElementById('statStreak').textContent=s.streak; document.getElementById('statMinutes').textContent=s.totalMin; document.getElementById('statToday').textContent=s.todayCount>0?s.todayCount:'—';
+  document.getElementById('statTotal').textContent=s.total;
+  document.getElementById('statStreak').textContent=s.streak;
+  document.getElementById('statMinutes').textContent=s.totalMin;
+  document.getElementById('statToday').textContent=s.todayCount>0?s.todayCount:'—';
   const ach=document.getElementById('achievements'); ach.innerHTML='';
-  BADGES.forEach(b=>{ const earned=b.check(s); const d=document.createElement('div'); d.className='badge'+(earned?' earned':''); d.innerHTML=`<div class="badge-icon">${earned?b.icon:'🔒'}</div><div class="badge-lbl">${b.label}</div>`; ach.appendChild(d); });
+  BADGES.forEach(b=>{ const earned=b.check(s); const d=document.createElement('div'); d.className='badge'+(earned?' earned':'');
+    d.innerHTML=`<div class="badge-icon">${earned?b.icon:'🔒'}</div><div class="badge-lbl">${b.label}</div>`; ach.appendChild(d); });
   const list=document.getElementById('historyList'); list.innerHTML='';
   if (!h.length){ list.innerHTML='<div class="empty-note">Пока нет сессий. Начни первую практику!</div>'; }
-  else h.slice(0,40).forEach(e=>{ const d=new Date(e.date); const ds=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); const row=document.createElement('div'); row.className='history-item'; row.innerHTML=`<span>${escapeHTML(e.name)}</span><span class="h-date">${escapeHTML(e.minutes)} мин · ${escapeHTML(ds)}</span>`; list.appendChild(row); });
+  else h.slice(0,40).forEach(e=>{ const d=new Date(e.date);
+    const ds=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    const row=document.createElement('div'); row.className='history-item';
+    row.innerHTML=`<span>${escapeHTML(e.name)}</span><span class="h-date">${escapeHTML(e.minutes)} мин · ${escapeHTML(ds)}</span>`; list.appendChild(row); });
   renderCalendarGrid(h);
 }
-function renderCalendarGrid(h) { const grid=document.getElementById('calendarGrid'); grid.innerHTML=''; const byDay={}; h.forEach(e => { const day=localDayKey(e.date); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); }); const days=98, cells=[]; for (let i=days-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const key=localDayKey(d); const mins=byDay[key]||0; let lvl=0; if (mins>0) lvl=1; if (mins>=10) lvl=2; if (mins>=25) lvl=3; cells.push(`<div class="cal-cell${lvl?(' lvl'+lvl):''}" title="${key}${mins?': '+mins+' мин':''}"></div>`); } grid.innerHTML = cells.join(''); }
+function renderCalendarGrid(h) {
+  const grid=document.getElementById('calendarGrid'); grid.innerHTML='';
+  const byDay={};
+  h.forEach(e => { const day=localDayKey(e.date); if (!day) return; byDay[day]=(byDay[day]||0)+(e.minutes||0); });
+  const days=98, cells=[];
+  for (let i=days-1;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const key=localDayKey(d);
+    const mins=byDay[key]||0;
+    let lvl=0; if (mins>0) lvl=1; if (mins>=10) lvl=2; if (mins>=25) lvl=3;
+    cells.push(`<div class="cal-cell${lvl?(' lvl'+lvl):''}" title="${key}${mins?': '+mins+' мин':''}"></div>`);
+  }
+  grid.innerHTML = cells.join('');
+}
 
-/* ---------- SETTINGS & EDITOR ---------- */
+/* ---------- SETTINGS ---------- */
 const TONE_VARIANT_LABELS = { chime:'Колокольчик', bowl:'Поющая чаша', ocean:'Океан', crystal:'Хрусталь' };
 function syncSettingsUI() {
   document.getElementById('langSelect').value=state.lang;
-  [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle'],['musicOn','musicToggle'],['settleOn','settleToggle'],['minimalOn','minimalToggle'],['screenOffOn','screenOffToggle'],['recentFirstOn','recentFirstToggle'],['cardTickOn','cardTickToggle']].forEach(([k,id])=>{ document.getElementById(id).classList.toggle('on', state[k]); });
-  document.getElementById('volCueSlider').value = state.volCue; document.getElementById('volCueVal').textContent = state.volCue+'%';
-  document.getElementById('volBellSlider').value = state.volBell; document.getElementById('volBellVal').textContent = state.volBell+'%';
-  document.getElementById('volMusicSlider').value = state.volMusic; document.getElementById('volMusicVal').textContent = state.volMusic+'%';
-  updateCueModeUI(); buildToneVariantRow(); buildVoicePickRow(); buildProfileRow(); applyMinimalMode();
+  [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle'],['musicOn','musicToggle'],['settleOn','settleToggle'],['minimalOn','minimalToggle'],['screenOffOn','screenOffToggle'],['recentFirstOn','recentFirstToggle'],['cardTickOn','cardTickToggle']].forEach(([k,id])=>{
+    document.getElementById(id).classList.toggle('on', state[k]);
+  });
+  document.getElementById('volCueSlider').value = state.volCue;
+  document.getElementById('volCueVal').textContent = state.volCue+'%';
+  document.getElementById('volBellSlider').value = state.volBell;
+  document.getElementById('volBellVal').textContent = state.volBell+'%';
+  document.getElementById('volMusicSlider').value = state.volMusic;
+  document.getElementById('volMusicVal').textContent = state.volMusic+'%';
+  updateCueModeUI();
+  buildToneVariantRow();
+  buildVoicePickRow();
+  buildProfileRow();
+  applyMinimalMode();
 }
-function setCueMode(mode) { state.cueMode = mode; saveSettings(); vibrate('tick'); updateCueModeUI(); }
-function updateCueModeUI() { document.getElementById('cueVoiceBtn').classList.toggle('active', state.cueMode==='voice'); document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode==='tone'); document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode==='off'); document.getElementById('langRow').style.display = state.cueMode==='voice' ? 'flex' : 'none'; document.getElementById('voicePickRow').style.display = state.cueMode==='voice' ? 'flex' : 'none'; document.getElementById('toneVariantRow').style.display = state.cueMode==='tone' ? 'flex' : 'none'; }
-function buildToneVariantRow() { const wrap=document.getElementById('toneVariantRowInner'); wrap.innerHTML=''; Object.keys(TONE_VARIANT_LABELS).forEach(k=>{ const o=document.createElement('div'); o.className='cat-opt'+(k===state.toneVariant?' active':''); o.textContent=TONE_VARIANT_LABELS[k]; o.onclick=()=>{ state.toneVariant=k; saveSettings(); buildToneVariantRow(); vibrate('tick'); previewTone(k); }; wrap.appendChild(o); }); }
-function previewTone(variant) { try { ensureAudioCtx(); const prev=state.toneVariant; state.toneVariant=variant; const savedMode=state.cueMode; state.cueMode='tone'; playTone('in', 1.4); state.cueMode=savedMode; state.toneVariant=prev; } catch(e){} }
-function buildVoicePickRow() { const sel = document.getElementById('voicePickSelect'); sel.innerHTML = '<option value="">Системный синтезатор</option>'; if ('speechSynthesis' in window) { const voices = window.speechSynthesis.getVoices(); voices.forEach(v => { const opt = document.createElement('option'); opt.value = v.name; opt.textContent = `${v.name} (${v.lang})`; sel.appendChild(opt); }); } }
+function setCueMode(mode) {
+  state.cueMode = mode; saveSettings(); vibrate('tick');
+  updateCueModeUI();
+}
+function updateCueModeUI() {
+  document.getElementById('cueVoiceBtn').classList.toggle('active', state.cueMode==='voice');
+  document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode==='tone');
+  document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode==='off');
+  document.getElementById('langRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
+  document.getElementById('voicePickRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
+  document.getElementById('toneVariantRow').style.display = state.cueMode==='tone' ? 'flex' : 'none';
+}
+function buildToneVariantRow() {
+  const wrap=document.getElementById('toneVariantRowInner'); wrap.innerHTML='';
+  Object.keys(TONE_VARIANT_LABELS).forEach(k=>{
+    const o=document.createElement('div'); o.className='cat-opt'+(k===state.toneVariant?' active':''); o.textContent=TONE_VARIANT_LABELS[k];
+    o.onclick=()=>{ state.toneVariant=k; saveSettings(); buildToneVariantRow(); vibrate('tick'); previewTone(k); };
+    wrap.appendChild(o);
+  });
+}
+function previewTone(variant) {
+  try { ensureAudioCtx(); const prev=state.toneVariant; state.toneVariant=variant; const savedMode=state.cueMode; state.cueMode='tone'; playTone('in', 1.4); state.cueMode=savedMode; state.toneVariant=prev; } catch(e){}
+}
+function buildVoicePickRow() {
+  const sel = document.getElementById('voicePickSelect');
+  sel.innerHTML = '<option value="">Голосовые mp3-файлы</option>';
+  // Добавляем синтезированные голоса браузера
+  if ('speechSynthesis' in window) {
+    const voices = window.speechSynthesis.getVoices();
+    voices.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.name;
+      opt.textContent = `${v.name} (${v.lang})`;
+      sel.appendChild(opt);
+    });
+  }
+}
 function onVoicePick(uri) { state.voiceURI=uri; saveSettings(); }
-const BUILTIN_PROFILES = { default: { label:'Обычный', cueMode:'voice', bellOn:true, hapticOn:true, volCue:70, volBell:70, volMusic:70, musicOn:false }, quiet: { label:'Тихо (для работы)', cueMode:'off', bellOn:false, hapticOn:true, volCue:0, volBell:0, volMusic:0, musicOn:false }, deep: { label:'Погружение', cueMode:'tone', bellOn:true, hapticOn:true, volCue:60, volBell:50, volMusic:85, musicOn:true } };
+
+const BUILTIN_PROFILES = {
+  default: { label:'Обычный', cueMode:'voice', bellOn:true, hapticOn:true, volCue:70, volBell:70, volMusic:70, musicOn:false },
+  quiet:   { label:'Тихо (для работы)', cueMode:'off', bellOn:false, hapticOn:true, volCue:0, volBell:0, volMusic:0, musicOn:false },
+  deep:    { label:'Погружение', cueMode:'tone', bellOn:true, hapticOn:true, volCue:60, volBell:50, volMusic:85, musicOn:true }
+};
 function loadCustomProfiles() { try { return JSON.parse(localStorage.getItem('pneuma_profiles')||'{}'); } catch(e){ return {}; } }
 function saveCustomProfiles(o) { try { localStorage.setItem('pneuma_profiles', JSON.stringify(o)); } catch(e){} }
-function buildProfileRow() { const wrap=document.getElementById('profileRow'); wrap.innerHTML=''; const custom = loadCustomProfiles(); const all = Object.assign({}, BUILTIN_PROFILES, custom); Object.keys(all).forEach(key => { const prof = all[key]; const o=document.createElement('div'); o.className='cat-opt'; o.textContent=prof.label; o.onclick=()=>applyProfile(prof); wrap.appendChild(o); }); const saveBtn=document.createElement('div'); saveBtn.className='cat-opt'; saveBtn.style.borderStyle='dashed'; saveBtn.textContent='+ Сохранить текущее'; saveBtn.onclick=saveCurrentAsProfile; wrap.appendChild(saveBtn); }
-function applyProfile(prof) { state.cueMode=prof.cueMode; state.bellOn=prof.bellOn; state.hapticOn=prof.hapticOn; state.volCue=prof.volCue; state.volBell=prof.volBell; state.volMusic=prof.volMusic; state.musicOn=prof.musicOn; saveSettings(); vibrate('tick'); syncSettingsUI(); }
-function saveCurrentAsProfile() { const name = prompt('Название профиля:'); if (!name || !name.trim()) return; const custom = loadCustomProfiles(); const key = 'custom_'+Date.now(); custom[key] = { label:name.trim(), cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic, musicOn:state.musicOn }; saveCustomProfiles(custom); vibrate('bell'); buildProfileRow(); }
+function buildProfileRow() {
+  const wrap=document.getElementById('profileRow'); wrap.innerHTML='';
+  const custom = loadCustomProfiles();
+  const all = Object.assign({}, BUILTIN_PROFILES, custom);
+  Object.keys(all).forEach(key => {
+    const prof = all[key];
+    const o=document.createElement('div'); o.className='cat-opt'; o.textContent=prof.label;
+    o.onclick=()=>applyProfile(prof);
+    wrap.appendChild(o);
+  });
+  const saveBtn=document.createElement('div'); saveBtn.className='cat-opt'; saveBtn.style.borderStyle='dashed'; saveBtn.textContent='+ Сохранить текущее';
+  saveBtn.onclick=saveCurrentAsProfile;
+  wrap.appendChild(saveBtn);
+}
+function applyProfile(prof) {
+  state.cueMode=prof.cueMode; state.bellOn=prof.bellOn; state.hapticOn=prof.hapticOn;
+  state.volCue=prof.volCue; state.volBell=prof.volBell; state.volMusic=prof.volMusic; state.musicOn=prof.musicOn;
+  saveSettings(); vibrate('tick'); syncSettingsUI();
+}
+function saveCurrentAsProfile() {
+  const name = prompt('Название профиля:')
+  if (!name || !name.trim()) return;
+  const custom = loadCustomProfiles();
+  const key = 'custom_'+Date.now();
+  custom[key] = { label:name.trim(), cueMode:state.cueMode, bellOn:state.bellOn, hapticOn:state.hapticOn, volCue:state.volCue, volBell:state.volBell, volMusic:state.volMusic, musicOn:state.musicOn };
+  saveCustomProfiles(custom); vibrate('bell'); buildProfileRow();
+}
+
 function applyMinimalMode() { document.body.classList.toggle('minimal-mode', state.minimalOn); }
-function tSet(key, id) { state[key]=!state[key]; document.getElementById(id).classList.toggle('on', state[key]); saveSettings(); vibrate('tick'); if (key==='minimalOn') applyMinimalMode(); if (key==='recentFirstOn') renderPatternList(); }
+
+function tSet(key, id) {
+  state[key]=!state[key]; document.getElementById(id).classList.toggle('on', state[key]); saveSettings(); vibrate('tick');
+  if (key==='minimalOn') applyMinimalMode();
+  if (key==='recentFirstOn') renderPatternList();
+}
 document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); });
+
 document.getElementById('volCueSlider').addEventListener('input', e=>{ state.volCue=parseInt(e.target.value); document.getElementById('volCueVal').textContent=state.volCue+'%'; saveSettings(); });
 document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { playTone('in',1.2); } });
 document.getElementById('volBellSlider').addEventListener('input', e=>{ state.volBell=parseInt(e.target.value); document.getElementById('volBellVal').textContent=state.volBell+'%'; saveSettings(); });
 document.getElementById('volBellSlider').addEventListener('change', ()=>{ bell(); });
 document.getElementById('volMusicSlider').addEventListener('input', e=>{ state.volMusic=parseInt(e.target.value); document.getElementById('volMusicVal').textContent=state.volMusic+'%'; saveSettings(); });
-function toggleAdvanced() { const adv=document.getElementById('advancedSettings'); const btn=document.getElementById('advToggle'); const show=adv.style.display==='none'; adv.style.display=show?'block':'none'; btn.textContent=show?'Скрыть продвинутые настройки ⌃':'Показать продвинутые настройки ⌄'; }
+function toggleAdvanced() {
+  const adv=document.getElementById('advancedSettings'); const btn=document.getElementById('advToggle');
+  const show=adv.style.display==='none';
+  adv.style.display=show?'block':'none'; btn.textContent=show?'Скрыть продвинутые настройки ⌃':'Показать продвинутые настройки ⌄';
+}
 function resetOnboarding() { try { localStorage.removeItem('pneuma_onboarded'); localStorage.removeItem('pneuma_goal'); } catch(e){} setRandomWelcomePhrase(); spawnWelcomeParticles(); document.getElementById('welcome').classList.add('active'); }
 
+/* ---------- EDITOR ---------- */
 let editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' };
 function openEditor(existingKey) {
   const custom=loadCustom();
-  if (existingKey && custom[existingKey]) { const p=custom[existingKey]; editState.key=existingKey; document.getElementById('editName').value=p.name; editState.glyph=p.glyph; editState.cat=p.cat||'balance'; editState.type=p.type; if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0; const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4; const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0; editState.inhaleMethod = p.phases[0].label.includes('ртом') ? 'ртом' : 'носом'; editState.exhaleMethod = ex && ex.label.includes('ртом') ? 'ртом' : 'носом'; } else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; editState.wimExhaleMethod = p.exhaleMethod || 'ртом'; } editState.rounds=p.defaultRounds; document.getElementById('editorHeaderTitle').textContent='Изменить'; document.getElementById('deleteLink').style.display='block';
-  } else { editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' }; document.getElementById('editName').value=''; document.getElementById('editorHeaderTitle').textContent='Новый паттерн'; document.getElementById('deleteLink').style.display='none'; }
-  buildGlyphSelect(); buildCatSelect(); buildBaseSelect(); buildEditRoundSelect(); setEditType(editState.type); syncSlidersFromState(); bindSliders(); updateMiniPreview(); setEditInhale(editState.inhaleMethod); setEditExhale(editState.exhaleMethod); setEditWimExhale(editState.wimExhaleMethod); showScreen('screen-editor');
+  if (existingKey && custom[existingKey]) {
+    const p=custom[existingKey];
+    editState.key=existingKey; document.getElementById('editName').value=p.name;
+    editState.glyph=p.glyph; editState.cat=p.cat||'balance'; editState.type=p.type;
+    if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0;
+      const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4;
+      const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0;
+      editState.inhaleMethod = p.phases[0].label.includes('ртом') ? 'ртом' : 'носом';
+      editState.exhaleMethod = ex && ex.label.includes('ртом') ? 'ртом' : 'носом'; }
+    else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; editState.wimExhaleMethod = p.exhaleMethod || 'ртом'; }
+    editState.rounds=p.defaultRounds;
+    document.getElementById('editorHeaderTitle').textContent='Изменить';
+    document.getElementById('deleteLink').style.display='block';
+  } else {
+    editState={ key:null, glyph:'✦', cat:'balance', type:'cycle', inhale:4,hold1:4,exhale:4,hold2:4, breaths:30,pace:1.6,recover:15, rounds:4, inhaleMethod:'носом', exhaleMethod:'ртом', wimExhaleMethod:'ртом' };
+    document.getElementById('editName').value='';
+    document.getElementById('editorHeaderTitle').textContent='Новый паттерн';
+    document.getElementById('deleteLink').style.display='none';
+  }
+  buildGlyphSelect(); buildCatSelect(); buildBaseSelect(); buildEditRoundSelect();
+  setEditType(editState.type); syncSlidersFromState(); bindSliders(); updateMiniPreview();
+  setEditInhale(editState.inhaleMethod); setEditExhale(editState.exhaleMethod); setEditWimExhale(editState.wimExhaleMethod);
+  showScreen('screen-editor');
 }
 function setEditInhale(m) { editState.inhaleMethod=m; document.getElementById('inhaleNoseBtn').classList.toggle('active', m==='носом'); document.getElementById('inhaleMouthBtn').classList.toggle('active', m==='ртом'); }
 function setEditExhale(m) { editState.exhaleMethod=m; document.getElementById('exhaleNoseBtn').classList.toggle('active', m==='носом'); document.getElementById('exhaleMouthBtn').classList.toggle('active', m==='ртом'); }
 function setEditWimExhale(m) { editState.wimExhaleMethod=m; document.getElementById('wimExhaleMouthBtn').classList.toggle('active', m==='ртом'); document.getElementById('wimExhaleNoseBtn').classList.toggle('active', m==='носом'); }
-function buildCatSelect() { const wrap=document.getElementById('editCatRow'); wrap.innerHTML=''; ['energy','calm','sleep','focus','balance'].forEach(k=>{ const o=document.createElement('div'); o.className='cat-opt'+(k===editState.cat?' active':''); o.textContent=CATEGORIES[k].label; o.onclick=()=>{ editState.cat=k; buildCatSelect(); }; wrap.appendChild(o); }); }
-function buildGlyphSelect() { const wrap=document.getElementById('glyphSelect'); wrap.innerHTML=''; GLYPHS.forEach(g=>{ const c=document.createElement('div'); c.className='round-chip'+(g===editState.glyph?' active':''); c.textContent=g; c.onclick=()=>{ editState.glyph=g; buildGlyphSelect(); }; wrap.appendChild(c); }); }
-function buildBaseSelect() { const wrap=document.getElementById('baseSelect'); wrap.innerHTML=''; ['box','coherent','wimhof','fourseven','extendedexhale'].forEach(k=>{ const pill=document.createElement('div'); pill.className='base-pill'; pill.textContent=BUILTIN[k].name; pill.onclick=()=>applyBase(k, pill, wrap); wrap.appendChild(pill); }); }
-function applyBase(key, el, wrap) { wrap.querySelectorAll('.base-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); const p=BUILTIN[key]; editState.type=p.type; if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0; const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4; const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0; } else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; } editState.rounds=p.defaultRounds; setEditType(editState.type); syncSlidersFromState(); buildEditRoundSelect(); updateMiniPreview(); }
-function setEditType(type) { editState.type=type; document.getElementById('typeCycleBtn').classList.toggle('active', type==='cycle'); document.getElementById('typeWimhofBtn').classList.toggle('active', type==='wimhof'); document.getElementById('editorCycleFields').style.display = type==='cycle'?'block':'none'; document.getElementById('editorWimhofFields').style.display = type==='wimhof'?'block':'none'; }
-function buildEditRoundSelect() { const wrap=document.getElementById('editRoundSelect'); wrap.innerHTML=''; for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===editState.rounds?' active':''); c.textContent=i; c.onclick=()=>{ editState.rounds=i; buildEditRoundSelect(); }; wrap.appendChild(c); } document.getElementById('editRoundCustom').value = editState.rounds; }
-document.getElementById('editRoundCustom').addEventListener('input', function(){ const n = parseInt(this.value, 10); if (!n || n<1) return; editState.rounds = Math.min(n, 99); document.querySelectorAll('#editRoundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===editState.rounds)); });
-function syncSlidersFromState() { document.getElementById('sInhale').value=editState.inhale; document.getElementById('valInhale').textContent=editState.inhale+'с'; document.getElementById('sHold1').value=editState.hold1; document.getElementById('valHold1').textContent=editState.hold1+'с'; document.getElementById('sExhale').value=editState.exhale; document.getElementById('valExhale').textContent=editState.exhale+'с'; document.getElementById('sHold2').value=editState.hold2; document.getElementById('valHold2').textContent=editState.hold2+'с'; document.getElementById('sBreaths').value=editState.breaths; document.getElementById('valBreaths').textContent=editState.breaths; document.getElementById('sPace').value=editState.pace; document.getElementById('valPace').textContent=editState.pace+'с'; document.getElementById('sRecover').value=editState.recover; document.getElementById('valRecover').textContent=editState.recover+'с'; }
-function bindSliders() { [['sInhale','valInhale','inhale','с'],['sHold1','valHold1','hold1','с'],['sExhale','valExhale','exhale','с'],['sHold2','valHold2','hold2','с'],['sBreaths','valBreaths','breaths',''],['sPace','valPace','pace','с'],['sRecover','valRecover','recover','с']].forEach(([inp,val,key,suf])=>{ const el=document.getElementById(inp); el.oninput=()=>{ editState[key]=parseFloat(el.value); document.getElementById(val).textContent=el.value+suf; updateMiniPreview(); }; }); }
+function buildCatSelect() {
+  const wrap=document.getElementById('editCatRow'); wrap.innerHTML='';
+  ['energy','calm','sleep','focus','balance'].forEach(k=>{ const o=document.createElement('div'); o.className='cat-opt'+(k===editState.cat?' active':''); o.textContent=CATEGORIES[k].label;
+    o.onclick=()=>{ editState.cat=k; buildCatSelect(); }; wrap.appendChild(o); });
+}
+function buildGlyphSelect() {
+  const wrap=document.getElementById('glyphSelect'); wrap.innerHTML='';
+  GLYPHS.forEach(g=>{ const c=document.createElement('div'); c.className='round-chip'+(g===editState.glyph?' active':''); c.textContent=g;
+    c.onclick=()=>{ editState.glyph=g; buildGlyphSelect(); }; wrap.appendChild(c); });
+}
+function buildBaseSelect() {
+  const wrap=document.getElementById('baseSelect'); wrap.innerHTML='';
+  ['box','coherent','wimhof','fourseven','extendedexhale'].forEach(k=>{ const pill=document.createElement('div'); pill.className='base-pill'; pill.textContent=BUILTIN[k].name;
+    pill.onclick=()=>applyBase(k, pill, wrap); wrap.appendChild(pill); });
+}
+function applyBase(key, el, wrap) {
+  wrap.querySelectorAll('.base-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active');
+  const p=BUILTIN[key]; editState.type=p.type;
+  if (p.type==='cycle'){ editState.inhale=p.phases[0].sec; editState.hold1=p.phases[1]&&p.phases[1].action==='hold-full'?p.phases[1].sec:0;
+    const ex=p.phases.find(x=>x.action==='contract'); editState.exhale=ex?ex.sec:4;
+    const h2=p.phases.find(x=>x.action==='hold-empty'); editState.hold2=h2?h2.sec:0; }
+  else { editState.breaths=p.breaths; editState.pace=p.pace; editState.recover=p.holdRecover; }
+  editState.rounds=p.defaultRounds;
+  setEditType(editState.type); syncSlidersFromState(); buildEditRoundSelect(); updateMiniPreview();
+}
+function setEditType(type) {
+  editState.type=type;
+  document.getElementById('typeCycleBtn').classList.toggle('active', type==='cycle');
+  document.getElementById('typeWimhofBtn').classList.toggle('active', type==='wimhof');
+  document.getElementById('editorCycleFields').style.display = type==='cycle'?'block':'none';
+  document.getElementById('editorWimhofFields').style.display = type==='wimhof'?'block':'none';
+}
+function buildEditRoundSelect() {
+  const wrap=document.getElementById('editRoundSelect'); wrap.innerHTML='';
+  for (let i=1;i<=10;i++){ const c=document.createElement('div'); c.className='round-chip'+(i===editState.rounds?' active':''); c.textContent=i;
+    c.onclick=()=>{ editState.rounds=i; buildEditRoundSelect(); }; wrap.appendChild(c); }
+  document.getElementById('editRoundCustom').value = editState.rounds;
+}
+document.getElementById('editRoundCustom').addEventListener('input', function(){
+  const n = parseInt(this.value, 10);
+  if (!n || n<1) return;
+  editState.rounds = Math.min(n, 99);
+  document.querySelectorAll('#editRoundSelect .round-chip').forEach((c,idx)=>c.classList.toggle('active', idx+1===editState.rounds));
+});
+function syncSlidersFromState() {
+  const set=(id,val,suf)=>{ const s=document.getElementById(id); if(s) s.value=val; const v=document.getElementById(id.replace('s','val')); if(v) v.textContent=val+suf; };
+  document.getElementById('sInhale').value=editState.inhale; document.getElementById('valInhale').textContent=editState.inhale+'с';
+  document.getElementById('sHold1').value=editState.hold1; document.getElementById('valHold1').textContent=editState.hold1+'с';
+  document.getElementById('sExhale').value=editState.exhale; document.getElementById('valExhale').textContent=editState.exhale+'с';
+  document.getElementById('sHold2').value=editState.hold2; document.getElementById('valHold2').textContent=editState.hold2+'с';
+  document.getElementById('sBreaths').value=editState.breaths; document.getElementById('valBreaths').textContent=editState.breaths;
+  document.getElementById('sPace').value=editState.pace; document.getElementById('valPace').textContent=editState.pace+'с';
+  document.getElementById('sRecover').value=editState.recover; document.getElementById('valRecover').textContent=editState.recover+'с';
+}
+function bindSliders() {
+  [['sInhale','valInhale','inhale','с'],['sHold1','valHold1','hold1','с'],['sExhale','valExhale','exhale','с'],['sHold2','valHold2','hold2','с'],['sBreaths','valBreaths','breaths',''],['sPace','valPace','pace','с'],['sRecover','valRecover','recover','с']].forEach(([inp,val,key,suf])=>{
+    const el=document.getElementById(inp); el.oninput=()=>{ editState[key]=parseFloat(el.value); document.getElementById(val).textContent=el.value+suf; updateMiniPreview(); };
+  });
+}
 let miniTimer=null;
-function updateMiniPreview() { clearTimeout(miniTimer); const mr=document.getElementById('miniRing'); mr.style.transition='transform 1.2s ease'; mr.style.transform='scale(0.6)'; const inS=editState.type==='wimhof'?editState.pace:editState.inhale; const exS=editState.type==='wimhof'?editState.pace*0.75:editState.exhale; function loop(){ mr.style.transition=`transform ${inS}s ease`; mr.style.transform='scale(1.15)'; miniTimer=setTimeout(()=>{ mr.style.transition=`transform ${exS}s ease`; mr.style.transform='scale(0.6)'; miniTimer=setTimeout(loop, exS*1000+200); }, inS*1000+200); } loop(); }
-function saveCustomPattern() { const name=document.getElementById('editName').value.trim(); if (!name){ document.getElementById('editName').focus(); return; } const key=editState.key||('custom_'+Date.now()); const custom=loadCustom(); const st=CAT_STYLE[editState.cat]||CAT_STYLE.balance; let obj; if (editState.type==='wimhof') { obj={ name, cat:editState.cat, desc:`${editState.breaths} вдохов · темп ${editState.pace}с · восстановление ${editState.recover}с`, glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'wimhof', breaths:editState.breaths, pace:editState.pace, holdRecover:editState.recover, exhaleMethod:editState.wimExhaleMethod, safety:true }; } else { const inLabel = 'Вдох ' + editState.inhaleMethod; const exLabel = 'Выдох ' + editState.exhaleMethod; const phases=[ph(inLabel,inLabel,editState.inhale,'expand')]; if (editState.hold1>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold1,'hold-full')); phases.push(ph(exLabel,exLabel,editState.exhale,'contract')); if (editState.hold2>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold2,'hold-empty')); const d=[`Вдох ${editState.inhale}`]; if(editState.hold1>0)d.push(`держи ${editState.hold1}`); d.push(`выдох ${editState.exhale}`); if(editState.hold2>0)d.push(`держи ${editState.hold2}`); obj={ name, cat:editState.cat, desc:d.join(' — '), glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'cycle', phases }; } custom[key]=obj; saveCustom(custom); vibrate('bell'); renderHome(); showScreen('screen-home'); }
-function deleteCustomPattern() { if (!editState.key) return; const custom=loadCustom(); delete custom[editState.key]; saveCustom(custom); const favs=loadFavs().filter(k=>k!==editState.key); saveFavs(favs); vibrate('bell'); renderHome(); showScreen('screen-home'); }
+function updateMiniPreview() {
+  clearTimeout(miniTimer); const mr=document.getElementById('miniRing');
+  mr.style.transition='transform 1.2s ease'; mr.style.transform='scale(0.6)';
+  const inS=editState.type==='wimhof'?editState.pace:editState.inhale;
+  const exS=editState.type==='wimhof'?editState.pace*0.75:editState.exhale;
+  function loop(){ mr.style.transition=`transform ${inS}s ease`; mr.style.transform='scale(1.15)';
+    miniTimer=setTimeout(()=>{ mr.style.transition=`transform ${exS}s ease`; mr.style.transform='scale(0.6)';
+      miniTimer=setTimeout(loop, exS*1000+200); }, inS*1000+200); }
+  loop();
+}
+function saveCustomPattern() {
+  const name=document.getElementById('editName').value.trim();
+  if (!name){ document.getElementById('editName').focus(); return; }
+  const key=editState.key||('custom_'+Date.now()); const custom=loadCustom();
+  const st=CAT_STYLE[editState.cat]||CAT_STYLE.balance;
+  let obj;
+  if (editState.type==='wimhof') {
+    obj={ name, cat:editState.cat, desc:`${editState.breaths} вдохов · темп ${editState.pace}с · восстановление ${editState.recover}с`,
+      glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'wimhof', breaths:editState.breaths, pace:editState.pace, holdRecover:editState.recover, exhaleMethod:editState.wimExhaleMethod, safety:true };
+  } else {
+    const inLabel = 'Вдох ' + editState.inhaleMethod;
+    const exLabel = 'Выдох ' + editState.exhaleMethod;
+    const phases=[ph(inLabel,inLabel,editState.inhale,'expand')];
+    if (editState.hold1>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold1,'hold-full'));
+    phases.push(ph(exLabel,exLabel,editState.exhale,'contract'));
+    if (editState.hold2>0) phases.push(ph('Задержи дыхание','Задержи дыхание',editState.hold2,'hold-empty'));
+    const d=[`Вдох ${editState.inhale}`]; if(editState.hold1>0)d.push(`держи ${editState.hold1}`); d.push(`выдох ${editState.exhale}`); if(editState.hold2>0)d.push(`держи ${editState.hold2}`);
+    obj={ name, cat:editState.cat, desc:d.join(' — '), glyph:editState.glyph, level:'Свой', defaultRounds:editState.rounds, type:'cycle', phases };
+  }
+  custom[key]=obj; saveCustom(custom); vibrate('bell'); renderHome(); showScreen('screen-home');
+}
+function deleteCustomPattern() {
+  if (!editState.key) return;
+  const custom=loadCustom(); delete custom[editState.key]; saveCustom(custom);
+  const favs=loadFavs().filter(k=>k!==editState.key); saveFavs(favs);
+  vibrate('bell'); renderHome(); showScreen('screen-home');
+}
 
 /* ---------- ONBOARDING ---------- */
-const WELCOME_PHRASES = [ 'Дыхание — самый короткий путь к своему состоянию. Что тебе нужно прямо сейчас?', 'Пара минут осознанного дыхания меняет состояние тела быстрее, чем кажется. С чего начнём?', 'Один вдох — и всё немного иначе. Что выбираешь на сегодня?', 'Тело слушает дыхание внимательнее, чем мысли. Куда направим внимание?' ];
-function setRandomWelcomePhrase() { const el = document.getElementById('welcomeSub'); el.textContent = WELCOME_PHRASES[Math.floor(Math.random()*WELCOME_PHRASES.length)]; }
-function spawnWelcomeParticles() { const wrap = document.getElementById('welcomeParticles'); wrap.innerHTML = ''; const count = 14; for (let i=0;i<count;i++){ const p = document.createElement('div'); p.className = 'welcome-particle'; const size = 3 + Math.random()*5; p.style.width = size+'px'; p.style.height = size+'px'; p.style.left = (Math.random()*100)+'%'; p.style.top = (40+Math.random()*55)+'%'; const duration = 9 + Math.random()*8; const delay = Math.random()*10; p.style.animationDuration = duration+'s'; p.style.animationDelay = delay+'s'; wrap.appendChild(p); } }
-function pickGoal(goal) { if (goal) { try { localStorage.setItem('pneuma_goal', goal); } catch(e){} } try { localStorage.setItem('pneuma_onboarded','1'); } catch(e){} document.getElementById('welcome').classList.remove('active'); vibrate('bell'); renderHome(); }
+const WELCOME_PHRASES = [
+  'Дыхание — самый короткий путь к своему состоянию. Что тебе нужно прямо сейчас?',
+  'Пара минут осознанного дыхания меняет состояние тела быстрее, чем кажется. С чего начнём?',
+  'Один вдох — и всё немного иначе. Что выбираешь на сегодня?',
+  'Тело слушает дыхание внимательнее, чем мысли. Куда направим внимание?'
+];
+function setRandomWelcomePhrase() {
+  const el = document.getElementById('welcomeSub');
+  el.textContent = WELCOME_PHRASES[Math.floor(Math.random()*WELCOME_PHRASES.length)];
+}
+function spawnWelcomeParticles() {
+  const wrap = document.getElementById('welcomeParticles');
+  wrap.innerHTML = '';
+  const count = 14;
+  for (let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'welcome-particle';
+    const size = 3 + Math.random()*5;
+    p.style.width = size+'px'; p.style.height = size+'px';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.top = (40+Math.random()*55)+'%';
+    const duration = 9 + Math.random()*8;
+    const delay = Math.random()*10;
+    p.style.animationDuration = duration+'s';
+    p.style.animationDelay = delay+'s';
+    wrap.appendChild(p);
+  }
+}
+function pickGoal(goal) {
+  if (goal) { try { localStorage.setItem('pneuma_goal', goal); } catch(e){} }
+  try { localStorage.setItem('pneuma_onboarded','1'); } catch(e){}
+  document.getElementById('welcome').classList.remove('active');
+  vibrate('bell'); renderHome();
+}
 
 /* ---------- INIT ---------- */
 loadSettings();
-if (!localStorage.getItem('pneuma_onboarded')) { setRandomWelcomePhrase(); spawnWelcomeParticles(); document.getElementById('welcome').classList.add('active'); }
+if (!localStorage.getItem('pneuma_onboarded')) {
+  setRandomWelcomePhrase();
+  spawnWelcomeParticles();
+  document.getElementById('welcome').classList.add('active');
+}
 renderHome();
 
-if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged = () => { if (document.getElementById('screen-settings').classList.contains('active')) { buildVoicePickRow(); } }; }
+// Загрузка голосов для TTS (синтез речи)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    if (document.getElementById('screen-settings').classList.contains('active')) {
+      buildVoicePickRow();
+    }
+  };
+}
 
-(function initTelegram(){ try { const tg = window.Telegram && window.Telegram.WebApp; if (!tg) return; tg.ready(); tg.expand(); try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch(e){} try { tg.setHeaderColor && tg.setHeaderColor('#100F1C'); } catch(e){} try { tg.setBackgroundColor && tg.setBackgroundColor('#100F1C'); } catch(e){} try { tg.BackButton && tg.BackButton.onClick(()=>{ const s=document.getElementById('screen-session'); if (s && s.classList.contains('active')) exitSession(); }); } catch(e){} } catch(e){})();
+/* ---------- TELEGRAM WEBAPP ---------- */
+(function initTelegram(){
+  try {
+    const tg = window.Telegram && window.Telegram.WebApp;
+    if (!tg) return;
+    tg.ready();
+    tg.expand();
+    try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch(e){}
+    try { tg.setHeaderColor && tg.setHeaderColor('#100F1C'); } catch(e){}
+    try { tg.setBackgroundColor && tg.setBackgroundColor('#100F1C'); } catch(e){}
+    try { tg.BackButton && tg.BackButton.onClick(()=>{ const s=document.getElementById('screen-session'); if (s && s.classList.contains('active')) exitSession(); }); } catch(e){}
+  } catch(e){}
+})();
+
 </script>
 </body>
 </html>
