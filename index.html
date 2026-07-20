@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B0A12">
 <style>
+  /* все стили без изменений — они были рабочие */
   :root{
     --bg: #0B0A12;
     --bg-elevated: #131220;
@@ -49,7 +50,6 @@
   @keyframes fadeIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
   @keyframes riseIn { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
 
-  /* ============ HOME ============ */
   .home-header { margin-bottom: 6px; }
   .greeting { font-family: var(--font-display); font-size:26px; font-weight:600; letter-spacing:0.2px; line-height:1.15; }
   .greeting-sub { color: var(--text-secondary); font-size:14px; margin-top:4px; }
@@ -103,7 +103,6 @@
   .fab:active { transform: scale(0.94); }
   .empty-note { color: var(--text-muted); font-size:14px; text-align:center; padding:50px 20px; line-height:1.6; }
 
-  /* ============ SESSION ============ */
   #screen-session { padding:0; justify-content:space-between; }
   .session-fade-bg { position:absolute; inset:0; background: var(--bg); opacity:0; transition: opacity 1.5s ease; pointer-events:none; z-index:0; }
   .session-top { display:flex; align-items:center; justify-content:space-between; padding: max(20px, env(safe-area-inset-top)) 20px 0; z-index:2; }
@@ -157,7 +156,6 @@
   #startBtn { flex:1.4; }
   .wake-warning { font-size:11px; color: var(--gold); text-align:center; padding:0 20px 8px; z-index:2; }
 
-  /* ============ SESSION COMPLETE ============ */
   #screen-complete { align-items:center; justify-content:center; text-align:center; }
   .complete-mark { width:80px; height:80px; border-radius:50%; background: var(--c-balance-bg); color: var(--c-balance); display:flex; align-items:center; justify-content:center; font-size:36px; margin-bottom:24px; animation: riseIn 0.5s ease; }
   .complete-title { font-family: var(--font-display); font-size:26px; font-weight:600; margin-bottom:8px; }
@@ -170,7 +168,6 @@
   .mood-btn { width:52px; height:52px; border-radius:16px; border:0.5px solid var(--border-strong); background: rgba(255,255,255,0.03); font-size:24px; display:flex; align-items:center; justify-content:center; }
   .mood-btn.sel { border-color: var(--accent); background: var(--accent-glow); }
 
-  /* ============ STATS ============ */
   .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
   .header .brand { font-family: var(--font-display); font-size:22px; font-weight:600; }
   .stat-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top: 4px; }
@@ -191,7 +188,6 @@
   .history-item { display:flex; justify-content:space-between; padding:12px 0; border-bottom:0.5px solid var(--border); font-size:13px; }
   .history-item .h-date { color: var(--text-muted); }
 
-  /* ============ SETTINGS ============ */
   .settings-group { margin-top:8px; }
   .settings-group-title { font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color: var(--text-muted); font-weight:600; margin: 22px 0 8px; }
   .set-row { display:flex; align-items:center; justify-content:space-between; padding:15px 0; border-bottom:0.5px solid var(--border); gap:12px; }
@@ -205,7 +201,6 @@
   .toggle.on .toggle-knob { left:21px; }
   .advanced-toggle { text-align:center; color: var(--accent); font-size:14px; padding:16px; margin-top:8px; }
 
-  /* ============ SHEET ============ */
   .sheet-overlay { position:fixed; inset:0; background: rgba(0,0,0,0.55); display:none; align-items:flex-end; z-index:50; }
   .sheet-overlay.active { display:flex; animation: fadeIn 0.25s ease; }
   .sheet { width:100%; max-height:80vh; overflow-y:auto; background: var(--bg-elevated); border-radius:24px 24px 0 0; padding:20px 20px max(28px, env(safe-area-inset-bottom)); border-top: 0.5px solid var(--border-strong); }
@@ -216,7 +211,6 @@
   .round-chip { width:38px; height:38px; border-radius:11px; border:0.5px solid var(--border-strong); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--text-secondary); flex-shrink:0; }
   .round-chip.active { background: var(--accent); color:#0B0A12; border-color: var(--accent); font-weight:600; }
 
-  /* ============ EDITOR ============ */
   .editor-section { margin-bottom:22px; }
   .editor-label { font-size:13px; color: var(--text-secondary); margin-bottom:10px; display:flex; justify-content:space-between; }
   .slider-row { margin-bottom:14px; }
@@ -236,7 +230,6 @@
   .base-pill.active { background: var(--accent); color:#0B0A12; border-color:var(--accent); font-weight:600; }
   .delete-link { text-align:center; color:#E24B4A; font-size:14px; padding:14px; margin-top:4px; }
 
-  /* ============ INTRO / WELCOME ============ */
   .intro-overlay { position:fixed; inset:0; background: rgba(0,0,0,0.72); z-index:60; display:none; align-items:center; justify-content:center; padding:24px; }
   .intro-overlay.active { display:flex; }
   .intro-card { background: var(--bg-elevated); border-radius:20px; padding:24px; border:0.5px solid var(--border-strong); max-width:340px; }
@@ -273,7 +266,6 @@
   #screenOffOverlay .soff-hint { color:rgba(255,255,255,0.35); font-size:13px; text-align:center; padding:0 40px; }
   #screenOffOverlay .soff-dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.25); }
 </style>
-<base target="_blank">
 </head>
 <body>
 <div id="app">
@@ -644,7 +636,7 @@
 
 <script>
 // ============================================================
-// ПНЕВМА — премиальное дыхательное приложение (без таймера)
+// ПНЕВМА — премиальное дыхательное приложение
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -844,22 +836,38 @@ let activeCat = 'all';
 let synth = window.speechSynthesis;
 let voiceList = [];
 let speechUnlocked = false;
-function refreshVoices() { try { voiceList = synth ? synth.getVoices() : []; } catch(e){ voiceList=[]; } }
+let voiceLoadAttempts = 0;
+
+function refreshVoices() {
+  try {
+    voiceList = synth ? synth.getVoices() : [];
+    if (voiceList.length === 0 && voiceLoadAttempts < 5) {
+      voiceLoadAttempts++;
+      setTimeout(refreshVoices, 400);
+    }
+  } catch(e){ voiceList=[]; }
+}
 if (synth) {
   refreshVoices();
-  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = refreshVoices;
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = refreshVoices;
+  }
 }
+
 function pickVoice(lang) {
   if (!voiceList.length) refreshVoices();
   if (!voiceList.length) return null;
-  if (state.voiceURI) { const chosen = voiceList.find(v => v.voiceURI === state.voiceURI); if (chosen) return chosen; }
-  const exact = voiceList.find(v => v.lang === lang);
-  if (exact) return exact;
+  // Сначала ищем точное совпадение
+  let found = voiceList.find(v => v.lang === lang);
+  if (found) return found;
+  // Потом начинается с 'ru'
   const short = lang.split('-')[0];
-  const partial = voiceList.find(v => v.lang && v.lang.split('-')[0] === short);
-  if (partial) return partial;
-  return voiceList[0];
+  found = voiceList.find(v => v.lang && v.lang.startsWith(short));
+  if (found) return found;
+  // Если нет русского, берём любой
+  return voiceList[0] || null;
 }
+
 function unlockSpeech() {
   unlockAudioCues();
   if (speechUnlocked || !synth) return;
@@ -871,6 +879,7 @@ function unlockSpeech() {
     synth.speak(u);
   } catch(e){}
 }
+
 let audioCtx=null, noiseNode=null, noiseGain=null, wakeLock=null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
 let sessionToken=0, pendingSessionKey=null;
@@ -1141,6 +1150,7 @@ const AUDIO_MAP = {
 };
 let audioCueCache={}, audioCueAvailable={}, audioCuesUnlocked=false;
 let speechRequestId=0, voiceTestToken=0;
+
 function preloadAudioCues() {
   Object.keys(AUDIO_MAP).forEach(text => {
     try {
@@ -1148,9 +1158,10 @@ function preloadAudioCues() {
       el.addEventListener('canplaythrough', ()=>{ audioCueAvailable[text]=true; }, {once:true});
       el.addEventListener('error', ()=>{ audioCueAvailable[text]=false; }, {once:true});
       audioCueCache[text]=el;
-    } catch(e){}
+    } catch(e){ audioCueAvailable[text]=false; }
   });
 }
+
 const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAAAA';
 function unlockAudioCues() {
   if (audioCuesUnlocked) return;
@@ -1161,48 +1172,67 @@ function unlockAudioCues() {
     if (p&&p.catch) p.catch(()=>{});
   } catch(e){}
 }
+
 function speakViaSynth(t, requestId) {
   if (!synth || !window.SpeechSynthesisUtterance || requestId!==speechRequestId) return;
   try {
-    const u=new SpeechSynthesisUtterance(t);
-    u.lang=state.lang; u.rate=0.95; u.pitch=1.0; u.volume=(state.volCue!=null?state.volCue:70)/100;
-    const v=pickVoice(state.lang);
-    if (v) u.voice=v;
+    // Принудительно обновляем список голосов, если он пуст
+    if (!voiceList.length) refreshVoices();
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = state.lang;
+    u.rate = 0.9;
+    u.pitch = 1.0;
+    u.volume = (state.volCue != null ? state.volCue : 70) / 100;
+    const voice = pickVoice(state.lang);
+    if (voice) u.voice = voice;
     synth.resume();
     synth.speak(u);
     setTimeout(() => { try { synth.resume(); } catch(e){} }, 120);
   } catch(e){}
 }
+
 function stopAllAudioCues() {
   Object.values(audioCueCache).forEach(el => { try { if (!el.paused) { el.pause(); el.currentTime=0; } } catch(e){} });
 }
+
 function stopSpeechCues() {
   speechRequestId++;
   try { synth && synth.cancel(); } catch(e){}
   stopAllAudioCues();
 }
+
 function speak(t) {
-  if (state.cueMode!=='voice') return;
-  const requestId=++speechRequestId;
-  const clip=audioCueCache[t];
-  if (clip && audioCueAvailable[t]===true) {
+  if (state.cueMode !== 'voice') return;
+  const requestId = ++speechRequestId;
+  const clip = audioCueCache[t];
+  // Если файл загружен и готов – играем его
+  if (clip && audioCueAvailable[t] === true) {
     try {
       try { synth && synth.cancel(); } catch(e){}
       stopAllAudioCues();
-      clip.currentTime=0; clip.volume=(state.volCue!=null?state.volCue:70)/100;
-      const p=clip.play();
-      if (p && p.catch) p.catch(()=>{ if (requestId===speechRequestId) speakViaSynth(t, requestId); });
+      clip.currentTime = 0;
+      clip.volume = (state.volCue != null ? state.volCue : 70) / 100;
+      const p = clip.play();
+      if (p && p.catch) p.catch(() => {
+        if (requestId === speechRequestId) speakViaSynth(t, requestId);
+      });
       return;
-    } catch(e){ /* fall through */ }
+    } catch(e) {
+      // Если ошибка – падаем на синтез
+      if (requestId === speechRequestId) speakViaSynth(t, requestId);
+    }
+  } else {
+    // Если файл недоступен – синтез
+    speakViaSynth(t, requestId);
   }
-  speakViaSynth(t, requestId);
 }
+
 function testVoiceCues() {
-  if (state.cueMode!=='voice') { setCueMode('voice'); }
+  if (state.cueMode !== 'voice') { setCueMode('voice'); }
   unlockSpeech();
-  const token=++voiceTestToken;
+  const token = ++voiceTestToken;
   ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
-    setTimeout(() => { if (token===voiceTestToken) speak(cue); }, index*1400);
+    setTimeout(() => { if (token === voiceTestToken) speak(cue); }, index*1400);
   });
 }
 
