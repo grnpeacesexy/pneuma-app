@@ -425,10 +425,11 @@
           <div class="set-label">Источник голоса</div>
           <div class="set-sub">Реалистичный (MP3) или Синтез (системный TTS, только русский)</div>
         </div>
-        <div class="cat-opt-row" id="voiceTypeRowInner" style="margin-bottom:0;">
-          <div class="cat-opt" id="voiceRealBtn" onclick="setVoiceType('real')">Реалистичный</div>
-          <div class="cat-opt" id="voiceSynthBtn" onclick="setVoiceType('synth')">Синтез</div>
+        <div class="type-toggle" style="margin-bottom:12px;">
+          <div class="type-opt" id="voiceRealBtn" onclick="setVoiceType('real')">Реалистичный</div>
+          <div class="type-opt" id="voiceSynthBtn" onclick="setVoiceType('synth')">Синтез</div>
         </div>
+        <button class="btn btn-ghost" type="button" style="padding:11px;" onclick="testVoiceCues()">Проверить голос</button>
       </div>
 
       <div class="set-row" id="toneVariantRow" style="display:none; flex-direction:column; align-items:stretch;">
@@ -1277,6 +1278,7 @@ function speak(t) {
   if (state.cueMode!=='voice') return;
   if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
   
+  // Если выбран Синтез — сразу идёт TTS
   if (state.voiceType === 'synth') {
     speakTTS(t);
     return;
