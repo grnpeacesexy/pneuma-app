@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Breath OS</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0B0A12">
@@ -31,7 +34,7 @@
     --c-balance: #6BC7A3;
     --c-balance-bg: #6BC7A31f;
     --font-display: 'Fraunces', Georgia, serif;
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select:none; touch-action: manipulation; }
   html, body {
@@ -60,13 +63,15 @@
   .hero-card {
     margin-top:22px; border-radius:24px; padding:24px; position:relative; overflow:hidden;
     background: linear-gradient(150deg, rgba(139,124,246,0.28), rgba(139,124,246,0.05));
+    background-size: 200% 200%; animation: heroGradient 12s ease infinite;
     border:0.5px solid var(--border-strong);
     box-shadow: 0 12px 40px -10px rgba(139,124,246,0.25);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    animation: riseIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: riseIn 0.6s cubic-bezier(0.16, 1, 0.3, 1), heroGradient 12s ease infinite;
     will-change: transform, opacity;
   }
+  @keyframes heroGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
   .hero-eyebrow { font-size:11px; letter-spacing:1px; text-transform:uppercase; color: var(--accent); font-weight:600; margin-bottom:10px; }
   .hero-name { font-family: var(--font-display); font-size:22px; font-weight:600; margin-bottom:4px; }
   .hero-desc { font-size:13px; color: var(--text-secondary); line-height:1.5; margin-bottom:16px; max-width:85%; }
@@ -122,7 +127,7 @@
   #progressRing { position:absolute; width:290px; height:290px; transform: rotate(-90deg); }
   #progressRing circle { fill:none; stroke-width:2; }
   #progressTrack { stroke: rgba(255,255,255,0.06); }
-  #progressBar { stroke: var(--accent); stroke-linecap:round; transition: stroke-dashoffset 0.4s linear; filter: drop-shadow(0 0 4px var(--accent-glow)); }
+  #progressBar { stroke: var(--accent); stroke-linecap:round; transition: stroke-dashoffset 0.4s linear; filter: drop-shadow(0 0 6px var(--accent)); }
   #glow { position:absolute; width:250px; height:250px; border-radius:50%; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); filter: blur(8px); transform: scale(0.5); transition: transform 4s cubic-bezier(0.45,0,0.55,1), opacity 4s ease; opacity: 0.55; will-change: transform, opacity; }
   #ring { position:relative; width:200px; height:200px; border-radius:50%; border: 1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); display:flex; align-items:center; justify-content:center; flex-direction:column; transform: scale(0.55); transition: transform 4s cubic-bezier(0.45,0,0.55,1); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06) inset, 0 10px 40px rgba(0,0,0,0.4); will-change: transform; }
   #ring.pulse { animation: livePulse var(--pulse-speed, 2.4s) ease-in-out infinite; }
@@ -143,14 +148,14 @@
 
   .spark-layer { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity 1.8s ease; z-index:0; }
   #screen-session.cat-energy .spark-layer { opacity:1; }
-  .spark { position:absolute; width:4px; height:4px; border-radius:50%; background:var(--accent); top:50%; left:50%; opacity:0; will-change: transform, opacity;
-    animation: sparkDrift 2.6s ease-out infinite; animation-delay: calc(var(--i) * 0.32s); }
+  .spark { position:absolute; width:5px; height:5px; border-radius:50%; background:var(--accent); top:50%; left:50%; opacity:0; box-shadow: 0 0 8px 2px var(--accent); will-change: transform, opacity;
+    animation: sparkDrift 2.8s ease-out infinite; animation-delay: calc(var(--i) * 0.32s); }
   @keyframes sparkDrift {
     0%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-85px) scale(0.4); }
     20%{ opacity:0.9; filter: blur(0px); }
-    100%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-160px) scale(1.3); filter: blur(1.5px); }
+    100%{ opacity:0; transform: rotate(calc(var(--i) * 45deg)) translateY(-160px) scale(1.4); filter: blur(2px); }
   }
-  #counter { font-size:44px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; transition: opacity 0.3s ease; }
+  #counter { font-size:44px; font-weight:600; font-variant-numeric: tabular-nums; letter-spacing:-1px; transition: opacity 0.3s ease; text-shadow: 0 2px 12px rgba(0,0,0,0.6); }
   #phaseWord { font-family: var(--font-display); font-size:16px; color: var(--text-secondary); margin-top:2px; letter-spacing:0.3px; text-align:center; padding:0 20px; animation: phaseWordIn 0.5s ease; }
   @keyframes phaseWordIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform: translateY(0); } }
   #roundInfo { font-size:12px; color: var(--text-muted); margin-top:20px; letter-spacing:0.5px; transition: color 0.3s ease; }
@@ -168,8 +173,9 @@
 
   /* ============ SESSION COMPLETE ============ */
   #screen-complete { align-items:center; justify-content:center; text-align:center; }
-  .complete-mark { width:80px; height:80px; border-radius:50%; background: var(--c-balance-bg); color: var(--c-balance); display:flex; align-items:center; justify-content:center; font-size:36px; margin-bottom:24px; animation: completePop 0.6s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 32px var(--c-balance-bg); }
+  .complete-mark { width:80px; height:80px; border-radius:50%; background: var(--c-balance-bg); color: var(--c-balance); display:flex; align-items:center; justify-content:center; font-size:36px; margin-bottom:24px; animation: completePop 0.6s cubic-bezier(0.16, 1, 0.3, 1), completeGlow 2.5s ease-in-out infinite 0.6s; }
   @keyframes completePop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes completeGlow { 0%, 100% { box-shadow: 0 0 24px var(--c-balance-bg); } 50% { box-shadow: 0 0 40px var(--c-balance); } }
   .complete-title { font-family: var(--font-display); font-size:26px; font-weight:600; margin-bottom:8px; animation: riseIn 0.5s ease 0.1s backwards; }
   .complete-sub { color: var(--text-secondary); font-size:15px; margin-bottom:28px; animation: riseIn 0.5s ease 0.15s backwards; }
   .complete-stats { display:flex; gap:28px; margin-bottom:36px; animation: riseIn 0.5s ease 0.2s backwards; }
@@ -261,7 +267,7 @@
   #welcome { position:fixed; inset:0; z-index:70; background: radial-gradient(ellipse 120% 80% at 50% 20%, #1A1830 0%, var(--bg) 60%); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; overflow:hidden; }
   #welcome.active { display:flex; animation: fadeIn 0.5s ease; }
   .welcome-particles { position:absolute; inset:0; pointer-events:none; z-index:0; }
-  .welcome-particle { position:absolute; border-radius:50%; background:var(--accent); opacity:0; animation-name:particleFloat; animation-timing-function:ease-in-out; animation-iteration-count:infinite; will-change: transform, opacity; }
+  .welcome-particle { position:absolute; border-radius:50%; background:var(--accent); opacity:0; animation-name:particleFloat; animation-timing-function:ease-in-out; animation-iteration-count:infinite; will-change: transform, opacity; box-shadow: 0 0 6px var(--accent); }
   @keyframes particleFloat { 0%{ transform:translate(0,0) scale(0.8); opacity:0; } 15%{ opacity:0.4; } 85%{ opacity:0.2; } 100%{ transform:translate(20px,-160px) scale(1.1); opacity:0; } }
   .welcome-ring { position:relative; z-index:1; width:120px; height:120px; border-radius:50%; border:1px solid var(--border-strong); background: linear-gradient(160deg, #1C1A2E, #100F1C); margin-bottom:32px; animation: welcomeBreath 6s ease-in-out infinite; box-shadow: 0 0 40px 8px rgba(139,124,246,0.2); will-change: transform; }
   @keyframes welcomeBreath { 0%,100%{ transform:scale(0.85);} 50%{ transform:scale(1.1);} }
@@ -421,9 +427,12 @@
           <div class="type-opt" id="cueOffBtn" onclick="setCueMode('off')">Выкл</div>
         </div>
       </div>
-      <div class="set-row" id="langRow">
-        <div><div class="set-label">Язык голоса</div></div>
-        <select id="langSelect"><option value="ru-RU">Русский</option><option value="en-US">English</option></select>
+      <div class="set-row" id="voiceTypeRow" style="flex-direction:column; align-items:stretch; display:flex;">
+        <div style="margin-bottom:10px;"><div class="set-label">Источник голоса</div><div class="set-sub">Реалистичный — использует MP3 (если загружены). Синтез — системный русский голос (TTS).</div></div>
+        <div class="type-toggle" style="margin-bottom:0;">
+          <div class="type-opt" id="voiceRealBtn" onclick="setVoiceType('real')">Реалистичный</div>
+          <div class="type-opt" id="voiceSynthBtn" onclick="setVoiceType('synth')">Синтез</div>
+        </div>
       </div>
       <div class="set-row" id="toneVariantRow" style="display:none; flex-direction:column; align-items:stretch;">
         <div style="margin-bottom:10px;"><div class="set-label">Тон</div><div class="set-sub">Вариант звучания</div></div>
@@ -445,13 +454,6 @@
         <div class="set-row" style="flex-direction:column; align-items:stretch;">
           <div style="margin-bottom:10px;"><div class="set-sub">Быстрое переключение сохранённых настроек звука</div></div>
           <div class="cat-opt-row" id="profileRow"></div>
-        </div>
-
-        <div class="settings-group-title">Голос</div>
-        <div class="set-row" id="voicePickRow" style="flex-direction:column; align-items:stretch;">
-          <div style="margin-bottom:10px;"><div class="set-label">Голос устройства</div><div class="set-sub">Синтезатор речи (если MP3 недоступен)</div></div>
-          <select id="voicePickSelect" style="width:100%;"></select>
-          <button class="btn btn-ghost" type="button" style="margin-top:10px; padding:11px;" onclick="testVoiceCues()">Проверить голос: вдох → пауза → выдох</button>
         </div>
 
         <div class="settings-group-title">Громкость</div>
@@ -836,9 +838,9 @@ let state = {
   currentPattern:'wimhof',
   rounds:3,
   cueMode:'voice',
+  voiceType:'real', // 'real' (MP3) or 'synth' (TTS)
   bellOn:true,
   hapticOn:true,
-  lang:'ru-RU',
   toneVariant:'chime',
   voiceURI:'',
   breathNoiseOn:true,
@@ -863,12 +865,12 @@ let audioBuffers = {};
 let audioCuesLoaded = false;
 let activeMp3Source = null;
 
-function ensureAudioCtx() {
+async function ensureAudioCtx() {
   if (!audioCtx) {
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
   }
   if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(()=>{});
+    await audioCtx.resume().catch(()=>{});
   }
   return audioCtx;
 }
@@ -890,9 +892,9 @@ function saveSettings() {
   try { localStorage.setItem('pneuma_settings', JSON.stringify({
     rounds:state.rounds,
     cueMode:state.cueMode,
+    voiceType:state.voiceType,
     bellOn:state.bellOn,
     hapticOn:state.hapticOn,
-    lang:state.lang,
     toneVariant:state.toneVariant,
     breathNoiseOn:state.breathNoiseOn,
     tapSkipOn:state.tapSkipOn,
@@ -1218,7 +1220,7 @@ const AUDIO_MAP = {
 
 async function loadAudioCues() {
   if (audioCuesLoaded) return;
-  ensureAudioCtx();
+  await ensureAudioCtx();
   if (!audioCtx) return;
   
   const keys = Object.keys(AUDIO_MAP);
@@ -1241,14 +1243,13 @@ function speakTTS(text) {
   try {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = state.lang || 'ru-RU';
+    utterance.lang = 'ru-RU'; // Жёстко ставим русский для синтеза
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
     utterance.volume = (state.volCue != null ? state.volCue : 70) / 100;
     const voices = window.speechSynthesis.getVoices();
     if (voices.length) {
-      const langPrefix = (state.lang || 'ru-RU').split('-')[0];
-      const matchedVoice = voices.find(v => v.lang.startsWith(langPrefix));
+      const matchedVoice = voices.find(v => v.lang.startsWith('ru'));
       if (matchedVoice) utterance.voice = matchedVoice;
     }
     window.speechSynthesis.speak(utterance);
@@ -1275,6 +1276,11 @@ function speak(t) {
   if (state.cueMode!=='voice') return;
   if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
   
+  if (state.voiceType === 'synth') {
+    speakTTS(t);
+    return;
+  }
+  
   if (playMp3Buffer(t)) return;
   
   speakTTS(t);
@@ -1287,11 +1293,18 @@ function stopSpeechCues() {
 
 function testVoiceCues() {
   if (state.cueMode!=='voice') { setCueMode('voice'); }
-  ensureAudioCtx();
-  loadAudioCues().then(() => {
-    ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
-      setTimeout(() => { speak(cue); }, index*1400);
-    });
+  ensureAudioCtx().then(() => {
+    if (state.voiceType === 'real') {
+      loadAudioCues().then(() => {
+        ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
+          setTimeout(() => { speak(cue); }, index*1400);
+        });
+      });
+    } else {
+      ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
+        setTimeout(() => { speak(cue); }, index*1400);
+      });
+    }
   });
 }
 
@@ -1714,8 +1727,8 @@ async function runTimedPhase(totalSec, tok, onSecond) {
 /* ---------- SESSION ENGINE ---------- */
 async function toggleStart() {
   if (state.running) return;
-  ensureAudioCtx();
-  await loadAudioCues(); 
+  await ensureAudioCtx(); // Ждем полного разблокирования аудио
+  if (state.voiceType === 'real') await loadAudioCues();
   
   state.running=true; state.sessionStart=Date.now(); sessionToken++;
   const token=sessionToken;
@@ -2053,7 +2066,6 @@ function renderCalendarGrid(h) {
 /* ---------- SETTINGS ---------- */
 const TONE_VARIANT_LABELS = { chime:'Колокольчик', bowl:'Поющая чаша', ocean:'Океан', crystal:'Хрусталь' };
 function syncSettingsUI() {
-  document.getElementById('langSelect').value=state.lang;
   [['bellOn','bellToggle'],['hapticOn','hapticToggle'],['breathNoiseOn','breathNoiseToggle'],['tapSkipOn','tapSkipToggle'],['noNumbersOn','noNumbersToggle'],['progressiveOn','progressiveToggle'],['musicOn','musicToggle'],['settleOn','settleToggle'],['minimalOn','minimalToggle'],['screenOffOn','screenOffToggle'],['recentFirstOn','recentFirstToggle'],['cardTickOn','cardTickToggle']].forEach(([k,id])=>{
     document.getElementById(id).classList.toggle('on', state[k]);
   });
@@ -2065,9 +2077,9 @@ function syncSettingsUI() {
   document.getElementById('volMusicVal').textContent = state.volMusic+'%';
   updateCueModeUI();
   buildToneVariantRow();
-  buildVoicePickRow();
   buildProfileRow();
   applyMinimalMode();
+  updateVoiceTypeUI();
 }
 function setCueMode(mode) {
   state.cueMode = mode; saveSettings(); vibrate('tick');
@@ -2077,9 +2089,18 @@ function updateCueModeUI() {
   document.getElementById('cueVoiceBtn').classList.toggle('active', state.cueMode==='voice');
   document.getElementById('cueToneBtn').classList.toggle('active', state.cueMode==='tone');
   document.getElementById('cueOffBtn').classList.toggle('active', state.cueMode==='off');
-  document.getElementById('langRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
-  document.getElementById('voicePickRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
+  document.getElementById('voiceTypeRow').style.display = state.cueMode==='voice' ? 'flex' : 'none';
   document.getElementById('toneVariantRow').style.display = state.cueMode==='tone' ? 'flex' : 'none';
+}
+function setVoiceType(type) {
+  state.voiceType = type; saveSettings(); vibrate('tick');
+  updateVoiceTypeUI();
+}
+function updateVoiceTypeUI() {
+  if (state.cueMode === 'voice') {
+    document.getElementById('voiceRealBtn').classList.toggle('active', state.voiceType === 'real');
+    document.getElementById('voiceSynthBtn').classList.toggle('active', state.voiceType === 'synth');
+  }
 }
 function buildToneVariantRow() {
   const wrap=document.getElementById('toneVariantRowInner'); wrap.innerHTML='';
@@ -2092,20 +2113,6 @@ function buildToneVariantRow() {
 function previewTone(variant) {
   try { ensureAudioCtx(); const prev=state.toneVariant; state.toneVariant=variant; const savedMode=state.cueMode; state.cueMode='tone'; playTone('in', 1.4); state.cueMode=savedMode; state.toneVariant=prev; } catch(e){}
 }
-function buildVoicePickRow() {
-  const sel = document.getElementById('voicePickSelect');
-  sel.innerHTML = '<option value="">Голосовые mp3-файлы</option>';
-  if ('speechSynthesis' in window) {
-    const voices = window.speechSynthesis.getVoices();
-    voices.forEach(v => {
-      const opt = document.createElement('option');
-      opt.value = v.name;
-      opt.textContent = `${v.name} (${v.lang})`;
-      sel.appendChild(opt);
-    });
-  }
-}
-function onVoicePick(uri) { state.voiceURI=uri; saveSettings(); }
 
 const BUILTIN_PROFILES = {
   default: { label:'Обычный', cueMode:'voice', bellOn:true, hapticOn:true, volCue:70, volBell:70, volMusic:70, musicOn:false },
@@ -2149,7 +2156,6 @@ function tSet(key, id) {
   if (key==='minimalOn') applyMinimalMode();
   if (key==='recentFirstOn') renderPatternList();
 }
-document.getElementById('langSelect').addEventListener('change', e=>{ state.lang=e.target.value; saveSettings(); });
 
 document.getElementById('volCueSlider').addEventListener('input', e=>{ state.volCue=parseInt(e.target.value); document.getElementById('volCueVal').textContent=state.volCue+'%'; saveSettings(); });
 document.getElementById('volCueSlider').addEventListener('change', ()=>{ if (state.cueMode==='voice') speak('Вдох'); else if (state.cueMode==='tone') { playTone('in',1.2); } });
@@ -2338,11 +2344,7 @@ if (!localStorage.getItem('pneuma_onboarded')) {
 renderHome();
 
 if ('speechSynthesis' in window) {
-  window.speechSynthesis.onvoiceschanged = () => {
-    if (document.getElementById('screen-settings').classList.contains('active')) {
-      buildVoicePickRow();
-    }
-  };
+  window.speechSynthesis.onvoiceschanged = () => {};
 }
 
 /* ---------- TELEGRAM WEBAPP ---------- */
