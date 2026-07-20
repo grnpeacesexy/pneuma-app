@@ -33,7 +33,7 @@
     --font-display: 'Fraunces', Georgia, serif;
     --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   }
-  /* ИСПРАВЛЕНИЕ: Добавлено touch-action: manipulation для мгновенного отклика кнопок */
+  /* ФИКС: touch-action: manipulation убирает задержку нажатия на мобильных */
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select:none; touch-action: manipulation; }
   html, body {
     margin:0; padding:0; height:100%; overflow-x:hidden;
@@ -199,7 +199,7 @@
   .set-row:last-child { border-bottom:none; }
   .set-label { font-size:15px; }
   .set-sub { font-size:12px; color: var(--text-muted); margin-top:2px; }
-  select, input[type=text] { background: rgba(255,255,255,0.05); color: var(--text-primary); border:0.5px solid var(--border-strong); border-radius:10px; padding:9px 12px; font-size:14px; }
+  select, input[type=text], input[type=number] { background: rgba(255,255,255,0.05); color: var(--text-primary); border:0.5px solid var(--border-strong); border-radius:10px; padding:9px 12px; font-size:14px; }
   .toggle { width:46px; height:28px; border-radius:20px; background: rgba(255,255,255,0.12); position:relative; transition: background 0.2s; flex-shrink:0; }
   .toggle.on { background: var(--accent); }
   .toggle-knob { position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:white; transition: left 0.2s; }
@@ -644,9 +644,9 @@
 
 <script>
 // ============================================================
-// ПНЕВМА — премиальное дыхательное приложение (без таймера)
-// Оптимизировано: исправлены баги с кнопками на мобильных,
-// добавлен синтезатор голоса (TTS) как фолбэк для MP3.
+// ПНЕВМА — премиальное дыхательное приложение
+// Аудио-движок переписан: MP3 проигрываются через Web Audio API
+// для обхода блокировок iOS/Android. Синтез голоса — как фолбэк.
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -844,8 +844,11 @@ let state = {
 };
 let activeCat = 'all';
 let audioCtx = null;
+let audioBuffers = {}; // Кэш для декодированных MP3 файлов
+let audioCuesLoaded = false;
+let activeMp3Source = null;
 
-// ИСПРАВЛЕНИЕ: Безопасная инициализация AudioContext для обхода блокировок автоплея
+// Инициализация AudioContext (обязательно для мобильных устройств)
 function ensureAudioCtx() {
   if (!audioCtx) {
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
@@ -1200,10 +1203,6 @@ const AUDIO_MAP = {
   '3': 'count_3.mp3'
 };
 
-let audioBuffers = {}; // Кэш для декодированных MP3 файлов
-let audioCuesLoaded = false;
-let activeMp3Source = null;
-
 // Загрузка и декодирование MP3 через Web Audio API (Решает проблему блокировки на iOS/Telegram)
 async function loadAudioCues() {
   if (audioCuesLoaded) return;
@@ -1218,13 +1217,8 @@ async function loadAudioCues() {
       const response = await fetch(url);
       if (!response.ok) continue; // Файл не найден, просто пропускаем (сработает TTS)
       const arrayBuffer = await response.arrayBuffer();
-      // Декодируем MP3 в AudioBuffer (быстро и без задержек)
-      await new Promise((resolve, reject) => {
-        audioCtx.decodeAudioData(arrayBuffer, (buffer) => {
-          audioBuffers[text] = buffer;
-          resolve();
-        }, (err) => { resolve(); }); // Если декодировать не удалось — просто идем дальше
-      });
+      const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+      audioBuffers[text] = buffer;
     } catch(e) {}
   }
   audioCuesLoaded = true;
@@ -1645,7 +1639,6 @@ function refreshPreStartDuration() {
 }
 
 /* ---------- TAP ---------- */
-// ИСПРАВЛЕНИЕ: обработка касаний работает теперь без задержек на мобильных
 function handleRingTap() {
   if (!state.tapSkipOn||!state.running||!isHoldPhase) return;
   const now=Date.now(); 
@@ -2094,7 +2087,6 @@ function previewTone(variant) {
 function buildVoicePickRow() {
   const sel = document.getElementById('voicePickSelect');
   sel.innerHTML = '<option value="">Голосовые mp3-файлы</option>';
-  // Добавляем синтезированные голоса браузера
   if ('speechSynthesis' in window) {
     const voices = window.speechSynthesis.getVoices();
     voices.forEach(v => {
