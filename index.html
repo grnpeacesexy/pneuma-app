@@ -660,8 +660,8 @@
 <script>
 // ============================================================
 // ПНЕВМА — премиальное дыхательное приложение
-// Аудио-движок: MP3 проигрываются через Web Audio API
-// для обхода блокировок iOS/Android. Синтез речи — как фолбэк.
+// Аудио-движок переписан на HTML5 Audio для максимальной совместимости с iOS/Android.
+// Синтез речи — как фолбэк.
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -858,9 +858,6 @@ let state = {
 };
 let activeCat = 'all';
 let audioCtx = null;
-let audioBuffers = {}; 
-let audioCuesLoaded = false;
-let activeMp3Source = null;
 
 // Инициализация AudioContext (обязательно для мобильных устройств)
 function ensureAudioCtx() {
@@ -873,12 +870,114 @@ function ensureAudioCtx() {
   return audioCtx;
 }
 
+/* ---------- VOICE (HTML5 AUDIO + TTS FALLBACK) ---------- */
+const AUDIO_BASE = 'audio/ru/';
+const AUDIO_MAP = {
+  'Вдох': 'inhale.mp3',
+  'Выдох': 'exhale.mp3',
+  'Задержи': 'hold.mp3',
+  'Задержи дыхание': 'hold_breath.mp3',
+  'Пауза': 'pause.mp3',
+  'Ещё': 'more.mp3',
+  'Вдохни и задержи': 'inhale_hold.mp3',
+  'Выдохни и задержи дыхание': 'exhale_hold.mp3',
+  'Сессия завершена': 'session_complete.mp3',
+  'Привет': 'hello.mp3',
+  '1': 'count_1.mp3',
+  '2': 'count_2.mp3',
+  '3': 'count_3.mp3'
+};
+
+// Предзагрузка аудио элементов для мгновенного воспроизведения
+const audioElements = {};
+function initAudioElements() {
+  Object.keys(AUDIO_MAP).forEach(text => {
+    const a = new Audio(AUDIO_BASE + AUDIO_MAP[text]);
+    a.preload = 'auto';
+    audioElements[text] = a;
+  });
+}
+initAudioElements(); // Запускаем сразу при загрузке скрипта
+
 // Разблокировка аудио при первом касании экрана (требование iOS/Android)
 function unlockAudio() {
   ensureAudioCtx();
+  // Разблокировка HTML5 Audio элементов
+  Object.values(audioElements).forEach(a => {
+    a.muted = true;
+    a.play().then(() => {
+      a.pause();
+      a.currentTime = 0;
+      a.muted = false;
+    }).catch(()=>{});
+  });
 }
 document.body.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
 document.body.addEventListener('click', unlockAudio, { once: true });
+
+function playMp3File(text) {
+  if (!AUDIO_MAP[text]) return false;
+  const a = audioElements[text];
+  if (!a) return false;
+  try {
+    a.currentTime = 0;
+    a.volume = (state.volCue != null ? state.volCue : 70) / 100;
+    a.play();
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+function speakTTS(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ru-RU'; // Жёстко ставим русский для синтеза
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = (state.volCue != null ? state.volCue : 70) / 100;
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length) {
+      const matchedVoice = voices.find(v => v.lang.startsWith('ru'));
+      if (matchedVoice) utterance.voice = matchedVoice;
+    }
+    window.speechSynthesis.speak(utterance);
+  } catch(e) {}
+}
+
+function speak(t) {
+  if (state.cueMode!=='voice') return;
+  
+  if (state.voiceType === 'synth') {
+    if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+    speakTTS(t);
+    return;
+  }
+  
+  // Пытаемся проиграть MP3 файл
+  if (playMp3File(t)) return;
+  
+  // Если MP3 не проигрался — синтез речи
+  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+  speakTTS(t);
+}
+
+function stopSpeechCues() {
+  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+  Object.values(audioElements).forEach(a => {
+    try { a.pause(); a.currentTime = 0; } catch(e){}
+  });
+}
+
+function testVoiceCues() {
+  if (state.cueMode!=='voice') { setCueMode('voice'); }
+  unlockAudio(); // Принудительно разблокируем
+  ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
+    setTimeout(() => { speak(cue); }, index*1400);
+  });
+}
 
 let noiseNode = null, noiseGain = null, noiseFilter = null, wakeLock = null;
 let lastTapTime=0, skipRequested=false, isHoldPhase=false, breathingSkipRequested=false;
@@ -920,7 +1019,7 @@ async function requestWakeLock() {
 function releaseWakeLock() { if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock=null; } }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible' && state.running && !wakeLock) requestWakeLock(); });
 
-/* ---------- AUDIO ---------- */
+/* ---------- AUDIO (Web Audio API for Tones/Music) ---------- */
 function chimeLayered(ctx, layers, now) {
   const volMult = (state.volBell != null ? state.volBell : 70) / 100;
   layers.forEach(L => {
@@ -1197,119 +1296,6 @@ function setNoiseLevel(level, dur) {
     noiseGain.gain.cancelScheduledValues(ctx.currentTime);
     noiseGain.gain.linearRampToValueAtTime(Math.min(level, 0.012), ctx.currentTime + dur);
   } catch(e) {}
-}
-
-/* ---------- VOICE (MP3 + TTS FALLBACK) ---------- */
-const AUDIO_BASE = 'audio/ru/';
-const AUDIO_MAP = {
-  'Вдох': 'inhale.mp3',
-  'Выдох': 'exhale.mp3',
-  'Задержи': 'hold.mp3',
-  'Задержи дыхание': 'hold_breath.mp3',
-  'Пауза': 'pause.mp3',
-  'Ещё': 'more.mp3',
-  'Вдохни и задержи': 'inhale_hold.mp3',
-  'Выдохни и задержи дыхание': 'exhale_hold.mp3',
-  'Сессия завершена': 'session_complete.mp3',
-  'Привет': 'hello.mp3',
-  '1': 'count_1.mp3',
-  '2': 'count_2.mp3',
-  '3': 'count_3.mp3'
-};
-
-// Загрузка и декодирование MP3 через Web Audio API (Решает проблему блокировки на iOS/Telegram)
-async function loadAudioCues() {
-  if (audioCuesLoaded) return;
-  ensureAudioCtx();
-  if (!audioCtx) return;
-  
-  const keys = Object.keys(AUDIO_MAP);
-  for (let i = 0; i < keys.length; i++) {
-    const text = keys[i];
-    const url = AUDIO_BASE + AUDIO_MAP[text];
-    try {
-      const response = await fetch(url);
-      if (!response.ok) continue; // Файл не найден, просто пропускаем (сработает TTS)
-      const arrayBuffer = await response.arrayBuffer();
-      const buffer = await audioCtx.decodeAudioData(arrayBuffer);
-      audioBuffers[text] = buffer;
-    } catch(e) {}
-  }
-  audioCuesLoaded = true;
-}
-
-// Функция синтеза речи (используется ТОЛЬКО если MP3 не загрузился или выбран Синтез)
-function speakTTS(text) {
-  if (!('speechSynthesis' in window)) return;
-  try {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ru-RU'; // Жёстко ставим русский для синтеза
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = (state.volCue != null ? state.volCue : 70) / 100;
-    const voices = window.speechSynthesis.getVoices();
-    if (voices.length) {
-      const matchedVoice = voices.find(v => v.lang.startsWith('ru'));
-      if (matchedVoice) utterance.voice = matchedVoice;
-    }
-    window.speechSynthesis.speak(utterance);
-  } catch(e) {}
-}
-
-// Проигрывание MP3 из кэша через Web Audio API (ИДЕАЛЬНО ДЛЯ МОБИЛОК)
-function playMp3Buffer(text) {
-  if (!audioCtx || !audioBuffers[text]) return false;
-  try {
-    if (activeMp3Source) { try { activeMp3Source.stop(); } catch(e){} }
-    const source = audioCtx.createBufferSource();
-    source.buffer = audioBuffers[text];
-    const gainNode = audioCtx.createGain();
-    gainNode.gain.value = (state.volCue != null ? state.volCue : 70) / 100;
-    source.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    source.start(0);
-    activeMp3Source = source;
-    return true;
-  } catch(e) { return false; }
-}
-
-function speak(t) {
-  if (state.cueMode!=='voice') return;
-  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
-  
-  // Если выбран Синтез — сразу идёт TTS
-  if (state.voiceType === 'synth') {
-    speakTTS(t);
-    return;
-  }
-  
-  // Пытаемся проиграть MP3 из буфера
-  if (playMp3Buffer(t)) return;
-  
-  // Если MP3 нет или не проигрался — синтез речи
-  speakTTS(t);
-}
-
-function stopSpeechCues() {
-  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
-  if (activeMp3Source) { try { activeMp3Source.stop(); } catch(e){} activeMp3Source = null; }
-}
-
-function testVoiceCues() {
-  if (state.cueMode!=='voice') { setCueMode('voice'); }
-  ensureAudioCtx();
-  if (state.voiceType === 'real') {
-    loadAudioCues().then(() => {
-      ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
-        setTimeout(() => { speak(cue); }, index*1400);
-      });
-    });
-  } else {
-    ['Вдох','Задержи','Выдох'].forEach((cue, index) => {
-      setTimeout(() => { speak(cue); }, index*1400);
-    });
-  }
 }
 
 /* ---------- TONES ---------- */
@@ -1731,10 +1717,7 @@ async function runTimedPhase(totalSec, tok, onSecond) {
 /* ---------- SESSION ENGINE ---------- */
 async function toggleStart() {
   if (state.running) return;
-  ensureAudioCtx();
-  if (state.voiceType === 'real') {
-    await loadAudioCues(); // Загружаем MP3 файлы в кэш при старте
-  }
+  unlockAudio(); // Гарантированно разблокируем аудио перед стартом
   
   state.running=true; state.sessionStart=Date.now(); sessionToken++;
   const token=sessionToken;
