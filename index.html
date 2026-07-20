@@ -1186,11 +1186,15 @@ function speakViaSynth(t) {
     setTimeout(() => { try { synth.speak(u); } catch(e){} }, 30);
   } catch(e){}
 }
+function stopAllAudioCues() {
+  Object.values(audioCueCache).forEach(el => { try { if (!el.paused) { el.pause(); el.currentTime=0; } } catch(e){} });
+}
 function speak(t) {
   if (state.cueMode!=='voice') return;
   const clip=audioCueCache[t];
   if (clip && audioCueAvailable[t]!==false) {
     try {
+      stopAllAudioCues(); // a new cue always cuts off whatever line was still finishing — same rule speechSynthesis's cancel() gave us
       clip.currentTime=0; clip.volume=(state.volCue!=null?state.volCue:70)/100;
       const p=clip.play();
       if (p && p.catch) p.catch(()=>{ speakViaSynth(t); });
