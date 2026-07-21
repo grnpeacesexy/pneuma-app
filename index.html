@@ -660,7 +660,7 @@
 <script>
 // ============================================================
 // ПНЕВМА — премиальное дыхательное приложение
-// Аудио-движок переписан на HTML5 Audio для максимальной совместимости с iOS/Android.
+// Аудио-движок: MP3 проигрываются через HTML5 Audio
 // Синтез речи — как фолбэк.
 // ============================================================
 
@@ -902,7 +902,6 @@ initAudioElements(); // Запускаем сразу при загрузке с
 // Разблокировка аудио при первом касании экрана (требование iOS/Android)
 function unlockAudio() {
   ensureAudioCtx();
-  // Разблокировка HTML5 Audio элементов
   Object.values(audioElements).forEach(a => {
     a.muted = true;
     a.play().then(() => {
@@ -919,11 +918,27 @@ function playMp3File(text) {
   if (!AUDIO_MAP[text]) return false;
   const a = audioElements[text];
   if (!a) return false;
+  
   try {
-    a.currentTime = 0;
     a.volume = (state.volCue != null ? state.volCue : 70) / 100;
-    a.play();
-    return true;
+    
+    // ФИКС: Безопасный сброс currentTime. Сначала ставим на паузу, если элемент ещё играется.
+    if (!a.paused) {
+      a.pause();
+    }
+    try { a.currentTime = 0; } catch(e) {}
+    
+    const playPromise = a.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        // ФИКС: Если промис отклонён (AbortError, NotAllowedError и т.д.), 
+        // честно вызываем TTS-фолбэк, чтобы звук не пропал в тишину.
+        if (state.voiceType === 'real') {
+          speakTTS(text);
+        }
+      });
+    }
+    return true; // Возвращаем true, так как попытка проигрывания инициирована
   } catch(e) {
     return false;
   }
@@ -956,12 +971,12 @@ function speak(t) {
     return;
   }
   
-  // Пытаемся проиграть MP3 файл
-  if (playMp3File(t)) return;
-  
-  // Если MP3 не проигрался — синтез речи
-  if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
-  speakTTS(t);
+  // Пытаемся проиграть MP3
+  if (!playMp3File(t)) {
+    // Если playMp3File сразу вернул false (нет элемента или синтаксическая ошибка),fallback to TTS
+    if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
+    speakTTS(t);
+  }
 }
 
 function stopSpeechCues() {
