@@ -660,8 +660,8 @@
 <script>
 // ============================================================
 // ПНЕВМА — премиальное дыхательное приложение
-// Аудио-движок: MP3 проигрываются через HTML5 Audio
-// Синтез речи — как фолбэк.
+// Аудио-движок: MP3 проигрываются через динамическое создание HTML5 Audio
+// для избежания зависаний очередей (AbortError queue).
 // ============================================================
 
 /* ---------- CATEGORIES ---------- */
@@ -888,7 +888,7 @@ const AUDIO_MAP = {
   '3': 'count_3.mp3'
 };
 
-// Предзагрузка аудио элементов для мгновенного воспроизведения
+// Предзагрузка аудио элементов для разблокировки
 const audioElements = {};
 function initAudioElements() {
   Object.keys(AUDIO_MAP).forEach(text => {
@@ -897,7 +897,10 @@ function initAudioElements() {
     audioElements[text] = a;
   });
 }
-initAudioElements(); // Запускаем сразу при загрузке скрипта
+initAudioElements(); 
+
+// Массив для отслеживания активных аудио элементов, чтобы их можно было остановить
+let activeAudioElements = [];
 
 // Разблокировка аудио при первом касании экрана (требование iOS/Android)
 function unlockAudio() {
@@ -916,29 +919,31 @@ document.body.addEventListener('click', unlockAudio, { once: true });
 
 function playMp3File(text) {
   if (!AUDIO_MAP[text]) return false;
-  const a = audioElements[text];
-  if (!a) return false;
+  const src = AUDIO_BASE + AUDIO_MAP[text];
   
   try {
+    // ФИКС: Создаём новый независимый Audio элемент для каждого вызова.
+    // Это полностью исключает зависание очереди (AbortError queue) и позволяет звукам накладываться друг на друга.
+    const a = new Audio(src);
     a.volume = (state.volCue != null ? state.volCue : 70) / 100;
+    activeAudioElements.push(a);
     
-    // ФИКС: Безопасный сброс currentTime. Сначала ставим на паузу, если элемент ещё играется.
-    if (!a.paused) {
-      a.pause();
-    }
-    try { a.currentTime = 0; } catch(e) {}
+    a.play().then(() => {
+      // Успешно начало играть
+    }).catch(err => {
+      // Если промис отклонён, честно вызываем TTS-фолбэк
+      if (state.voiceType === 'real') {
+        speakTTS(text);
+      }
+    });
     
-    const playPromise = a.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        // ФИКС: Если промис отклонён (AbortError, NotAllowedError и т.д.), 
-        // честно вызываем TTS-фолбэк, чтобы звук не пропал в тишину.
-        if (state.voiceType === 'real') {
-          speakTTS(text);
-        }
-      });
-    }
-    return true; // Возвращаем true, так как попытка проигрывания инициирована
+    a.onended = () => {
+      a.src = ''; // Очищаем память
+      const idx = activeAudioElements.indexOf(a);
+      if (idx > -1) activeAudioElements.splice(idx, 1);
+    };
+    
+    return true;
   } catch(e) {
     return false;
   }
@@ -973,7 +978,7 @@ function speak(t) {
   
   // Пытаемся проиграть MP3
   if (!playMp3File(t)) {
-    // Если playMp3File сразу вернул false (нет элемента или синтаксическая ошибка),fallback to TTS
+    // Если playMp3File сразу вернул false (нет элемента или синтаксическая ошибка), fallback to TTS
     if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
     speakTTS(t);
   }
@@ -981,9 +986,11 @@ function speak(t) {
 
 function stopSpeechCues() {
   if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch(e){}
-  Object.values(audioElements).forEach(a => {
-    try { a.pause(); a.currentTime = 0; } catch(e){}
+  // Останавливаем все активные аудио элементы
+  activeAudioElements.forEach(a => {
+    try { a.pause(); a.src = ''; } catch(e){}
   });
+  activeAudioElements = [];
 }
 
 function testVoiceCues() {
